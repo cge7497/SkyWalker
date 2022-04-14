@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 const express = require('express');
 const compression = require('compression');
@@ -16,7 +18,8 @@ const router = require('./router.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/DomoMaker';
+const dbURI = process.env.MONGODB_URI;
+
 mongoose.connect(dbURI, (err) => {
   if (err) {
     console.log('Could not connect to database');
@@ -53,7 +56,7 @@ app.use(session({
   store: new RedisStore({
     client: redisClient,
   }),
-  secret: 'Domo Arigato',
+  secret: process.env.secret,
   resave: 'true',
   saveUninitialized: true,
   cookie: {

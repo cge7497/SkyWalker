@@ -1,36 +1,36 @@
 const models = require('../models');
-const DomoModel = require('../models/Domo');
+const PlayerModel = require('../models/Player');
 
-const { Domo } = models;
+const { Player } = models;
 
-const makeDomo = async (req, res) => {
-  if (!req.body.name || !req.body.age || !req.body.favThing) {
-    return res.status(400).json({ error: 'Name, age, and favorite thing are required!' });
+const makePlayer = async (req, res) => {
+  if (!req.body.name || !req.body.color) {
+    return res.status(400).json({ error: 'Name and color are required!' });
   }
 
-  const domoData = {
+  const playerData = {
     name: req.body.name,
-    age: req.body.age,
-    favThing: req.body.favThing,
+    color: req.body.color,
+    items: req.body.items, //what syntax can I use for this conditional? Maybe ternary operator
     owner: req.session.account._id,
   };
 
   try {
-    const newDomo = new Domo(domoData);
-    await newDomo.save();
-    return res.status(201).json({ name: newDomo.name, age: newDomo.age, favThing: newDomo.favThing});
+    const newPlayer = new Player(playerData);
+    await newPlayer.save();
+    return res.status(201).json({ name: newPlayer.name, color: newPlayer.color, items: newPlayer.items});
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {
-      return res.status(400).json({ error: 'Domo already exists!' });
+      return res.status(400).json({ error: 'Player already exists!' });
     }
     return res.status(400).json({ error: 'An error occurred' });
   }
 };
 
-const makerPage = (req, res) => res.render('app');
+const appPage = (req, res) => res.render('app');
 
-const getDomos = (req, res) => DomoModel.findByOwner(req.session.account._id, (err, docs) => {
+const getPlayers = (req, res) => PlayerModel.findByOwner(req.session.account._id, (err, docs) => {
   if (err) {
     console.log(err);
     return res.status(400).json({ error: 'An error occurred!' });
@@ -40,7 +40,7 @@ const getDomos = (req, res) => DomoModel.findByOwner(req.session.account._id, (e
 });
 
 module.exports = {
-  makerPage,
-  makeDomo,
-  getDomos,
+  appPage,
+  makePlayer,
+  getPlayers,
 };

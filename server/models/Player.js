@@ -1,28 +1,27 @@
 const mongoose = require('mongoose');
 const _ = require('underscore');
 
-let DomoModel = {};
+let PlayerModel = {};
 
 const setName = (name) => _.escape(name).trim();
-const setFavThing = (thing) => _.escape(thing).trim();
+//const setFavThing = (thing) => _.escape(thing).trim();
 
-const DomoSchema = new mongoose.Schema({
+const PlayerSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
     set: setName,
   },
-  age: {
-    type: Number,
-    min: 0,
-    require: true,
-  },
-  favThing:{
+  color: {
     type: String,
     required: true,
     trim: true,
-    set: setFavThing,
+  },
+  items:{
+    type: Array,
+    required: false,
+    default: [false, false, false, false],
   },
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -35,10 +34,10 @@ const DomoSchema = new mongoose.Schema({
   },
 });
 
-DomoSchema.statics.toApi = (doc) => ({
+PlayerSchema.statics.toApi = (doc) => ({
   name: doc.name,
-  age: doc.age,
-  favThing: doc.favThing,
+  color: doc.color,
+  items: doc.items,
 });
 
 DomoSchema.statics.findByOwner = (ownerId, callback) => {
@@ -46,9 +45,9 @@ DomoSchema.statics.findByOwner = (ownerId, callback) => {
     // Convert the string ownerId to an object id
     owner: mongoose.Types.ObjectId(ownerId),
   };
-  return DomoModel.find(search).select('name age favThing').lean().exec(callback);
+  return DomoModel.find(search).select('name color items').lean().exec(callback);
 };
 
-DomoModel = mongoose.model('Domo', DomoSchema);
+PlayerModel = mongoose.model('Player', PlayerSchema);
 
-module.exports = DomoModel;
+module.exports = PlayerModel;
