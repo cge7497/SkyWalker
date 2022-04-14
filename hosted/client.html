@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <title>Christian Eliopoulos Project 1</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&family=Roboto:wght@300;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="/bundle.js" type="module"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Project 1: Sky Walker</h1>
+    </header>
+    <main>
+        <section class="center">
+            <h3>Create A Player</h3>
+            <form id="playerForm" action="/addPlayer" method="post">
+                <label for="name">Name: </label>
+                <input id="nameField" type="text" name="name" />
+                <label for="age" class="age">Number: </label>
+                <input id="ageField" class="age" type="number" name="age" min="-1" max="100" value="1" step="0.00016" />
+                <!-- I got this color picker code from https://www.w3schools.com/colors/colors_picker.asp !-->
+                <label for="color">Ultimate Color: </label>
+                <input id="colorField" type="color" name="favcolor" name="color">
+                <br>
+                <input id="submitBtn" type="submit" value="Create (or log in as) Player" />
+            </form>
+            <p id="createResponse"><br></p>
+            <canvas width="640" height="480" id="canvas_player">
+                If this message is displayed, the canvas could not be loaded. This is likely because of the browser
+                you
+                are in.
+            </canvas>
+            <canvas width="640" height="480" id="canvas_walkers">
+                If this message is displayed, the canvas could not be loaded. This is likely because of the browser
+                you
+                are in.
+            </canvas>
+            <canvas width="640" height="480" id="canvas_bg">
+                If this message is displayed, the canvas could not be loaded. This is likely because of the browser
+                you
+                are in.
+            </canvas>
+        </section>
+        <div>
+            <!-- I got the screw attack image from https://strategywiki.org/wiki/File:SMetroidScrewAttackIcon.png, 
+    and the morph ball image from https://strategywiki.org/wiki/File:Super_Metroid_Items_Morph_Ball.png, 
+    though they are both originally from Super Metroid games.
+    The Yellow Button image is from Super Mario World, and I got it from here: https://strategywiki.org/wiki/Super_Mario_World/Yellow_Switch_Palace -->
+            <h3 style="display: inline">Items: </h3>
+            <img id="screwattack" src="/screwattack.png" style="display: none" width="16" height="16"
+                alt="Infinite Flip Powerup">
+            <img id="morphball" src="/morphball.png" style="display: none" width="16" height="16"
+                alt="Shrinking Powerup">
+            <img id="yellowswitch" src="/yellowswitch.png" style="display: none" width="32" height="32"
+                alt="Final Powerup">
+            <!--Update this inner html when you get an item.-->
+            <div class="center" id="instructions">
+                <div id="moveInstructions" style="display:inline">Use '<strong>A</strong>' and
+                    '<strong>D</strong>'
+                    to move, </div>
+                <div id="spaceInstructions" style="display:inline"> <strong>SPACE</strong> to flip.
+                </div>
+            </div>
+
+            <button id="resetBtn" disabled=true>Back to Start</button>
+        </div>
+    </main>
+    <footer>
+        <p>By Christian Eliopoulos</p>
+    </footer>
+</body>
+
+</html>
