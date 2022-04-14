@@ -1,11 +1,11 @@
 {
-  "name": "Logins",
+  "name": "Sky Walker",
   "version": "1.0.0",
   "engines": {
     "node": "12.16.0",
     "npm": "6.13.7"
   },
-  "description": "A Simple Login Example using Node.js, Mongo and Redis",
+  "description": "A multiplayer HTML Canvas Game.",
   "main": "./server/app.js",
   "scripts": {
     "webpack": "webpack",
@@ -22,7 +22,7 @@
     "Redis",
     "Login"
   ],
-  "author": "Cody Van De Mark / Austin Willoughby",
+  "author": "Christian Eliopoulos",
   "license": "Apache 2.0",
   "devDependencies": {
     "@babel/core": "^7.17.8",
