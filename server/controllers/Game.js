@@ -1,4 +1,4 @@
-const level = require('./levelData.js');
+const level = require('../../src/levelData.js');
 
 const players = {};
 const playerMovementThisSecond = {};

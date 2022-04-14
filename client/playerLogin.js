@@ -78,4 +78,4 @@ const init = () => {
 };
 
 //When the window loads, run init.
-window.onload = init;
+//window.onload = init;
