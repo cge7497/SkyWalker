@@ -295,3 +295,19 @@ h3.domoFavThing {
 .domo:last-child {
     margin-bottom:10px;
 }
+
+#canvas_player{
+    z-index: 2;
+    position: absolute;
+    border: 0.5rem outset rgba(131, 220, 250, 0.7);
+}
+
+#canvas_walkers{
+    z-index: 1; 
+    position: absolute;
+}
+
+#canvas_bg{
+    z-index: 0; 
+    border: 0.5rem outset lightpink;
+}

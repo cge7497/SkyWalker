@@ -40,7 +40,7 @@ PlayerSchema.statics.toApi = (doc) => ({
   items: doc.items,
 });
 
-DomoSchema.statics.findByOwner = (ownerId, callback) => {
+PlayerSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     // Convert the string ownerId to an object id
     owner: mongoose.Types.ObjectId(ownerId),
