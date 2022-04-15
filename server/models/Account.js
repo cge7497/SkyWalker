@@ -45,7 +45,7 @@ const AccountSchema = new mongoose.Schema({
   },
   // Like compiling it ahead of time rather than when putting it in.
   // React uses virtual DOM. It basically renders the component before, and then adds it to the DOM.
-  // This is so the DOM doesn't have to update the whole tree- 
+  // This is so the DOM doesn't have to update the whole tree-
   // the virtual DOM updates only the relevant web component.
   createdDate: {
     type: Date,

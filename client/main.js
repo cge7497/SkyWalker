@@ -278,7 +278,7 @@ function collectMorphBall(shouldSendPost = true) {
     canCrawl = true; hasMorphBall = true;
     if (shouldSendPost === true) {
         //requests.updatePlayer(player.name, 'morphball');
-        item_audio.play();
+        //item_audio.play();
     }
 }
 function collectScrewAttack(shouldSendPost = true) {
@@ -286,8 +286,8 @@ function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('spaceInstructions').innerHTML = `<strong>SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
-        //requests.updatePlayer(player.name, 'screwattack');
-        item_audio.play();
+        // requests.updatePlayer(player.name, 'screwattack');
+        //item_audio.play();
     }
 }
 
@@ -304,8 +304,8 @@ function endGame() {
     if (!inEndGame) {
         //create a background rectangle of the player's selected color.
         bgRects.push(new level.bgRect(Math.random() * 640, Math.random() * 480, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor));
-        requests.sendCloud(trueColor);
-        btn_audio.play();
+        // requests.sendCloud(trueColor);
+        // btn_audio.play();
         inEndGame = true;
     }
     if (bgRectColor < 254) {
