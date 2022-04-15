@@ -41,11 +41,12 @@ const AccountSchema = new mongoose.Schema({
   items: {
     type: Array,
     required: false,
-    default: [{'morphball': false}, {'screwattack': false}, {'blaster': false}, {'cloud': false}],
+    default: [{ morphball: false }, { screwattack: false }, { blaster: false }, { cloud: false }],
   },
   // Like compiling it ahead of time rather than when putting it in.
   // React uses virtual DOM. It basically renders the component before, and then adds it to the DOM.
-  // This is so the DOM doesn't have to update the whole tree- the virtual DOM updates only the relevant web component.
+  // This is so the DOM doesn't have to update the whole tree- 
+  // the virtual DOM updates only the relevant web component.
   createdDate: {
     type: Date,
     default: Date.now,
