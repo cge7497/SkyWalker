@@ -50,12 +50,17 @@ const LoginWindow = (props) => {
         method = "POST"
         className = "mainForm"
         >
+            <div className= "floatLeft">
             <label htmlFor="username">Username: </label>
             <input id = "user" type = "text" name = "username" placeholder = "username" />
+            </div>
+            <div className= "floatRight">
             <label htmlFor = "pass">Password: </label>
             <input id = "pass" type = "password" name = "pass" placeholder = "password" />
+            </div>
+            <br />
             <input id = "_csrf" type = "hidden" name = "_csrf" value = {props.csrf} />
-            <input className = "formSubmit" type = "submit" value = "Sign in" />
+            <input className = "formSubmit" type = "submit" value = "Log in" />
         </form>
     );
 }; 
@@ -69,14 +74,25 @@ const SignupWindow = (props) => {
         method = "POST"
         className = "mainForm"
         >
+            <div className= "floatLeft">
             <label htmlFor="username">Username: </label>
             <input id = "user" type = "text" name = "username" placeholder = "username" />
+            </div>
+            <div className= "floatRight">
             <label htmlFor = "pass">Password: </label>
             <input id = "pass" type = "password" name = "pass" placeholder = "password" />
+            </div>
+            <div className= "floatLeft">
+            <label htmlFor = "colorField">Color: </label>
+            <input id="colorField" type="color" name="color" />
+            </div>
+            <div className= "floatRight">
             <label htmlFor = "pass2">Password: </label>
             <input id = "pass2" type = "password" name = "pass2" placeholder = "password" />
+            </div>
+            <br />
             <input id = "_csrf" type = "hidden" name = "_csrf" value = {props.csrf} />
-            <input className = "formSubmit" type = "submit" value = "Sign in" />
+            <input className = "formSubmit" type = "submit" value = "Create Account" />
         </form>
     );
 }; 
@@ -92,6 +108,9 @@ const init = async () => {
         e.preventDefault();
         ReactDOM.render(<LoginWindow csrf = {data.csrfToken} />,
         document.getElementById('content'));
+        signupButton.style.visibility = "visible";
+        loginButton.style.visibility = "hidden";
+        console.log("login button pressed");
         return false;
     });
 
@@ -99,7 +118,9 @@ const init = async () => {
         e.preventDefault();
         ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
             document.getElementById('content'));
-            return false;
+        signupButton.style.visibility = "hidden";
+        loginButton.style.visibility = "visible";
+        return false;
     });
 
     ReactDOM.render(<LoginWindow csrf = {data.csrfToken} />,
