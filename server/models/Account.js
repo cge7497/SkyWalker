@@ -33,6 +33,16 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  color: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  items: {
+    type: Array,
+    required: false,
+    default: [false, false, false, false],
+  },
   createdDate: {
     type: Date,
     default: Date.now,

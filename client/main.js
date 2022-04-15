@@ -94,8 +94,8 @@ const init = (obj, name) => {
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
-    setInterval(sendAndReceiveMovement, 1000);
-    setInterval(drawOtherPlayerMovement, 1000/30);
+    //setInterval(sendAndReceiveMovement, 1000);
+    //setInterval(drawOtherPlayerMovement, 1000/30);
 }
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {

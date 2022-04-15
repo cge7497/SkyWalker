@@ -3,8 +3,8 @@
    end in an error.
 */
 const handleError = (message) => {
-    document.getElementById('errorMessage').textContent = message;
-    document.getElementById('domoMessage').classList.remove('hidden');
+    document.getElementById('createResponse').textContent = message;
+    //document.getElementById('domoMessage').classList.remove('hidden');
 };
 
 /* Sends post requests to the server using fetch. Will look for various

@@ -24,7 +24,7 @@ const login = (req, res) => {
     }
     req.session.account = Account.toAPI(account);
 
-    return res.json({ redirect: '/maker' });
+    return res.json({account});
   });
 };
 
@@ -32,8 +32,9 @@ const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
   const pass2 = `${req.body.pass2}`;
+  const color = `${req.body.color}`;
 
-  if (!username || !pass || !pass2) {
+  if (!username || !pass || !pass2 || !color) {
     return res.status(400).json({ error: 'All fields are required!' });
   }
 
@@ -43,10 +44,10 @@ const signup = async (req, res) => {
 
   try {
     const hash = await Account.generateHash(pass);
-    const newAccount = new Account({ username, password: hash });
+    const newAccount = new Account({ username, password: hash, color });
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
-    return res.json({ redirect: '/maker' });
+    return res.json({username, color});
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {

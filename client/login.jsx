@@ -1,4 +1,6 @@
 const helper = require('./helper.js');
+const level = require('./level.js');
+const game = require('./main.js');
 
 const handleLogin = (e) => {
     e.preventDefault();
@@ -13,7 +15,7 @@ const handleLogin = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, _csrf});
+    helper.sendPost(e.target.action, {username, pass, _csrf}, game.init);
     return false;
 }
 
@@ -37,7 +39,7 @@ const handleSignup = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, pass2, _csrf});
+    helper.sendPost(e.target.action, {username, pass, pass2, _csrf}, game.init);
     return false;
 };
 
@@ -98,6 +100,8 @@ const SignupWindow = (props) => {
 }; 
 
 const init = async () => {
+    level.getData();
+
     const response = await fetch('/getToken');
     const data = await response.json();
 

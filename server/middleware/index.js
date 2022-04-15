@@ -1,13 +1,13 @@
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
-    return res.redirect('/');
+    //return res.status(400);
   }
   return next();
 };
 
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
-    return res.redirect('/maker');
+    //return res.status(400);
   }
   return next();
 };
