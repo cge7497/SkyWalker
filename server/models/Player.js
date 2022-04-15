@@ -4,7 +4,7 @@ const _ = require('underscore');
 let PlayerModel = {};
 
 const setName = (name) => _.escape(name).trim();
-//const setFavThing = (thing) => _.escape(thing).trim();
+// const setFavThing = (thing) => _.escape(thing).trim();
 
 const PlayerSchema = new mongoose.Schema({
   name: {
@@ -18,7 +18,7 @@ const PlayerSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  items:{
+  items: {
     type: Array,
     required: false,
     default: [false, false, false, false],
@@ -45,7 +45,7 @@ PlayerSchema.statics.findByOwner = (ownerId, callback) => {
     // Convert the string ownerId to an object id
     owner: mongoose.Types.ObjectId(ownerId),
   };
-  return DomoModel.find(search).select('name color items').lean().exec(callback);
+  return PlayerModel.find(search).select('name color items').lean().exec(callback);
 };
 
 PlayerModel = mongoose.model('Player', PlayerSchema);
