@@ -63,10 +63,14 @@ const data = {
     {
       x: 296, y: -16, width: 16, height: 16, id: 'yellowswitch',
     },
-    //There should be fire here. Maybe just give it a huge width and height?
-    { x: -450, y: 998, width: 640, height: 480, id: 'fire', },
-    //There should be fire here.
-    { x: -450, y: 700, width: 640, height: 480, id: 'fire', },
+    // There should be fire here. Maybe just give it a huge width and height?
+    {
+      x: -450, y: 998, width: 640, height: 480, id: 'fire',
+    },
+    // There should be fire here.
+    {
+      x: -450, y: 700, width: 640, height: 480, id: 'fire',
+    },
   ],
   clouds: [],
 };
