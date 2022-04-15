@@ -56,7 +56,7 @@ app.use(session({
   store: new RedisStore({
     client: redisClient,
   }),
-  secret: process.env.secret,
+  secret: process.env.SECRET,
   resave: 'true',
   saveUninitialized: true,
   cookie: {
