@@ -30,6 +30,10 @@ const sendPost = async (url, data, handler) => {
         window.location = result.redirect;
     }
 
+    if (result.username){
+        document.getElementById('createResponse').textContent = "Logged in as " + result.username;
+    }
+
     if (handler){
         handler(result);
     }

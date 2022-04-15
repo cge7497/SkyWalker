@@ -24,7 +24,7 @@ const login = (req, res) => {
     }
     req.session.account = Account.toAPI(account);
 
-    return res.json({account});
+    return res.json(req.session.account);
   });
 };
 

@@ -266,6 +266,11 @@ img.domoFace {
     margin: 0 auto;
 }
 
+#createResponse{
+    text-align: center;
+    font-weight: bold;
+}
+
 footer{
     margin-top: 40px;
 }

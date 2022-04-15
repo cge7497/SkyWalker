@@ -19,7 +19,9 @@ const handleResponse = async (response) => {
 // sends the player data to the server as a POST request.
 const updatePlayer = async (name, itemId) => {
     //Build a data string in the FORM-URLENCODED format.
-    const formData = `name=${name}&item=${itemId}`;
+    const _csrf = document.querySelector('#_csrf').value;
+    const formData = `name=${name}&item=${itemId}&_csrf=${_csrf}`;
+
 
     let response = await fetch('/updateItems', {
         method: 'POST',

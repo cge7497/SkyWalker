@@ -52,6 +52,8 @@ const AccountSchema = new mongoose.Schema({
 // Converts a doc to something we can store in redis later on.
 AccountSchema.statics.toAPI = (doc) => ({
   username: doc.username,
+  color: doc.color,
+  items: doc.items,
   _id: doc._id,
 });
 
