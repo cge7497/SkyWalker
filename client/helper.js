@@ -23,7 +23,7 @@ const sendPost = async (url, data, handler) => {
     document.getElementById('domoMessage').classList.add('hidden');
     
     if (result.error) {
-        handleError(result.error);
+        return handleError(result.error);
     }
 
     if (result.redirect) {
