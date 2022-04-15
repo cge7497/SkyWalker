@@ -277,7 +277,7 @@ function collectMorphBall(shouldSendPost = true) {
     document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move, `;
     canCrawl = true; hasMorphBall = true;
     if (shouldSendPost === true) {
-        requests.updatePlayer(player.name, 'morphball');
+        //requests.updatePlayer(player.name, 'morphball');
         item_audio.play();
     }
 }
@@ -286,7 +286,7 @@ function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('spaceInstructions').innerHTML = `<strong>SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
-        requests.updatePlayer(player.name, 'screwattack');
+        //requests.updatePlayer(player.name, 'screwattack');
         item_audio.play();
     }
 }
