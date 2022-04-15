@@ -27,6 +27,7 @@ const handleSignup = (e) => {
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
     const pass2 = e.target.querySelector('#pass2').value;
+    const color = e.target.querySelector('#colorField').value;
     const _csrf = e.target.querySelector('#_csrf').value;
 
     if (!username || !pass || !pass2){
@@ -39,7 +40,7 @@ const handleSignup = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, pass2, _csrf}, game.init);
+    helper.sendPost(e.target.action, {username, pass, pass2, color, _csrf}, game.init);
     return false;
 };
 

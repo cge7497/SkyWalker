@@ -24,7 +24,9 @@ const login = (req, res) => {
     }
     req.session.account = Account.toAPI(account);
 
-    return res.json(req.session.account);
+    return res.json({ name: req.session.account.username,
+    items: req.session.account.username,
+    color: req.session.account.color});
   });
 };
 

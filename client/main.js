@@ -261,10 +261,10 @@ const CollisionsWithSpecialObjects = (p) => {
 
 //If the player's data on the server shows they already have items, give them those items.
 const initItems = (items) => {
-    if (items['morphball'].obtained) {
+    if (items['morphball']) {
         collectMorphBall(false);
     }
-    if (items['screwattack'].obtained) {
+    if (items['screwattack']) {
         collectScrewAttack(false);
     }
 }

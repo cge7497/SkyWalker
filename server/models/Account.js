@@ -41,7 +41,7 @@ const AccountSchema = new mongoose.Schema({
   items: {
     type: Array,
     required: false,
-    default: [false, false, false, false],
+    default: [{'morphball': false}, {'screwattack': false}, {'test': false}, {'test2': false}],
   },
   createdDate: {
     type: Date,
