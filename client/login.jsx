@@ -110,7 +110,6 @@ const init = async () => {
         document.getElementById('content'));
         signupButton.style.visibility = "visible";
         loginButton.style.visibility = "hidden";
-        console.log("login button pressed");
         return false;
     });
 

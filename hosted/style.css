@@ -233,10 +233,7 @@ img.domoFace {
     float:left;
 }
 
-canvas{
-    position: absolute;
-    left:-50%;
-}
+
 #canvas_player{
     z-index: 2;
     position: absolute;
@@ -257,19 +254,16 @@ canvas{
 
 #game{
     padding:0;
-    position: absolute;
-    left: 50%;
+    position:relative;
+    margin: 0 auto;
     width:640px;
+    height:540px;
     font-family: 'Raleway', sans-serif;
     display:block;
 }
 .center {
     text-align: center;
     margin: 0 auto;
-}
-
-#instructions{
-    padding-top: 40px;
 }
 
 footer{
