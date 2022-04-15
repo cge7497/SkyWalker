@@ -19,6 +19,18 @@
 
   </section>
 
+  <h3>Create A Player</h3>
+  <form id="playerForm" action="/addPlayer" method="post">
+    <label for="name">Name: </label>
+    <input id="nameField" type="text" name="name" />
+    <label for="age" class="age">Number: </label>
+    <input id="ageField" class="age" type="number" name="age" min="-1" max="100" value="1" step="0.00016" />
+    <!-- I got this color picker code from https://www.w3schools.com/colors/colors_picker.asp !-->
+    <label for="color">Ultimate Color: </label>
+    <input id="colorField" type="color" name="favcolor" name="color">
+    <br>
+    <input id="submitBtn" type="submit" value="Create (or log in as) Player" />
+  </form>
   <div>
     <section id="game">
       <p id="createResponse"><br></p>
