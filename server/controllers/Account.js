@@ -5,6 +5,7 @@ const { Account } = models;
 const loginPage = (req, res) => res.render('app', { csrfToken: req.csrfToken() });
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
+
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
@@ -25,7 +26,7 @@ const login = (req, res) => {
     req.session.account = Account.toAPI(account);
 
     return res.json({
-      name: req.session.account.username,
+      username: req.session.account.username,
       items: req.session.account.username,
       color: req.session.account.color,
     });
