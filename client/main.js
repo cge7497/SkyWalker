@@ -41,14 +41,17 @@ let camXOffset = 0, camYOffset = 0
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
 const init = (obj, name) => {
-    if (obj && obj.player) {
-        player.name = obj.player.username;
-        trueColor = obj.player.color;
-        if (obj.player.items) initItems(obj.player.items);
+    if (obj && obj.username && obj.items && obj.color) {
+        console.log('obj.player exists...');
+        player.name = obj.username;
+        trueColor = obj.color;
+        if (obj.items) initItems(obj.items);
     }
     else {
         player.name = name;
     }
+
+    console.log('initting');
 
     movementThisSecond.name = player.name;
     movementThisSecond.color = trueColor;
@@ -261,10 +264,12 @@ const CollisionsWithSpecialObjects = (p) => {
 
 //If the player's data on the server shows they already have items, give them those items.
 const initItems = (items) => {
-    if (items['morphball'] == true) {
+    console.log(items);
+    if (items['morphball'] === true) {
         collectMorphBall(false);
+        console.log(items);
     }
-    if (items['screwattack'] == true) {
+    if (items['screwattack'] === true) {
         collectScrewAttack(false);
     }
 }

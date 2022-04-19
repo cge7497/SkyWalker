@@ -71,21 +71,22 @@ const updateItems = async (req, res) => {
   const item = `${req.body.item}`;
 
   if (!name || !item) {
-    return res.status(400).json({ error: 'All fields are required!' });
+    return res.status(400).json({ error: 'Username and valid Item ID are required!' });
   }
 
   try{
-    await Account.updateOne({username: req.session.account.username}),{
-      //items: [item : true]
-    }
-    return res.json({
-      username: req.session.account.username,
-      items: req.session.account.items,
-      color: req.session.account.color,
-    });
+    const doc= await Account.findOne({username: req.session.account.username}).exec();
+    
+    if (!doc) return res.json({error: 'Account with that username not found.'});
+
+    doc.items[item] = true;
+
+    doc.save();
+    
+    return res.status(201).json({message: 'Item successfully saved to player.'})
   }
   catch{
-
+    return res.status(400).json({ error: 'An error occurred' });
   }
 };
 
@@ -94,5 +95,6 @@ module.exports = {
   login,
   logout,
   signup,
+  updateItems,
   getToken,
 };

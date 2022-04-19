@@ -42,6 +42,7 @@ const AccountSchema = new mongoose.Schema({
     type: Array,
     required: false,
     default: [{ morphball: false }, { screwattack: false }, { blaster: false }, { cloud: false }],
+    //I should restructure this.
   },
   // Like compiling it ahead of time rather than when putting it in.
   // React uses virtual DOM. It basically renders the component before, and then adds it to the DOM.

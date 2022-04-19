@@ -141,7 +141,6 @@ nav:nth-child(1) {
 .formSubmit {
     transition: background-color 0.4s ease;
 
-
     /* I got this code for centering an inline-block element from https://stackoverflow.com/questions/4980525/css-center-display-inline-block */
     position: relative;
     /* Move the element to the right by 50% of the container's width */
@@ -269,6 +268,7 @@ img.domoFace {
 #createResponse{
     text-align: center;
     font-weight: bold;
+    height:18px;
 }
 
 footer{
