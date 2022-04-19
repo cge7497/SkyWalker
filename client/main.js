@@ -261,10 +261,10 @@ const CollisionsWithSpecialObjects = (p) => {
 
 //If the player's data on the server shows they already have items, give them those items.
 const initItems = (items) => {
-    if (items['morphball']) {
+    if (items['morphball'] == true) {
         collectMorphBall(false);
     }
-    if (items['screwattack']) {
+    if (items['screwattack'] == true) {
         collectScrewAttack(false);
     }
 }
@@ -277,8 +277,8 @@ function collectMorphBall(shouldSendPost = true) {
     document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move, `;
     canCrawl = true; hasMorphBall = true;
     if (shouldSendPost === true) {
-        //requests.updatePlayer(player.name, 'morphball');
-        //item_audio.play();
+        requests.updatePlayer(player.name, 'morphball');
+        item_audio.play();
     }
 }
 function collectScrewAttack(shouldSendPost = true) {
@@ -286,8 +286,8 @@ function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('spaceInstructions').innerHTML = `<strong>SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
-        // requests.updatePlayer(player.name, 'screwattack');
-        //item_audio.play();
+        requests.updatePlayer(player.name, 'screwattack');
+        item_audio.play();
     }
 }
 

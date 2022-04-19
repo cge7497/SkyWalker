@@ -27,7 +27,7 @@ const login = (req, res) => {
 
     return res.json({
       username: req.session.account.username,
-      items: req.session.account.username,
+      items: req.session.account.items,
       color: req.session.account.color,
     });
   });
@@ -52,13 +52,40 @@ const signup = async (req, res) => {
     const newAccount = new Account({ username, password: hash, color });
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
-    return res.json({ username, color });
+    return res.json({
+      username: req.session.account.username,
+      items: req.session.account.items,
+      color: req.session.account.color,
+    });
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use.' });
     }
     return res.status(400).json({ error: 'An error occurred' });
+  }
+};
+
+const updateItems = async (req, res) => {
+  const name = `${req.body.username}`;
+  const item = `${req.body.item}`;
+
+  if (!name || !item) {
+    return res.status(400).json({ error: 'All fields are required!' });
+  }
+
+  try{
+    await Account.updateOne({username: req.session.account.username}),{
+      //items: [item : true]
+    }
+    return res.json({
+      username: req.session.account.username,
+      items: req.session.account.items,
+      color: req.session.account.color,
+    });
+  }
+  catch{
+
   }
 };
 
