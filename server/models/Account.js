@@ -39,9 +39,9 @@ const AccountSchema = new mongoose.Schema({
     trim: true,
   },
   items: {
-    type: Array,
+    type: Object,
     required: false,
-    default: [{ morphball: false }, { screwattack: false }, { blaster: false }, { cloud: false }],
+    default: {'morphball': false,'screwattack': false,'blaster': false,'cloud': false },
     //I should restructure this.
   },
   // Like compiling it ahead of time rather than when putting it in.

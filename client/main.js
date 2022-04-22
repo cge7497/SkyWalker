@@ -42,7 +42,6 @@ let camXOffset = 0, camYOffset = 0
 // Runs after the player has logged in (called in playerLogin.js)
 const init = (obj, name) => {
     if (obj && obj.username && obj.items && obj.color) {
-        console.log('obj.player exists...');
         player.name = obj.username;
         trueColor = obj.color;
         if (obj.items) initItems(obj.items);

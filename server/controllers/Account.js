@@ -79,6 +79,8 @@ const updateItems = async (req, res) => {
     
     if (!doc) return res.json({error: 'Account with that username not found.'});
 
+    console.log(doc);
+    
     doc.items[item] = true;
 
     doc.save();
