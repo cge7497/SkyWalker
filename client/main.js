@@ -25,7 +25,7 @@ const items = {
 const player = { x: -450, y: 690, halfWidth: 4, halfHeight: 7, newX: 300, newY: 300, scale: 1, name: '', flip: false };
 let trueColor = 0, bgRectColor = 0;
 
-let xSpeed = 2, ySpeed = 3;
+let xSpeed = 3, ySpeed = 5;
 let canFlip = true; let infiniteFlip = false, inEndGame = false;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0;
 let keysPressed = [];
