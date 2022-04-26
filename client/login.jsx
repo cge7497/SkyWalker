@@ -15,7 +15,7 @@ const handleLogin = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, { username, pass, _csrf }, game.init);
+    helper.sendPost(e.target.action, { username, pass, _csrf }, initGame);
     return false;
 }
 
@@ -61,7 +61,6 @@ const LoginWindow = (props) => {
                 <label htmlFor="pass">Password: </label>
                 <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
-            <br />
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="Log in" />
         </form>
@@ -93,9 +92,39 @@ const SignupWindow = (props) => {
                 <label htmlFor="pass2">Password: </label>
                 <input id="pass2" type="password" name="pass2" placeholder="password" />
             </div>
-            <br />
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="Create Account" />
+        </form>
+    );
+};
+
+const ChangePasswordWindow = (props) => {
+    return (
+        <form id="changePasswordForm"
+            name="changePasswordForm"
+            onSubmit={handleSignup}
+            action="/changePassword"
+            method="POST"
+            className="mainForm"
+        >
+            <div className="floatLeft">
+                <label htmlFor="username">Username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
+            </div>
+            <div className="floatRight">
+                <label htmlFor="pass">Current Password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
+            </div>
+            <div className="floatRight">
+                <label htmlFor="pass2">New Password: </label>
+                <input id="pass2" type="password" name="pass2" placeholder="password" />
+            </div>
+            <div className="floatLeft invisible">
+                <label htmlFor="username">Username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
+            </div>
+            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
+            <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Change Password" />
         </form>
     );
 };
@@ -108,6 +137,8 @@ const init = async () => {
 
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const changePasswordButton = document.getElementById('changePasswordButton');
 
     loginButton.addEventListener('click', (e) => {
         e.preventDefault();
@@ -122,13 +153,44 @@ const init = async () => {
         e.preventDefault();
         ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
             document.getElementById('content'));
-            loginButton.disabled = false;
-            signupButton.disabled = true;
+        loginButton.disabled = false;
+        signupButton.disabled = true;
+        return false;
+    });
+
+    changePasswordButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        ReactDOM.render(<ChangePasswordWindow csrf={data.csrfToken} />,
+            document.getElementById('content'));
+        signupButton.disabled = false;
+        loginButton.disabled = true;
+        return false;
+    });
+
+    logoutButton.addEventListener('click', (e) => {
+        window.location.reload();
         return false;
     });
 
     ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
         document.getElementById('content'));
 };
+
+const initGame = (player) => {
+    game.init(player);
+
+    document.getElementById('loginButton').classList.add('hidden');
+    document.getElementById('signupButton').classList.add('hidden');
+
+    document.getElementById('changePasswordButton').classList.remove('hidden');
+    document.getElementById('logoutButton').classList.remove('hidden');
+
+    ReactDOM.render(null,
+        document.getElementById('content'));
+    loginButton.disabled = false;
+    signupButton.disabled = true;
+    return false;
+}
+
 
 window.onload = init;

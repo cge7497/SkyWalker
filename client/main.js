@@ -47,7 +47,7 @@ const init = (obj, name) => {
         if (obj.items) initItems(obj.items);
     }
     else {
-        player.name = name;
+        
     }
 
     console.log('initting');

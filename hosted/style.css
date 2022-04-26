@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -7,13 +8,8 @@ html, body {
     padding-top: 30px;
 }
 
-.inline{
-    display:inline-block;
-}
-
-.inactiveLink{
-    background-color: #20384b;
-    transition: background-color 0.2s ease;
+.inline {
+    display: inline-block;
 }
 
 .mainForm {
@@ -33,19 +29,52 @@ html, body {
     margin-right: 10px;
     text-align: right;
     font-size: 1.2em;
-    padding-top:20px;
+    padding-top: 20px;
 }
 
-.floatLeft{
+#signupButton {
+    margin-right: 50px;
+    width: 90px;
+}
+
+#loginButton {
+    margin-left: 50px;
+    width: 90px;
+}
+
+#changePasswordForm{
+    width: 800px;
+    height: 178px;
+}
+
+#changePasswordForm label {
+    width: 200px;
+}
+
+#changePasswordButton{
+    width:185px;
+    margin-right: 90px;
+}
+
+.invisible{
+    visibility: hidden;
+}
+
+#logoutButton{
+    width:90px;
+    margin-left: 100px;
+}
+
+.floatLeft {
     float: left;
 }
 
-.floatRight{
+.floatRight {
     float: right;
 }
 
-#colorField{
-    width:180px;
+#colorField {
+    width: 180px;
 }
 
 .formSubmit {
@@ -54,40 +83,49 @@ html, body {
     /* I got this code for centering an inline-block element from https://stackoverflow.com/questions/4980525/css-center-display-inline-block */
     position: relative;
     /* Move the element to the right by 50% of the container's width */
-    left: 50%; 
-    /* Calculates 50% of the element's width, and moves it by that */ 
+    left: 50%;
+    /* Calculates 50% of the element's width, and moves it by that */
     /* amount across the X-axis to the left */
     transform: translateX(-50%);
 
-    margin-top: 50px;
+    margin-top: 25px;
     font-size: 1.2em;
-    background-color: #a8d0e8;
     border-radius: 2px;
     border-color: #6f8a9a;
     padding: 3px 10px;
-    color: white;
+    color: black;
     text-decoration: none;
     overflow: auto;
+    font-weight: bolder;
+
+    cursor: pointer;
 }
 
-.formSubmit:link, .formSubmit:visited, .formSubmit:hover, .formSubmit:active {
-    color: white;
-    background-color: #cbcee7;
+.formSubmit:link,
+.formSubmit:visited,
+.formSubmit:hover,
+.formSubmit:active {
+    background-color: #338acc;
 }
 
 .formSubmit:hover {
     transition: background-color 0.4s ease;
-    background-color: #338acc;
+    background-color: #cbcee7;
+    border: 2px solid;
 }
 
-#user, #pass, #pass2 {
+#user,
+#pass,
+#pass2 {
     text-align: center;
     font-size: 1.1em;
     width: 180px;
     border-radius: 6px;
 }
 
-#user:focus, #pass:focus, #pass2:focus {
+#user:focus,
+#pass:focus,
+#pass2:focus {
     outline: none;
     box-shadow: 0px 0px 1px 1px #55acee;
 }
@@ -97,45 +135,46 @@ html, body {
 }
 
 
-#canvas_player{
+#canvas_player {
     z-index: 2;
     position: absolute;
     border: 0.5rem outset rgba(131, 220, 250, 0.7);
 }
 
-#canvas_walkers{
-    z-index: 1; 
+#canvas_walkers {
+    z-index: 1;
     position: absolute;
     border: 0.5rem outset lightpink;
 }
 
-#canvas_bg{
-    z-index: 0; 
+#canvas_bg {
+    z-index: 0;
     position: absolute;
     border: 0.5rem outset lightgreen;
 }
 
-#game{
-    padding:0;
-    position:relative;
+#game {
+    padding: 0;
+    position: relative;
     margin: 0 auto;
-    width:640px;
-    height:540px;
+    width: 640px;
+    height: 540px;
     font-family: 'Raleway', sans-serif;
-    display:block;
+    display: block;
 }
+
 .center {
     text-align: center;
     margin: 0 auto;
 }
 
-#createResponse{
+#createResponse {
     text-align: center;
     font-weight: bold;
-    height:18px;
+    height: 18px;
 }
 
-button{
+button {
     font-family: 'Roboto', sans-serif;
     font-size: 1.2em;
     font-weight: 700;
@@ -144,27 +183,17 @@ button{
     margin-top: 20px;
 }
 
-button:enabled{
-    color:black;
-    background-color:#e7e7e7;
+button:enabled {
+    color: black;
+    background-color: #e7e7e7;
     transition: background-color 250ms linear;
 }
 
-button:enabled:hover{
+button:enabled:hover {
     background-color: #cbcee7;
-    border:2px solid;
+    border: 2px solid;
 }
 
-#signupButton{
-    margin-right: 50px;
-    width:90px;
-}
-
-#loginButton{
-    margin-left: 50px;
-    width:90px;
-}
-
-footer{
+footer {
     margin-top: 40px;
 }
