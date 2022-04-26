@@ -10,12 +10,12 @@ const handleLogin = (e) => {
     const pass = e.target.querySelector('#pass').value;
     const _csrf = e.target.querySelector('#_csrf').value;
 
-    if (!username || !pass){
+    if (!username || !pass) {
         helper.handleError('Username or password is empty!');
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, _csrf}, game.init);
+    helper.sendPost(e.target.action, { username, pass, _csrf }, game.init);
     return false;
 }
 
@@ -30,75 +30,75 @@ const handleSignup = (e) => {
     const color = e.target.querySelector('#colorField').value;
     const _csrf = e.target.querySelector('#_csrf').value;
 
-    if (!username || !pass || !pass2){
+    if (!username || !pass || !pass2) {
         helper.handleError('All fields are required!');
         return false;
     }
 
-    if (pass !== pass2){
+    if (pass !== pass2) {
         helper.handleError('Passwords do not match!');
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, pass2, color, _csrf}, game.init);
+    helper.sendPost(e.target.action, { username, pass, pass2, color, _csrf }, game.init);
     return false;
 };
 
 const LoginWindow = (props) => {
     return (
-        <form id = "loginForm"
-        name = "loginForm"
-        onSubmit = {handleLogin}
-        action = "/login"
-        method = "POST"
-        className = "mainForm"
+        <form id="loginForm"
+            name="loginForm"
+            onSubmit={handleLogin}
+            action="/login"
+            method="POST"
+            className="mainForm"
         >
-            <div className= "floatLeft">
-            <label htmlFor="username">Username: </label>
-            <input id = "user" type = "text" name = "username" placeholder = "username" />
+            <div className="floatLeft">
+                <label htmlFor="username">Username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
             </div>
-            <div className= "floatRight">
-            <label htmlFor = "pass">Password: </label>
-            <input id = "pass" type = "password" name = "pass" placeholder = "password" />
+            <div className="floatRight">
+                <label htmlFor="pass">Password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
             <br />
-            <input id = "_csrf" type = "hidden" name = "_csrf" value = {props.csrf} />
-            <input className = "formSubmit" type = "submit" value = "Log in" />
+            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
+            <input className="formSubmit" type="submit" value="Log in" />
         </form>
     );
-}; 
+};
 
 const SignupWindow = (props) => {
     return (
-        <form id = "signupForm"
-        name = "signupForm"
-        onSubmit = {handleSignup}
-        action = "/signup"
-        method = "POST"
-        className = "mainForm"
+        <form id="signupForm"
+            name="signupForm"
+            onSubmit={handleSignup}
+            action="/signup"
+            method="POST"
+            className="mainForm"
         >
-            <div className= "floatLeft">
-            <label htmlFor="username">Username: </label>
-            <input id = "user" type = "text" name = "username" placeholder = "username" />
+            <div className="floatLeft">
+                <label htmlFor="username">Username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
             </div>
-            <div className= "floatRight">
-            <label htmlFor = "pass">Password: </label>
-            <input id = "pass" type = "password" name = "pass" placeholder = "password" />
+            <div className="floatRight">
+                <label htmlFor="pass">Password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
-            <div className= "floatLeft">
-            <label htmlFor = "colorField">Color: </label>
-            <input id="colorField" type="color" name="color" />
+            <div className="floatLeft">
+                <label htmlFor="colorField">Color: </label>
+                <input id="colorField" type="color" name="color" />
             </div>
-            <div className= "floatRight">
-            <label htmlFor = "pass2">Password: </label>
-            <input id = "pass2" type = "password" name = "pass2" placeholder = "password" />
+            <div className="floatRight">
+                <label htmlFor="pass2">Password: </label>
+                <input id="pass2" type="password" name="pass2" placeholder="password" />
             </div>
             <br />
-            <input id = "_csrf" type = "hidden" name = "_csrf" value = {props.csrf} />
-            <input className = "formSubmit" type = "submit" value = "Create Account" />
+            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
+            <input className="formSubmit" type="submit" value="Create Account" />
         </form>
     );
-}; 
+};
 
 const init = async () => {
     level.getData();
@@ -111,10 +111,10 @@ const init = async () => {
 
     loginButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<LoginWindow csrf = {data.csrfToken} />,
-        document.getElementById('content'));
-        signupButton.style.visibility = "visible";
-        loginButton.style.visibility = "hidden";
+        ReactDOM.render(<LoginWindow csrf={data.csrfToken} />,
+            document.getElementById('content'));
+        signupButton.disabled = false;
+        loginButton.disabled = true;
         return false;
     });
 
@@ -122,12 +122,12 @@ const init = async () => {
         e.preventDefault();
         ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
             document.getElementById('content'));
-        signupButton.style.visibility = "hidden";
-        loginButton.style.visibility = "visible";
+            loginButton.disabled = false;
+            signupButton.disabled = true;
         return false;
     });
 
-    ReactDOM.render(<LoginWindow csrf = {data.csrfToken} />,
+    ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
         document.getElementById('content'));
 };
 
