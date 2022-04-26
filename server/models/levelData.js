@@ -4,7 +4,7 @@ const data = {
   rects: [
     // Main middle room
     {
-      x: 280, y: 315, width: 31, height: 30, color: 'blue',
+      x: 284, y: 315, width: 31, height: 30, color: 'blue',
     },
     {
       x: 0, y: 0, width: 30, height: 800, color: 'red',

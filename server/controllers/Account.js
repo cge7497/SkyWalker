@@ -71,7 +71,7 @@ const updateItems = async (req, res) => {
   const item = `${req.body.item}`;
 
   if (!name || !item) {
-    return res.status(400).json({ error: 'Username and valid Item ID are required!' });
+    return res.status(400).json({ error: 'Username and valid item ID are required!' });
   }
 
   try{
@@ -80,11 +80,13 @@ const updateItems = async (req, res) => {
     if (!doc) return res.json({error: 'Account with that username not found.'});
 
     console.log(doc);
-    
+
     doc.items[item] = true;
 
-    doc.save();
-    
+    await doc.save();
+
+    console.log(doc);
+
     return res.status(201).json({message: 'Item successfully saved to player.'})
   }
   catch{

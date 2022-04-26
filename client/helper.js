@@ -29,8 +29,10 @@ const sendPost = async (url, data, handler) => {
         window.location = result.redirect;
     }
 
+    // If the result includes a username, this means the player just logged in or signed up, and the game will load.
     if (result.username){
         document.getElementById('createResponse').textContent = "Logged in as " + result.username;
+        document.getElementById('resetBtn').disabled = false;
     }
 
     if (handler){
