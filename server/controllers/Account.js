@@ -83,7 +83,7 @@ const updateItems = async (req, res) => {
 
     doc.items[item] = true;
 
-    await doc.save();
+    await doc.save(); //doc.save isn't working. Try one of the more official methods?
 
     console.log(doc);
 
