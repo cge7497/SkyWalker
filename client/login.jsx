@@ -1,6 +1,7 @@
 const helper = require('./helper.js');
 const level = require('./level.js');
 const game = require('./main.js');
+const gameComponents = require('./gameComponents.jsx');
 
 const handleLogin = (e) => {
     e.preventDefault();
