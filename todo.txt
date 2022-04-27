@@ -3,10 +3,12 @@ Implement payment model:
     Items to buy: Probably a flex container of different attributes, like big head, big arm, big leg.
 
 
-Implement change password:
+DONE Implement change password:
     Changing password will require user to enter their username, password, and new password. It'll send code to the server to update that. That'll use some bcrypt nuances...
     Check on client if the two passwords are different.
     Use same kind of function as updateItems in Account controller.
+
+Turn into cloud and fly offscreen like in Bob's game.
 
 GOOD Improve styling of log in button (formSubmit)
     Make sure it uses no code from Domo-change colors, and borders if I want to.

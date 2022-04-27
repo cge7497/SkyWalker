@@ -38,25 +38,29 @@ body {
     width: 90px;
 }
 
-#changePasswordForm{
+#changePasswordForm {
     width: 800px;
 }
 
-#changePasswordForm label {
-    width: 200px;
+#changePasswordForm div {
+    width: 360px;
 }
 
-#changePasswordButton{
-    width:185px;
+#changePasswordForm label {
+    width: auto;
+}
+
+#changePasswordButton {
+    width: 185px;
     margin-right: 90px;
 }
 
-.invisible{
+.invisible {
     visibility: hidden;
 }
 
-#logoutButton{
-    width:90px;
+#logoutButton {
+    width: 90px;
     margin-left: 100px;
 }
 
