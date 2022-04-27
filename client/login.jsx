@@ -58,18 +58,18 @@ const handleChangePassword = (e) => {
         return false;
     }
 
-    if (oldPass === newPass){
+    if (oldPass === newPass) {
         helper.handleError('The two passwords are the same!');
         return false;
     }
 
-    helper.sendPost(e.target.action, {oldPass, newPass, _csrf }, resetPasswordForm);
+    helper.sendPost(e.target.action, { oldPass, newPass, _csrf }, resetPasswordForm);
     return false;
 }
 
 const resetPasswordForm = (result) => {
     // If the password was successfully changed- meaning the jsob objects haas a success message and not an error- reset the password input values so the user can't double click it.
-    if (result.message){
+    if (result.message) {
         document.getElementById('oldPass').value = '';
         document.getElementById('newPass').value = '';
     }
@@ -116,7 +116,7 @@ const SignupWindow = (props) => {
             </div>
             <div className="floatLeft">
                 <label htmlFor="colorField">Color: </label>
-                <input id="colorField" type="color" name="color" value = "#6495ed" />
+                <input id="colorField" type="color" name="color" value="#6495ed" />
             </div>
             <div className="floatRight">
                 <label htmlFor="pass2">Password: </label>
@@ -140,13 +140,13 @@ const ChangePasswordWindow = (props) => {
         >
             <div className="floatLeft">
                 <label htmlFor="oldPass">Current Password: </label>
-                <input id="oldPass" type="password" name="oldPass" placeholder={defaultText} />
+                <input id="oldPass" type="password" name="oldPass" placeholder="password" />
             </div>
             <div className="floatRight">
                 <label htmlFor="newPass">New Password: </label>
-                <input id="newPass" type="password" name="newPass" placeholder={defaultText} />
+                <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
-            <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Set Password" onClick={(e) => setDefaultText("password")} />
+            <input className="formSubmit" id="changePasswordSubmit" type="submit" defaultValue="Set Password" onClick={(e) => setDefaultText("password")} />
         </form>
     );
 };
@@ -184,7 +184,7 @@ const init = async () => {
 
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<ChangePasswordWindow defaultText = "password"/>,
+        ReactDOM.render(<ChangePasswordWindow defaultText="password" />,
             document.getElementById('content'));
         signupButton.disabled = false;
         loginButton.disabled = true;
@@ -199,6 +199,8 @@ const init = async () => {
 
     ReactDOM.render(<SignupWindow />,
         document.getElementById('content'));
+
+        gameComponents.init();
 };
 
 const initGame = (player) => {

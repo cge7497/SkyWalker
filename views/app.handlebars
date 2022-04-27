@@ -11,57 +11,28 @@
 
 <body>
   <section class="center">
-    <button id="signupButton" class = "inline" disabled = true>Sign up </button></div>
-    <button id="loginButton" class = "inline">Login </button></div>
-    <button id="changePasswordButton" class = "inline hidden">Change Password</button></div>
-    <button id="logoutButton" class = "inline hidden">Save and Quit </button></div>
+    <button id="signupButton" class="inline" disabled=true>Sign up </button></div>
+    <button id="loginButton" class="inline">Login </button></div>
+    <button id="changePasswordButton" class="inline hidden">Change Password</button></div>
+    <button id="logoutButton" class="inline hidden">Save and Quit </button></div>
     <input id="_csrf" type="hidden" name="_csrf" />
   </section>
   <section id="content">
   </section>
-  <div>
-    <div id="game">
-      <p id="createResponse">Please log in or create an account.</p>
-      <canvas width="640" height="480" id="canvas_player">
-        If this message is displayed, the canvas could not be loaded. This is likely because of the browser
-        you are in.
-      </canvas>
-      <canvas width="640" height="480" id="canvas_walkers"></canvas>
-      <canvas width="640" height="480" id="canvas_bg"></canvas>
-    </div>
-    <div class = "center">
-      <!-- I got the screw attack image from https://strategywiki.org/wiki/File:SMetroidScrewAttackIcon.png, 
-    and the morph ball image from https://strategywiki.org/wiki/File:Super_Metroid_Items_Morph_Ball.png, 
-    though they are both originally from Super Metroid games.
-    The Yellow Button image is from Super Mario World, and I got it from here: https://strategywiki.org/wiki/Super_Mario_World/Yellow_Switch_Palace -->
-      <h3>Items: </h3>
-      <img id="screwattack" src="/assets/img/screwattack.png" style="display: none" width="16" height="16"
-        alt="Infinite Flip Powerup">
-      <img id="morphball" src="/assets/img/morphball.png" style="display: none" width="16" height="16"
-        alt="Shrinking Powerup">
-      <img id="yellowswitch" src="/assets/img/yellowswitch.png" style="display: none" width="32" height="32"
-        alt="Final Powerup">
-      <!--Update this inner html when you get an item.-->
-      <div class="center" id="instructions">
-        <div id="moveInstructions" style="display:inline">Use '<strong>A</strong>' and
-          '<strong>D</strong>'
-          to move, </div>
-        <div id="spaceInstructions" style="display:inline"> <strong>SPACE</strong> to flip.
-        </div>
-      </div>
-
-      <button id="resetBtn" disabled=true>Back to Start</button>
-    </div>
+  <div id="game">
+    <p id="createResponse">Please log in or create an account.</p>
+    <canvas width="640" height="480" id="canvas_player">
+      If this message is displayed, the canvas could not be loaded. This is likely because of the browser
+      you are in.
+    </canvas>
+    <canvas width="640" height="480" id="canvas_walkers"></canvas>
+    <canvas width="640" height="480" id="canvas_bg"></canvas>
   </div>
 
+  <section id="gameInfo">
+  </section>
 
-  <div id="domoMessage" class='hidden'>
-    <img id="speech" src="/assets/img/speech.png" alt="speech box" />
-    <h3><span id="errorMessage"></span></h3>
-    <img id="domo" src="assets/img/domo.png" alt="domo" />
-  </div>
-
-  <footer class = "center">
+  <footer class="center">
     <p>By Christian Eliopoulos</p>
   </footer>
 
