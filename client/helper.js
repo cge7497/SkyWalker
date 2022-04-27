@@ -25,6 +25,10 @@ const sendPost = async (url, data, handler) => {
         return handleError(result.error);
     }
 
+    if (result.message) {
+        document.getElementById('createResponse').textContent = result.message;
+    }
+
     if (result.redirect) {
         window.location = result.redirect;
     }

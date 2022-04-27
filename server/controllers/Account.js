@@ -89,10 +89,37 @@ const updateItems = async (req, res) => {
 
     console.log(doc);
 
-    return res.status(201).json({ message: 'Item successfully saved to player.' });
+    return res.status(204);
   } catch (e) {
     return res.status(400).json({ error: 'An error occurred' });
   }
+};
+
+const changePassword = async (req, res) => {
+  const username = `${req.body.username}`;
+  const oldPass = `${req.body.oldPass}`;
+  const newPass = `${req.body.newPass}`;
+
+  if (!username || !oldPass || !newPass) {
+    return res.status(400).json({ error: 'All fields are required!' });
+  }
+
+  // Authenticate the account.
+  await Account.authenticate(username, oldPass, async (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'Wrong username or password' });
+    }
+    // If successful, hash the password and then set it as the account's password.
+    try {
+      const hash = await Account.generateHash(newPass);
+      account.password = hash;
+      await account.save();
+      return res.status(200).json({message: 'Successfully changed password'});
+    }
+    catch (e) {
+      return res.status(400).json({ error: 'An error occured.' });
+    }
+  });
 };
 
 module.exports = {
@@ -101,5 +128,6 @@ module.exports = {
   logout,
   signup,
   updateItems,
+  changePassword,
   getToken,
 };

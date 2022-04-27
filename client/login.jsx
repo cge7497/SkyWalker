@@ -44,6 +44,29 @@ const handleSignup = (e) => {
     return false;
 };
 
+const handleChangePassword = (e) => {
+    e.preventDefault();
+    helper.hideError();
+
+    const username = e.target.querySelector('#user').value;
+    const oldPass = e.target.querySelector('#oldPass').value;
+    const newPass = e.target.querySelector('#newPass').value;
+    const _csrf = document.querySelector('#_csrf').value;
+
+    if (!username || !oldPass || !newPass) {
+        helper.handleError('Username or passwords are empty!');
+        return false;
+    }
+
+    if (oldPass === newPass){
+        helper.handleError('The two passwords are the same!');
+        return false;
+    }
+
+    helper.sendPost(e.target.action, { username, oldPass, newPass, _csrf });
+    return false;
+}
+
 const LoginWindow = (props) => {
     return (
         <form id="loginForm"
@@ -100,7 +123,7 @@ const ChangePasswordWindow = (props) => {
     return (
         <form id="changePasswordForm"
             name="changePasswordForm"
-            onSubmit={handleSignup}
+            onSubmit={handleChangePassword}
             action="/changePassword"
             method="POST"
             className="mainForm"
@@ -110,12 +133,12 @@ const ChangePasswordWindow = (props) => {
                 <input id="user" type="text" name="username" placeholder="username" />
             </div>
             <div className="floatRight">
-                <label htmlFor="pass">Current Password: </label>
-                <input id="pass" type="password" name="pass" placeholder="password" />
+                <label htmlFor="oldPass">Current Password: </label>
+                <input id="oldPass" type="password" name="oldPass" placeholder="password" />
             </div>
             <div className="floatRight">
-                <label htmlFor="pass2">New Password: </label>
-                <input id="pass2" type="password" name="pass2" placeholder="password" />
+                <label htmlFor="newPass">New Password: </label>
+                <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
             <div className="floatLeft invisible">
                 <label htmlFor="username">Username: </label>

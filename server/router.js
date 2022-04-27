@@ -18,6 +18,7 @@ const router = (app) => {
     .head(mid.requiresSecure, controllers.Game.getPlayerMeta);
 
   app.post('/updateItems', mid.requiresSecure, mid.requiresLogin, controllers.Account.updateItems);
+  app.post('/changePassword', mid.requiresSecure, mid.requiresLogin, controllers.Account.changePassword);
 
   // app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
