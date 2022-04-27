@@ -47,7 +47,7 @@ const init = (obj, name) => {
         if (obj.items) initItems(obj.items);
     }
     else {
-        
+        console.log(obj);
     }
 
     console.log('initting');

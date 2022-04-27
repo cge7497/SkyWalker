@@ -79,9 +79,10 @@ const updateItems = async (req, res) => {
     
     if (!doc) return res.json({error: 'Account with that username not found.'});
 
-    console.log(doc);
-
-    doc.items[item] = true;
+    const key = 'items.' + item;
+    // I was having trouble using the typical method of something like doc.items[item] = true. It's likely because I'm setting an object property.
+    // I found this solution here, and the [var] syntax for the set command: https://stackoverflow.com/a/23833060
+    doc.set({[key]: true});
 
     await doc.save(); //doc.save isn't working. Try one of the more official methods?
 

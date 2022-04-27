@@ -8,7 +8,7 @@ const handleLogin = (e) => {
 
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
-    const _csrf = e.target.querySelector('#_csrf').value;
+    const _csrf = document.querySelector('#_csrf').value;
 
     if (!username || !pass) {
         helper.handleError('Username or password is empty!');
@@ -28,7 +28,7 @@ const handleSignup = (e) => {
     const pass = e.target.querySelector('#pass').value;
     const pass2 = e.target.querySelector('#pass2').value;
     const color = e.target.querySelector('#colorField').value;
-    const _csrf = e.target.querySelector('#_csrf').value;
+    const _csrf = document.querySelector('#_csrf').value;
 
     if (!username || !pass || !pass2) {
         helper.handleError('All fields are required!');
@@ -61,7 +61,6 @@ const LoginWindow = (props) => {
                 <label htmlFor="pass">Password: </label>
                 <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
-            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="Log in" />
         </form>
     );
@@ -92,7 +91,6 @@ const SignupWindow = (props) => {
                 <label htmlFor="pass2">Password: </label>
                 <input id="pass2" type="password" name="pass2" placeholder="password" />
             </div>
-            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="Create Account" />
         </form>
     );
@@ -123,7 +121,6 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="username">Username: </label>
                 <input id="user" type="text" name="username" placeholder="username" />
             </div>
-            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Change Password" />
         </form>
     );
@@ -140,9 +137,11 @@ const init = async () => {
     const logoutButton = document.getElementById('logoutButton');
     const changePasswordButton = document.getElementById('changePasswordButton');
 
+    document.getElementById('_csrf').value = data.csrfToken;
+
     loginButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<LoginWindow csrf={data.csrfToken} />,
+        ReactDOM.render(<LoginWindow />,
             document.getElementById('content'));
         signupButton.disabled = false;
         loginButton.disabled = true;
@@ -151,7 +150,7 @@ const init = async () => {
 
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
+        ReactDOM.render(<SignupWindow />,
             document.getElementById('content'));
         loginButton.disabled = false;
         signupButton.disabled = true;
@@ -160,7 +159,7 @@ const init = async () => {
 
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<ChangePasswordWindow csrf={data.csrfToken} />,
+        ReactDOM.render(<ChangePasswordWindow />,
             document.getElementById('content'));
         signupButton.disabled = false;
         loginButton.disabled = true;
@@ -172,7 +171,7 @@ const init = async () => {
         return false;
     });
 
-    ReactDOM.render(<SignupWindow csrf={data.csrfToken} />,
+    ReactDOM.render(<SignupWindow />,
         document.getElementById('content'));
 };
 
