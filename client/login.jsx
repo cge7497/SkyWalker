@@ -62,8 +62,16 @@ const handleChangePassword = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {oldPass, newPass, _csrf });
+    helper.sendPost(e.target.action, {oldPass, newPass, _csrf }, resetPasswordForm);
     return false;
+}
+
+const resetPasswordForm = (result) => {
+    // If the password was successfully changed- meaning the jsob objects haas a success message and not an error- reset the password input values so the user can't double click it.
+    if (result.message){
+        document.getElementById('oldPass').value = '';
+        document.getElementById('newPass').value = '';
+    }
 }
 
 const LoginWindow = (props) => {
@@ -180,7 +188,8 @@ const init = async () => {
         return false;
     });
 
-    logoutButton.addEventListener('click', (e) => {
+    logoutButton.addEventListener('click', async (e) => {
+        await fetch('/logout');
         window.location.reload();
         return false;
     });

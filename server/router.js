@@ -28,6 +28,8 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  
+  app.get('/*', mid.requiresSecure, mid.requiresLogout, controllers.Account.redirect);
 };
 
 module.exports = router;

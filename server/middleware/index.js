@@ -1,5 +1,6 @@
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
+    console.log('login');
     // return res.status(400);
   }
   return next();
@@ -7,6 +8,7 @@ const requiresLogin = (req, res, next) => {
 
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
+    console.log('logout');
     // return res.status(400);
   }
   return next();

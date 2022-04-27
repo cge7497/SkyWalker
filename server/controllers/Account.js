@@ -6,9 +6,12 @@ const loginPage = (req, res) => res.render('app', { csrfToken: req.csrfToken() }
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
+const redirect = (req, res) => res.redirect('/');
+
 const logout = (req, res) => {
+  console.log('logging out');
   req.session.destroy();
-  res.redirect('/');
+  return res.status(204);
 };
 
 const login = (req, res) => {
@@ -130,4 +133,5 @@ module.exports = {
   updateItems,
   changePassword,
   getToken,
+  redirect
 };
