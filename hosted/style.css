@@ -1,9 +1,5 @@
 html,
 body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
     overflow-x: initial;
     padding-top: 30px;
 }
@@ -12,18 +8,18 @@ body {
     display: inline-block;
 }
 
-.mainForm {
+.inputForm {
     width: 650px;
     margin: 0 auto;
     padding-top: 20px;
     font-size: 1.2em;
 }
 
-.mainForm h3 {
+.inputForm h3 {
     text-align: center;
 }
 
-.mainForm label {
+.inputForm label {
     display: inline-block;
     width: 100px;
     margin-right: 10px;
@@ -44,7 +40,6 @@ body {
 
 #changePasswordForm{
     width: 800px;
-    height: 178px;
 }
 
 #changePasswordForm label {

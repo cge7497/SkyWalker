@@ -96,7 +96,7 @@ const updateItems = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const username = `${req.body.username}`;
+  const username = `${req.session.account.username}`;
   const oldPass = `${req.body.oldPass}`;
   const newPass = `${req.body.newPass}`;
 
@@ -114,7 +114,7 @@ const changePassword = async (req, res) => {
       const hash = await Account.generateHash(newPass);
       account.password = hash;
       await account.save();
-      return res.status(200).json({message: 'Successfully changed password'});
+      return res.status(200).json({message: 'Successfully changed password for user ' + username});
     }
     catch (e) {
       return res.status(400).json({ error: 'An error occured.' });

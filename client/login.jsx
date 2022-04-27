@@ -40,7 +40,7 @@ const handleSignup = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, { username, pass, pass2, color, _csrf }, game.init);
+    helper.sendPost(e.target.action, { username, pass, pass2, color, _csrf }, initGame);
     return false;
 };
 
@@ -48,13 +48,12 @@ const handleChangePassword = (e) => {
     e.preventDefault();
     helper.hideError();
 
-    const username = e.target.querySelector('#user').value;
     const oldPass = e.target.querySelector('#oldPass').value;
     const newPass = e.target.querySelector('#newPass').value;
     const _csrf = document.querySelector('#_csrf').value;
 
-    if (!username || !oldPass || !newPass) {
-        helper.handleError('Username or passwords are empty!');
+    if (!oldPass || !newPass) {
+        helper.handleError('One or more password fields are empty!');
         return false;
     }
 
@@ -63,7 +62,7 @@ const handleChangePassword = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, { username, oldPass, newPass, _csrf });
+    helper.sendPost(e.target.action, {oldPass, newPass, _csrf });
     return false;
 }
 
@@ -74,7 +73,7 @@ const LoginWindow = (props) => {
             onSubmit={handleLogin}
             action="/login"
             method="POST"
-            className="mainForm"
+            className="inputForm"
         >
             <div className="floatLeft">
                 <label htmlFor="username">Username: </label>
@@ -96,7 +95,7 @@ const SignupWindow = (props) => {
             onSubmit={handleSignup}
             action="/signup"
             method="POST"
-            className="mainForm"
+            className="inputForm"
         >
             <div className="floatLeft">
                 <label htmlFor="username">Username: </label>
@@ -126,23 +125,15 @@ const ChangePasswordWindow = (props) => {
             onSubmit={handleChangePassword}
             action="/changePassword"
             method="POST"
-            className="mainForm"
+            className="inputForm"
         >
             <div className="floatLeft">
-                <label htmlFor="username">Username: </label>
-                <input id="user" type="text" name="username" placeholder="username" />
-            </div>
-            <div className="floatRight">
                 <label htmlFor="oldPass">Current Password: </label>
                 <input id="oldPass" type="password" name="oldPass" placeholder="password" />
             </div>
             <div className="floatRight">
                 <label htmlFor="newPass">New Password: </label>
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
-            </div>
-            <div className="floatLeft invisible">
-                <label htmlFor="username">Username: </label>
-                <input id="user" type="text" name="username" placeholder="username" />
             </div>
             <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Set Password" />
         </form>
