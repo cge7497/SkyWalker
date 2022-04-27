@@ -127,6 +127,8 @@ const SignupWindow = (props) => {
 };
 
 const ChangePasswordWindow = (props) => {
+    const [defaultText, setDefaultText] = React.useState(props.defaultText);
+
     return (
         <form id="changePasswordForm"
             name="changePasswordForm"
@@ -137,13 +139,13 @@ const ChangePasswordWindow = (props) => {
         >
             <div className="floatLeft">
                 <label htmlFor="oldPass">Current Password: </label>
-                <input id="oldPass" type="password" name="oldPass" placeholder="password" />
+                <input id="oldPass" type="password" name="oldPass" placeholder={defaultText} />
             </div>
             <div className="floatRight">
                 <label htmlFor="newPass">New Password: </label>
-                <input id="newPass" type="password" name="newPass" placeholder="password" />
+                <input id="newPass" type="password" name="newPass" placeholder={defaultText} />
             </div>
-            <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Set Password" />
+            <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Set Password" onClick={(e) => setDefaultText("password")} />
         </form>
     );
 };
@@ -181,7 +183,7 @@ const init = async () => {
 
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<ChangePasswordWindow />,
+        ReactDOM.render(<ChangePasswordWindow defaultText = "password"/>,
             document.getElementById('content'));
         signupButton.disabled = false;
         loginButton.disabled = true;
@@ -189,7 +191,7 @@ const init = async () => {
     });
 
     logoutButton.addEventListener('click', async (e) => {
-        await fetch('/logout');
+        fetch('/logout');
         window.location.reload();
         return false;
     });

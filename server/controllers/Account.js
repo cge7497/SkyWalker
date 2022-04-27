@@ -11,7 +11,7 @@ const redirect = (req, res) => res.redirect('/');
 const logout = (req, res) => {
   console.log('logging out');
   req.session.destroy();
-  return res.status(204);
+  return res.status(204).json({message: "Logged out successfully"});
 };
 
 const login = (req, res) => {

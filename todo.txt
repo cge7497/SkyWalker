@@ -10,6 +10,8 @@ Delete request account when refreshing so it doesn't log back in?
 
 Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
 
+Fix weird canvas centering. It is slightly too big due to border. It is 16 px too wide on the right.
+
 DONE Implement change password:
     Changing password will require user to enter their username, password, and new password. It'll send code to the server to update that. That'll use some bcrypt nuances...
     Check on client if the two passwords are different.

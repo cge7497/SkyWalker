@@ -133,6 +133,9 @@ body {
     display: none;
 }
 
+canvas{
+    margin:-0.5rem;
+}
 
 #canvas_player {
     z-index: 2;

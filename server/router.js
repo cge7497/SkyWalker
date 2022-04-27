@@ -20,16 +20,12 @@ const router = (app) => {
   app.post('/updateItems', mid.requiresSecure, mid.requiresLogin, controllers.Account.updateItems);
   app.post('/changePassword', mid.requiresSecure, mid.requiresLogin, controllers.Account.changePassword);
 
-  // app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
-
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
-
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
-  app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
-  
-  app.get('/*', mid.requiresSecure, mid.requiresLogout, controllers.Account.redirect);
+  app.get('/', mid.requiresSecure, controllers.Account.loginPage);
+  app.get('/*', mid.requiresSecure, controllers.Account.redirect);
 };
 
 module.exports = router;
