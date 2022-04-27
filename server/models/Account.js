@@ -41,7 +41,9 @@ const AccountSchema = new mongoose.Schema({
   items: {
     type: Object,
     required: false,
-    default: {'morphball': false,'screwattack': false,'blaster': false,'cloud': false },
+    default: {
+      morphball: false, screwattack: false, blaster: false, cloud: false,
+    },
   },
   createdDate: {
     type: Date,
@@ -49,10 +51,10 @@ const AccountSchema = new mongoose.Schema({
   },
 });
 
-  // Notes from class on why React is faster: Like compiling it ahead of time rather than when putting it in.
-  // React uses virtual DOM. It basically renders the component before, and then adds it to the DOM.
-  // This is so the DOM doesn't have to update the whole tree-
-  // the virtual DOM updates only the relevant web component.
+// Class notes on React speed: Like compiling it ahead of time rather than when putting it in.
+// React uses virtual DOM. It basically renders the component before, and then adds it to the DOM.
+// This is so the DOM doesn't have to update the whole tree-
+// the virtual DOM updates only the relevant web component.
 
 // Converts a doc to something we can store in redis later on.
 AccountSchema.statics.toAPI = (doc) => ({

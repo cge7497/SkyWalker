@@ -74,23 +74,23 @@ const updateItems = async (req, res) => {
     return res.status(400).json({ error: 'Username and valid item ID are required!' });
   }
 
-  try{
-    const doc= await Account.findOne({username: req.session.account.username}).exec();
-    
-    if (!doc) return res.json({error: 'Account with that username not found.'});
+  try {
+    const doc = await Account.findOne({ username: req.session.account.username }).exec();
 
-    const key = 'items.' + item;
-    // I was having trouble using the typical method of something like doc.items[item] = true. It's likely because I'm setting an object property.
+    if (!doc) return res.json({ error: 'Account with that username not found.' });
+
+    const key = `items.${item}`;
+    // I was having trouble using the typical method of something like doc.items[item] = true.
+    // It's likely because I'm setting an object property.
     // I found this solution here, and the [var] syntax for the set command: https://stackoverflow.com/a/23833060
-    doc.set({[key]: true});
+    doc.set({ [key]: true });
 
-    await doc.save(); //doc.save isn't working. Try one of the more official methods?
+    await doc.save(); // doc.save isn't working. Try one of the more official methods?
 
     console.log(doc);
 
-    return res.status(201).json({message: 'Item successfully saved to player.'})
-  }
-  catch{
+    return res.status(201).json({ message: 'Item successfully saved to player.' });
+  } catch (e) {
     return res.status(400).json({ error: 'An error occurred' });
   }
 };
