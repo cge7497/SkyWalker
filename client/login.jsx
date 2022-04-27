@@ -85,7 +85,7 @@ const SignupWindow = (props) => {
             </div>
             <div className="floatLeft">
                 <label htmlFor="colorField">Color: </label>
-                <input id="colorField" type="color" name="color" />
+                <input id="colorField" type="color" name="color" value = "#6495ed" />
             </div>
             <div className="floatRight">
                 <label htmlFor="pass2">Password: </label>
@@ -121,7 +121,7 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="username">Username: </label>
                 <input id="user" type="text" name="username" placeholder="username" />
             </div>
-            <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Change Password" />
+            <input className="formSubmit" id = "changePasswordSubmit"type="submit" value="Set Password" />
         </form>
     );
 };

@@ -4,11 +4,12 @@ Implement payment model:
 
 
 Implement change password:
-    Once the player is logged in, remove signup/login form react component. In its place, put a component with buttons 'Log Out' and 'Change Password.'
     Changing password will require user to enter their username, password, and new password. It'll send code to the server to update that. That'll use some bcrypt nuances...
+    Check on client if the two passwords are different.
+    Use same kind of function as updateItems in Account controller.
 
-Improve styling of log in button (formSubmit)
+GOOD Improve styling of log in button (formSubmit)
     Make sure it uses no code from Domo-change colors, and borders if I want to.
 
-Fix item saving.
+DONE Fix item saving.
     It is not actually saving on the server. The .save() function doesn't actually save to the mongoDB.

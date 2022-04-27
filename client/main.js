@@ -57,9 +57,9 @@ const init = (obj, name) => {
     movementThisSecond.movement = [];
 
     //I created these sounds with SFXR (http://sfxr.me/)
-    btn_audio = new Audio("buttonClick.wav");
+    btn_audio = new Audio("assets/sound/buttonClick.wav");
     btn_audio.volume = 0.25;
-    item_audio = new Audio("itemGet.wav");
+    item_audio = new Audio("assets/sound/itemGet.wav");
     item_audio.volume = 0.25;
 
     let p_canvas = document.querySelector("#canvas_player");
