@@ -1,7 +1,6 @@
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
-    console.log(req);
-    return res.status(401).error('You must be logged in to complete that action.');
+    return res.status(401).json({ error: 'You must be logged in to complete that action.' });
   }
   return next();
 };

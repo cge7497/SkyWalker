@@ -1,6 +1,6 @@
 const level = require('../models/levelData.js');
 
-const players = {};
+const players = [];
 const playerMovementThisSecond = {};
 
 // writes a status header and a JSON object to the response.
@@ -17,52 +17,7 @@ const respondJSONMeta = (request, response, status) => {
 };
 
 // return user object as JSON
-const getPlayers = (request, response) => {
-  const responseJSON = {
-    players,
-  };
-
-  respondJSON(request, response, 200, responseJSON);
-};
-
-// add a user/player from the body of a POST request
-const addPlayer = (request, response, body) => {
-  // default json message
-  let responseJSON = {
-    message: 'Both name and color are required.',
-  };
-
-  if (!body.name || !body.color) {
-    responseJSON.id = 'missingParams';
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
-  let responseCode = 200;
-
-  if (!players[body.name]) {
-    responseCode = 201;
-    players[body.name] = {
-      name: body.name,
-      color: body.color,
-      items: {
-        morphball: false,
-        screwattack: false,
-      },
-    };
-  }
-
-  // update the items and currently unused age value.
-  // if (body.age) players[body.name].age = body.age;
-  if (body.items) players[body.name].items = body.items;
-  players[body.name].color = body.color;
-
-  responseJSON = {
-    player: players[body.name],
-  };
-
-  // This returns both if the player already existed and if they were created.
-  return respondJSON(request, response, responseCode, responseJSON);
-};
+const getPlayers = (request, response) => response.json(players);
 
 // get an existing player/user.
 const getPlayer = (request, response, body) => {
@@ -122,30 +77,6 @@ const addMovement = (request, response, body) => {
   };
 
   return 0;
-};
-
-// update the items of a player
-const updateItems = (request, response, body) => {
-  const responseJSON = {
-    message: 'Name and item are required.',
-  };
-
-  if (!body.name || !body.item) {
-    responseJSON.id = 'missingParams';
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
-  if (!players[body.name]) {
-    responseJSON.id = 'invalidPlayer';
-    responseJSON.message = 'The request had the required parameters, but a player of that name does not exist on the server.';
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
-  // add or update fields for this user name
-  players[body.name].items[body.item] = true;
-
-  // This returns if the player was updated.
-  return respondJSONMeta(request, response, 204);
 };
 
 // Add a cloud to the level data JSON object.
@@ -218,9 +149,8 @@ module.exports = {
   getLevelMeta,
   getMovement,
   getMovementMeta,
-  addPlayer,
   addMovement,
-  updateItems,
   addCloud,
   notFound,
+  players,
 };

@@ -45,6 +45,11 @@ const AccountSchema = new mongoose.Schema({
       morphball: false, screwattack: false, blaster: false, cloud: false,
     },
   },
+  shape: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
   createdDate: {
     type: Date,
     default: Date.now,

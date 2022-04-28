@@ -152,10 +152,8 @@ const ChangePasswordWindow = (props) => {
 };
 
 const init = async () => {
-    ReactDOM.render(<gameComponents.GameInfo />,
-    document.getElementById('gameInfo'));
-    
     level.getData();
+    gameComponents.init();
 
     const response = await fetch('/getToken');
     const data = await response.json();
@@ -170,7 +168,7 @@ const init = async () => {
     loginButton.addEventListener('click', (e) => {
         e.preventDefault();
         ReactDOM.render(<LoginWindow />,
-            document.getElementById('content'));
+            document.getElementById('formContent'));
         signupButton.disabled = false;
         loginButton.disabled = true;
         return false;
@@ -179,7 +177,7 @@ const init = async () => {
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();
         ReactDOM.render(<SignupWindow />,
-            document.getElementById('content'));
+            document.getElementById('formContent'));
         loginButton.disabled = false;
         signupButton.disabled = true;
         return false;
@@ -188,24 +186,26 @@ const init = async () => {
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
         ReactDOM.render(<ChangePasswordWindow defaultText="password" />,
-            document.getElementById('content'));
+            document.getElementById('formContent'));
         signupButton.disabled = false;
         loginButton.disabled = true;
         return false;
     });
 
     logoutButton.addEventListener('click', async (e) => {
-        await fetch('/logout');
+        fetch('/logout');
         window.location.reload();
         return false;
     });
 
     ReactDOM.render(<SignupWindow />,
-        document.getElementById('content'));
+        document.getElementById('formContent'));
 };
 
 const initGame = (player) => {
     game.init(player);
+
+    gameComponents.init();
 
     document.getElementById('loginButton').classList.add('hidden');
     document.getElementById('signupButton').classList.add('hidden');
@@ -214,9 +214,8 @@ const initGame = (player) => {
     document.getElementById('logoutButton').classList.remove('hidden');
 
     ReactDOM.render(null,
-        document.getElementById('content'));
-    loginButton.disabled = false;
-    signupButton.disabled = true;
+        document.getElementById('formContent'));
+
     return false;
 }
 

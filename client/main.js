@@ -45,7 +45,7 @@ const init = (obj, name) => {
         if (obj.items) initItems(obj.items);
     }
     else {
-        return;
+        console.log('boom');
     }
 
     movementThisSecond.name = player.name;

@@ -37,8 +37,6 @@ const sendPost = async (url, data, handler) => {
     if (result.username){
         document.getElementById('createResponse').textContent = "Logged in as " + result.username;
         document.getElementById('resetBtn').disabled = false;
-        document.getElementById('signupButton').disabled = true;
-        document.getElementById('loginButton').disabled = true;
     }
 
     if (handler){

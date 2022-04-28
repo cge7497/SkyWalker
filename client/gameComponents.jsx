@@ -1,6 +1,6 @@
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PlayerDisplay = (props) => {
-    const [players, setPlayers] = React.useState(props.defaultText);
+    const [players, setPlayers] = React.useState(props.players);
 
     React.useEffect(async () => {
         const response = await fetch('/getPlayers');
@@ -8,7 +8,7 @@ const PlayerDisplay = (props) => {
         setPlayers(players)
     });
 
-    if (players.length === 0) {
+    if (!players || players.length === 0) {
         return (
             <div>
                 <h2>Loading Players...</h2>
@@ -26,7 +26,6 @@ const PlayerDisplay = (props) => {
                 <tr key={p.username}>
                     <td>{p.username}</td>
                     <td style={{ backgroundColor: p.color }}>{p.color}</td>
-                    <td>{p.items}</td>
                 </tr>
             </table>
         )
@@ -50,7 +49,7 @@ const GameInfo = (props) => {
     The Yellow Button image is from Super Mario World, and I got it from here: https://strategywiki.org/wiki/Super_Mario_World/Yellow_Switch_Palace 
     
     I got the img src syntax from https://stackoverflow.com/a/57229118 {*/}
-            <h3>Items: </h3>
+            <h3>Items</h3>
             <img id="screwattack" src='assets/img/screwattack.png' style={{ display: 'none' }} width="16" height="16"
                 alt="Infinite Flip Powerup" />
             <img id="morphball" src='assets/img/morphball.png' style={{ display: 'none' }} width="16" height="16"
@@ -73,7 +72,7 @@ const GameInfo = (props) => {
 
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PayModelDisplay = (props) => {
-    const [players, setPlayers] = React.useState(props.defaultText);
+    const [players, setPlayers] = React.useState(props.players);
 
     React.useEffect(async () => {
         const response = await fetch('/getPlayers');
@@ -81,7 +80,7 @@ const PayModelDisplay = (props) => {
         setPlayers(players)
     });
 
-    if (players.length === 0) {
+    if (!players || players.length === 0) {
         return (
             <div>
                 <h2>Loading Players...</h2>
@@ -99,7 +98,6 @@ const PayModelDisplay = (props) => {
                 <tr key={p.username}>
                     <td>{p.username}</td>
                     <td style={{ backgroundColor: p.color }}>{p.color}</td>
-                    <td>{p.items}</td>
                 </tr>
             </table>
         )
@@ -113,8 +111,24 @@ const PayModelDisplay = (props) => {
     );
 };
 
+const init = () => {
+    console.log('gc init');
+
+    ReactDOM.render(<GameInfo />,
+        document.getElementById('gameInfo'));
+
+    ReactDOM.render(<PlayerDisplay players = {[]} />,
+        document.getElementById('playerDisplay'));
+
+    ReactDOM.render(<PayModelDisplay players = {[]} />,
+        document.getElementById('payModel'));
+};
+
+window.onload = init;
+
 module.exports = {
     PlayerDisplay,
     GameInfo,
-    PayModelDisplay
+    PayModelDisplay,
+    init
 }
