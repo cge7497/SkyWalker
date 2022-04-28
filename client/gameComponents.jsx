@@ -47,8 +47,7 @@ const GameInfo = (props) => {
     and the morph ball image from https://strategywiki.org/wiki/File:Super_Metroid_Items_Morph_Ball.png, 
     though they are both originally from Super Metroid games.
     The Yellow Button image is from Super Mario World, and I got it from here: https://strategywiki.org/wiki/Super_Mario_World/Yellow_Switch_Palace 
-    
-    I got the img src syntax from https://stackoverflow.com/a/57229118 {*/}
+    {*/}
             <h3>Items</h3>
             <img id="screwattack" src='assets/img/screwattack.png' style={{ display: 'none' }} width="16" height="16"
                 alt="Infinite Flip Powerup" />
@@ -112,16 +111,15 @@ const PayModelDisplay = (props) => {
 };
 
 const init = () => {
-    console.log('gc init');
 
     ReactDOM.render(<GameInfo />,
         document.getElementById('gameInfo'));
 
-    ReactDOM.render(<PlayerDisplay players = {[]} />,
-        document.getElementById('playerDisplay'));
+    // ReactDOM.render(<PlayerDisplay players={[]} />,
+    //    document.getElementById('playerDisplay'));
 
-    ReactDOM.render(<PayModelDisplay players = {[]} />,
-        document.getElementById('payModel'));
+    //ReactDOM.render(<PayModelDisplay players={[]} />,
+    //    document.getElementById('payModel'));
 };
 
 window.onload = init;

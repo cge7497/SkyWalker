@@ -45,7 +45,6 @@ const init = (obj, name) => {
         if (obj.items) initItems(obj.items);
     }
     else {
-        console.log('boom');
     }
 
     movementThisSecond.name = player.name;
@@ -262,8 +261,6 @@ const initItems = (savedItems) => {
     imgs['screwattack'] = document.getElementById('screwattack');
     imgs['morphball'] = document.getElementById('morphball');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
-
-    console.log(items);
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);

@@ -23,6 +23,8 @@ const router = (app) => {
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
+  app.post('/addCloud', mid.requiresSecure, mid.requiresLogin, controllers.Game.addCloud);
+
   app.get('/', mid.requiresSecure, controllers.Account.loginPage);
   app.get('/*', mid.requiresSecure, controllers.Account.redirect);
 };

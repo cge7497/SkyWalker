@@ -7,7 +7,7 @@ const requiresLogin = (req, res, next) => {
 
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
-    console.log(req.session.account);
+    // console.log(req.session.account);
   }
   return next();
 };
