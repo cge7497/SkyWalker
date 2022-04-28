@@ -68,7 +68,7 @@ const handleChangePassword = (e) => {
 }
 
 const resetPasswordForm = (result) => {
-    // If the password was successfully changed- meaning the jsob objects haas a success message and not an error- reset the password input values so the user can't double click it.
+    // If the password was successfully changed- meaning the json object has a success message and not an error- reset the password input values so the user can't double click it.
     if (result.message) {
         document.getElementById('oldPass').value = '';
         document.getElementById('newPass').value = '';
@@ -116,7 +116,7 @@ const SignupWindow = (props) => {
             </div>
             <div className="floatLeft">
                 <label htmlFor="colorField">Color: </label>
-                <input id="colorField" type="color" name="color" value="#6495ed" />
+                <input id="colorField" type="color" name="color" defaultValue="#6495ed" />
             </div>
             <div className="floatRight">
                 <label htmlFor="pass2">Password: </label>
@@ -146,7 +146,7 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="newPass">New Password: </label>
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
-            <input className="formSubmit" id="changePasswordSubmit" type="submit" defaultValue="Set Password" onClick={(e) => setDefaultText("password")} />
+            <input className="formSubmit" id="changePasswordSubmit" type="submit" defaultValue="Set Password" />
         </form>
     );
 };
