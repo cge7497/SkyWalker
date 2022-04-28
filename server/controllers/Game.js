@@ -20,26 +20,26 @@ const respondJSONMeta = (request, response, status) => {
 const getPlayers = (request, response) => response.json(players);
 
 // get an existing player/user.
-const getPlayer = (request, response, body) => {
+const getPlayer = (request, response) => {
   // default json message
   let responseJSON = {
     message: 'A name parameter is required.',
   };
 
-  if (!body.name) {
+  if (!request.body.name) {
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
 
   let responseCode = 200;
 
-  if (!players[body.name]) {
+  if (!players[request.body.name]) {
     responseCode = 400;
     responseJSON.id = 'invalidParams';
-    responseJSON.message = `A player of the name ${body.name} does not exist.`;
+    responseJSON.message = `A player of the name ${request.body.name} does not exist.`;
   } else {
     responseJSON = {
-      player: players[body.name],
+      player: players[request.body.name],
     };
   }
   // console.log(interval.ref);
@@ -47,15 +47,15 @@ const getPlayer = (request, response, body) => {
 };
 
 // adds to the global movement array for this second.
-const addMovement = (request, response, body) => {
+const addMovement = (request, response) => {
   let responseJSON = {
     message: 'This endpoint requires a player JSON object with a name, color, and array of >=30 JSON objects with an X, Y, and flipped variable. They were not present in the request.',
     id: 'missingParams',
   };
 
-  if (!body.movement) return respondJSON(request, response, 400, responseJSON);
+  if (!request.body.movement) return respondJSON(request, response, 400, responseJSON);
 
-  const movement = JSON.parse(body.movement);
+  const movement = JSON.parse(request.body.movement);
 
   if (!movement.name || !movement.color || !movement.movement) {
     return respondJSON(request, response, 400, responseJSON);
@@ -63,7 +63,7 @@ const addMovement = (request, response, body) => {
 
   if (!players[movement.name]) {
     responseJSON.id = 'invalidPlayer';
-    responseJSON.message = `The player '${body.name}' does not exist on the server.`;
+    responseJSON.message = `The player '${request.body.name}' does not exist on the server.`;
     return respondJSON(request, response, 400, responseJSON);
   }
 
@@ -80,7 +80,7 @@ const addMovement = (request, response, body) => {
 };
 
 // Add a cloud to the level data JSON object.
-const addCloud = (request, response, body) => {
+const addCloud = (request, response) => {
   const responseJSON = {
     message: 'A color is required.',
   };

@@ -309,7 +309,7 @@ function collectMorphBall(shouldSendPost = true) {
 }
 function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('screwattack').style.display = 'inline';
-    document.getElementById('spaceInstructions').innerHTML = `<strong>SPACE</strong> to ultra flip`
+    document.getElementById('spaceInstructions').innerHTML = `<strong>&nbsp;SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'screwattack');
@@ -335,8 +335,8 @@ function endGame() {
         bg_audio.pause();
         whistle_audio.play();
 
-        // Kind of fun to glitch around... I may uncomment this.
-        // document.getElementById('resetBtn').disabled = true;
+        // Kind of fun to glitch around... I may comment this.
+        document.getElementById('resetBtn').disabled = true;
 
         //Play the sky theme after the whistle audio is over. Could use an event listener instead.
         setTimeout(() => {

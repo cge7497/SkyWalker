@@ -3,20 +3,28 @@ const game = require('./Game.js');
 
 const { Account } = models;
 
+const addPlayer = (a) => {
+  if (!game.players.find((o) => o.username === a.username)) {
+    game.players.push({ username: a.username, color: a.color });
+  }
+};
+
 const loginPage = (req, res) => res.render('app', { csrfToken: req.csrfToken() });
 
-
-// Return whether or not there is an account in the request. They client uses this to know whether to display the signup form or just jump straight into the game.
+// Return whether or not there is an account in the request.
+// They client uses this to know whether to display the signup form or jump straight into the game.
 const initPage = (req, res) => {
   if (req.session.account) addPlayer(req.session.account);
 
-  res.json({ csrfToken: req.csrfToken(), account: req.session.account ? req.session.account : null });
-}
+  res.json({
+    csrfToken: req.csrfToken(),
+    account: req.session.account ? req.session.account : null,
+  });
+};
 
 const redirect = (req, res) => res.redirect('/');
 
 const logout = (req, res) => {
-
   // Remove this account from the list of online players.
   if (req.session.account) {
     const player = { username: req.session.account.username, color: req.session.account.color };
@@ -26,12 +34,6 @@ const logout = (req, res) => {
 
     req.session.destroy();
     res.redirect('/initGame');
-  }
-};
-
-const addPlayer = (a) => {
-  if (!game.players.find((o) => o.username = a.username)) {
-    game.players.push({ username: a.username, color: a.color });
   }
 };
 
@@ -86,7 +88,6 @@ const signup = async (req, res) => {
       items: req.session.account.items,
       color: req.session.account.color,
     });
-
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use.' });

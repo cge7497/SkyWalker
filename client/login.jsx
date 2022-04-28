@@ -146,7 +146,7 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="newPass">New Password: </label>
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
-            <input className="formSubmit" id="changePasswordSubmit" type="submit" defaultValue="Set Password" />
+            <input className="formSubmit" id="changePasswordSubmit" type="submit" value="Set Password" />
         </form>
     );
 };
@@ -214,7 +214,7 @@ const initGame = (player, immediate) => {
     document.getElementById('signupButton').classList.add('hidden');
 
     document.getElementById('changePasswordButton').classList.remove('hidden');
-    document.getElementById('logoutButton').classList.remove('hidden');
+    document.getElementById('logoutLink').classList.remove('hidden');
 
     ReactDOM.render(null,
         document.getElementById('formContent'));
