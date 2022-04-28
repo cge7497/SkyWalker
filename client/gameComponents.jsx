@@ -1,13 +1,26 @@
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PlayerDisplay = (props) => {
     const [players, setPlayers] = React.useState(props.players);
+    const [displayMode, setDisplayMode] = React.useState(props.displayMode);
 
     React.useEffect(async () => {
         const response = await fetch('/getPlayers');
-        const players = response.json();
+        const players = await response.json();
         setPlayers(players)
-    });
+    }, []);
 
+    const changeDisplay = () => {
+        //if (!displayMode)  return setDisplayMode(0);
+
+        if (displayMode == 0) setDisplayMode(1);
+        else setDisplayMode(0);
+    };
+
+    if (!displayMode || displayMode === 0) {
+        return (
+            <button onClick={(e) => { changeDisplay() }}> O -|- /\</button>
+        )
+    }
     if (!players || players.length === 0) {
         return (
             <div>
@@ -71,55 +84,64 @@ const GameInfo = (props) => {
 
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PayModelDisplay = (props) => {
-    const [players, setPlayers] = React.useState(props.players);
+    const [displayMode, setDisplayMode] = React.useState(props.displayMode);
 
-    React.useEffect(async () => {
-        const response = await fetch('/getPlayers');
-        const players = response.json();
-        setPlayers(players)
-    });
+    const changeDisplay = () => {
+        //if (!displayMode)  return setDisplayMode(0);
 
-    if (!players || players.length === 0) {
+        if (displayMode == 0) setDisplayMode(1);
+        else setDisplayMode(0);
+    }
+
+    if (!displayMode || displayMode === 0) {
         return (
-            <div>
-                <h2>Loading Players...</h2>
-            </div>
+            <button onClick={(e) => { changeDisplay() }}>&nabla; &#9634; &#9671;</button>
         )
     }
 
-    const playerList = players.map((p) => {
+    const ShapeList = () => {
         return (
             <table>
-                <tr>
-                    <th>Username</th>
-                    <th>Color</th>
-                </tr>
-                <tr key={p.username}>
-                    <td>{p.username}</td>
-                    <td style={{ backgroundColor: p.color }}>{p.color}</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Shape</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Square</td>
+                        <td>$ Free </td>
+                    </tr>
+                    <tr>
+                        <td>Triangle</td>
+                        <td>$ Free </td>
+                    </tr>
+                    <tr>
+                        <td>Diamond</td>
+                        <td>$ Free </td>
+                    </tr>
+                </tbody>
             </table>
         )
-    })
+    };
 
     return (
         <div>
-            <h3>Current Players</h3>
-            {playerList}
+            <ShapeList />
         </div>
     );
 };
 
 const init = () => {
-
     ReactDOM.render(<GameInfo />,
         document.getElementById('gameInfo'));
 
-    // ReactDOM.render(<PlayerDisplay players={[]} />,
-    //    document.getElementById('playerDisplay'));
+    ReactDOM.render(<PlayerDisplay players={[]} displayMode={0} />,
+        document.getElementById('playerDisplay'));
 
-    //ReactDOM.render(<PayModelDisplay players={[]} />,
-    //    document.getElementById('payModel'));
+    ReactDOM.render(<PayModelDisplay displayMode={0} />,
+        document.getElementById('payModel'));
 };
 
 window.onload = init;

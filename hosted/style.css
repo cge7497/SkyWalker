@@ -100,6 +100,31 @@ body {
     cursor: pointer;
 }
 
+#payModel {
+    margin-top: 0px;
+    position: absolute;
+    width: 20px;
+    right: -20px;
+    height: 35px;
+    top: 6px;
+    word-wrap: break-word;
+}
+
+#playerDisplay {
+    margin-top: 0px;
+    position: absolute;
+    width: 40px;
+    left: -40px;
+    top: 6px;
+    word-wrap: break-word;
+}
+
+#payModel button,
+#playerDisplay button {
+    height: 75px;
+    width: 40px;
+}
+
 .formSubmit:link,
 .formSubmit:visited,
 .formSubmit:hover,
@@ -133,8 +158,8 @@ body {
     display: none;
 }
 
-canvas{
-    margin:-0.5rem;
+canvas {
+    margin: -0.5rem;
 }
 
 #canvas_player {
