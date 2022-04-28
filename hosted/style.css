@@ -101,7 +101,7 @@ body {
 }
 
 #payModel {
-    margin-top: 0px;
+    margin-top: 20px;
     position: absolute;
     width: 20px;
     right: -20px;
@@ -111,7 +111,7 @@ body {
 }
 
 #playerDisplay {
-    margin-top: 0px;
+    margin-top: 20px;
     position: absolute;
     width: 40px;
     left: -40px;
@@ -121,6 +121,7 @@ body {
 
 #payModel button,
 #playerDisplay button {
+    margin-top: 0px;
     height: 75px;
     width: 40px;
 }

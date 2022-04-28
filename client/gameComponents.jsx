@@ -96,13 +96,13 @@ const PayModelDisplay = (props) => {
 
     if (!displayMode || displayMode === 0) {
         return (
-            <button onClick={(e) => { changeDisplay() }}>&nabla; &#9634; &#9671;</button>
+            <button id = "payModelBtn" onClick={(e) => { changeDisplay() }}>&nabla; &#9634; &#9671;</button>
         )
     }
 
     const ShapeList = () => {
         return (
-            <table>
+            <table id = "payModelTable">
                 <thead>
                     <tr>
                         <th>Shape</th>

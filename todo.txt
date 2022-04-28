@@ -15,11 +15,7 @@ Turn into cloud and fly offscreen like in Bob's game.
 
 Make audio volume decrease when you're near yellow button.
 
-With current middleware setup: if you refresh the page, it doesn't log you out. If you refresh the page, it'll load your account from your req.account.session. 
-This means it won't save your items if you refresh rather than save and quit, and because of initGame it'll reload you into your current account.
-It'll use the saved req.session.account rather than loading the one from the server.
-Should I load it from server, or save it to account at the specific time?
-Should refreshing just log them out? Domo would keep you logged in, but this is a one-person application.
+window.onbeforeunload to send "mark me as offline" request to server...
 
 DONE Implement change password:
     Changing password will require user to enter their username, password, and new password. It'll send code to the server to update that. That'll use some bcrypt nuances...

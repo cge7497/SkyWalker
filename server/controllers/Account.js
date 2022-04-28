@@ -7,7 +7,11 @@ const loginPage = (req, res) => res.render('app', { csrfToken: req.csrfToken() }
 
 
 // Return whether or not there is an account in the request. They client uses this to know whether to display the signup form or just jump straight into the game.
-const initPage = (req, res) => res.json({ csrfToken: req.csrfToken(), account: req.session.account ? req.session.account : null });
+const initPage = (req, res) => {
+  if (req.session.account) addPlayer(req.session.account);
+
+  res.json({ csrfToken: req.csrfToken(), account: req.session.account ? req.session.account : null });
+}
 
 const redirect = (req, res) => res.redirect('/');
 
@@ -20,13 +24,15 @@ const logout = (req, res) => {
       game.players.splice(game.players.indexOf(player), 1);
     }
 
-  req.session.destroy();
-  res.redirect('/initGame');
+    req.session.destroy();
+    res.redirect('/initGame');
   }
 };
 
 const addPlayer = (a) => {
-  game.players.push({ username: a.username, color: a.color });
+  if (!game.players.find((o) => o.username = a.username)) {
+    game.players.push({ username: a.username, color: a.color });
+  }
 };
 
 const login = (req, res) => {
