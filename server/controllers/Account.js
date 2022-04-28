@@ -106,18 +106,18 @@ const changePassword = async (req, res) => {
   }
 
   // Authenticate the account.
-  await Account.authenticate(username, oldPass, async (err, account) => {
+  return Account.authenticate(username, oldPass, async (err, account) => {
     if (err || !account) {
       return res.status(401).json({ error: 'Wrong username or password' });
     }
     // If successful, hash the password and then set it as the account's password.
     try {
       const hash = await Account.generateHash(newPass);
-      account.password = hash;
-      await account.save();
-      return res.status(200).json({message: 'Successfully changed password for user ' + username});
-    }
-    catch (e) {
+      const doc = account; // necessary to acoid eslint no-param-reassign error.
+      doc.password = hash;
+      await doc.save();
+      return res.status(200).json({ message: `Successfully changed password for user ${username}` });
+    } catch (e) {
       return res.status(400).json({ error: 'An error occured.' });
     }
   });
@@ -131,5 +131,5 @@ module.exports = {
   updateItems,
   changePassword,
   getToken,
-  redirect
+  redirect,
 };
