@@ -20,18 +20,16 @@ const handleResponse = async (response) => {
 const updatePlayer = async (name, itemId) => {
     //Build a data string in the FORM-URLENCODED format.
     const _csrf = document.querySelector('#_csrf').value;
-    const formData = `name=${name}&item=${itemId}&_csrf=${_csrf}`;
+    const formData = { username: name, item: itemId, _csrf: _csrf };
 
 
     let response = await fetch('/updateItems', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
+            'Content-Type': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify(formData),
     });
-    handleResponse(response);
 };
 
 // sends the player data to the server as a POST request.
@@ -67,7 +65,7 @@ const sendCloud = async (color = '#000000') => {
     const _csrf = document.querySelector('#_csrf').value;
 
     //Build a data string in the FORM-URLENCODED format.
-    const formData = {color: color, _csrf: _csrf}
+    const formData = { color: color, _csrf: _csrf }
 
     let response = await fetch('/addCloud', {
         method: 'POST',
@@ -80,4 +78,4 @@ const sendCloud = async (color = '#000000') => {
 }
 export {
     updatePlayer, sendMovement, sendCloud
-  }
+}

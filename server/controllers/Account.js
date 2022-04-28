@@ -105,7 +105,7 @@ const updateItems = async (req, res) => {
   }
 
   try {
-    const doc = await Account.findOne({ username: req.session.account.username }).exec();
+    const doc = await Account.findOne({ username: req.body.username }).exec();
 
     if (!doc) return res.json({ error: 'Account with that username not found.' });
 
@@ -118,10 +118,11 @@ const updateItems = async (req, res) => {
 
     await doc.save();
 
-    req.session.account = Account.toAPI(doc);
+    req.session.account.items[item] = true;
 
     return res.status(204);
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ error: 'An error occurred' });
   }
 };
