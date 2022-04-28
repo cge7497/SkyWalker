@@ -17,6 +17,7 @@ const PlayerDisplay = (props) => {
     };
 
     if (!displayMode || displayMode === 0) {
+        // render the objects with the className
         return (
             <button onClick={(e) => { changeDisplay() }}> O -|- /\</button>
         )

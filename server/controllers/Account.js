@@ -10,17 +10,26 @@ const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 const redirect = (req, res) => res.redirect('/');
 
 const logout = (req, res) => {
+
   // Remove this account from the list of online players.
   if (req.session.account) {
     const player = { username: req.session.account.username, color: req.session.account.color };
     if (game.players[player]) {
       game.players.splice(game.players.indexOf(player), 1);
     }
-  }
 
   req.session.destroy();
-  res.status(204);
+  res.redirect('/initGame');
+  }
 };
+
+const initGame = (req, res) => {
+  return res.json({
+    username: req.session.account.username,
+    items: req.session.account.items,
+    color: req.session.account.color,
+  });
+}
 
 const addPlayer = (a) => {
   game.players.push({ username: a.username, color: a.color });
@@ -149,4 +158,5 @@ module.exports = {
   changePassword,
   getToken,
   redirect,
+  initGame
 };

@@ -160,7 +160,6 @@ const init = async () => {
 
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
-    const logoutButton = document.getElementById('logoutButton');
     const changePasswordButton = document.getElementById('changePasswordButton');
 
     document.getElementById('_csrf').value = data.csrfToken;
@@ -189,12 +188,6 @@ const init = async () => {
             document.getElementById('formContent'));
         signupButton.disabled = false;
         loginButton.disabled = true;
-        return false;
-    });
-
-    logoutButton.addEventListener('click', async (e) => {
-        fetch('/logout');
-        window.location.reload();
         return false;
     });
 

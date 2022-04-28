@@ -5,8 +5,8 @@ const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
 
   app.route('/getLevel')
-    .get(mid.requiresSecure, controllers.Game.getLevel)
-    .head(mid.requiresSecure, controllers.Game.getLevelMeta);
+    .get(mid.requiresSecure, mid.requiresLogout, controllers.Game.getLevel)
+    .head(mid.requiresSecure, mid.requiresLogout, controllers.Game.getLevelMeta);
 
   app.route('/getPlayers')
     .get(mid.requiresSecure, controllers.Game.getPlayers)
@@ -23,6 +23,7 @@ const router = (app) => {
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
+  app.get('/initGame', mid.requiresSecure, mid.requiresLogin, controllers.Account.initGame)
   app.post('/addCloud', mid.requiresSecure, mid.requiresLogin, controllers.Game.addCloud);
 
   app.get('/', mid.requiresSecure, controllers.Account.loginPage);

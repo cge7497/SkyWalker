@@ -17,7 +17,7 @@ const items = {
     'screwattack': { obtained: false, collected: collectScrewAttack },
     'morphball': { obtained: false, collected: collectMorphBall },
     'yellowswitch': { collected: endGame },
-    'fire': {collected: collectMorphBall},
+    'fire': { collected: collectMorphBall },
 };
 
 const player = { x: -450, y: 690, halfWidth: 4, halfHeight: 7, newX: 300, newY: 300, scale: 1, name: '', flip: false };
@@ -28,7 +28,7 @@ let canFlip = true; let infiniteFlip = false, inEndGame = false;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
-let btn_audio, item_audio;
+let btn_audio, item_audio, bg_audio, whistle_audio, sky_audio;
 let walker_counter = 0;
 let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
@@ -57,6 +57,16 @@ const init = (obj, name) => {
     item_audio = new Audio("assets/sound/itemGet.wav");
     item_audio.volume = 0.25;
 
+    // This is the song "The Earth" by J.S. Bach. It is the version from the film "Solaris"
+    bg_audio = new Audio("assets/sound/the-earth.mp3");
+    bg_audio.volume = 0.25;
+    // This is the Warp Whistle theme from Super Mario Adnvance 4: Super Mario Bros. 3
+    whistle_audio = new Audio("assets/sound/warp-whistle.mp3");
+    whistle_audio.volume = 0.3;
+    // This is the World 9 theme from Super Mario Advance 4: Super Mario Bros. 3
+    sky_audio = new Audio("assets/sound/world-sky.mp3");
+    sky_audio.volume = 0.25;
+
     let p_canvas = document.querySelector("#canvas_player");
     let w_canvas = document.querySelector("#canvas_walkers");
     let bg_canvas = document.querySelector("#canvas_bg");
@@ -75,7 +85,7 @@ const init = (obj, name) => {
     utilities.drawPlayer(300, 300, p_ctx, false);
 
     //If getLevel (in level.js) got back a set of clouds, add them to the bgRects/clouds that will be displayed by the client.
-    if (level.clouds && level.clouds.length>0){
+    if (level.clouds && level.clouds.length > 0) {
         level.clouds.forEach((c) => {
             bgRects.push(new level.bgRect(Math.random() * 630 + 5, Math.random() * 470 + 5, Math.random() * 10 + 30, Math.random() * 4 + 3, c));
         })
@@ -119,7 +129,7 @@ const updatePlayer = () => {
     if (canCrawl) {
         if (keysPressed[87]) {
             //make sure the camera stays centered on player despite edits to their y coordinates caused by crawling.
-            camYOffset -= utilities.handlePlayerCrawl(player, player.flip); 
+            camYOffset -= utilities.handlePlayerCrawl(player, player.flip);
 
             canCrawl = false;
             crawlInputTimer = crawlTimerMax;
@@ -193,7 +203,7 @@ const drawBG = () => {
 const sendAndReceiveMovement = async () => {
     if (movementThisSecond && !inEndGame) {
         otherPlayerMovement = await requests.sendMovement(movementThisSecond);
-        otherPlayerMovementFrame=0;
+        otherPlayerMovementFrame = 0;
         movementThisSecond.movement = [];
     }
 };
@@ -247,11 +257,12 @@ const areColliding = (p, r) => {
 
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
-        if (areColliding(p,o)) {
+        if (areColliding(p, o)) {
             //should give player this item... maybe it has an index, or a callback function
             items[o.id].collected();
-            if (o.id !== "fire"){
-            level.specialObjects.splice(level.specialObjects.indexOf(o), 1);}
+            if (o.id !== "fire") {
+                level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+            }
         }
     })
 };
@@ -305,8 +316,21 @@ function endGame() {
     if (!inEndGame) {
         //create a background rectangle of the player's selected color.
         bgRects.push(new level.bgRect(Math.random() * 640, Math.random() * 480, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor));
-        // requests.sendCloud(trueColor);
-        // btn_audio.play();
+        requests.sendCloud(trueColor);
+        whistle_audio.play();
+
+        //Play the sky theme after the whistle audio is over. Could use an event listener instead.
+        setTimeout(() => {
+            sky_audio.play();
+            // I got this code for perfect audio looping (as the loop attribute has delay) from https://stackoverflow.com/a/22446616
+            sky_audio.addEventListener('timeupdate', (e) => {
+                const buffer = 0.12;
+                if (sky_audio.currentTime > sky_audio.duration - buffer) {
+                    sky_audio.currentTime = 0;
+                    sky_audio.play();
+                }
+            })
+        }, 4000);
         inEndGame = true;
     }
     if (bgRectColor < 254) {

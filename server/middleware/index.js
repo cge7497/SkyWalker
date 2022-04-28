@@ -1,13 +1,19 @@
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
-    return res.status(401).json({ error: 'You must be logged in to complete that action.' });
+    return res.redirect('/');
   }
   return next();
 };
 
 const requiresLogout = (req, res, next) => {
+
   if (req.session.account) {
-    // console.log(req.session.account);
+    // If the player is trying to login or sign up while already having a session, just init the game.
+    if (req.path === '/login') {
+      return res.redirect('/initGame');
+    }
+
+    return res.status(401).json({ error: 'You must be logged out to complete that action.' });
   }
   return next();
 };

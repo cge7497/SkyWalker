@@ -64,16 +64,18 @@ const sendMovement = async (movement) => {
 };
 
 const sendCloud = async (color = '#000000') => {
+    const _csrf = document.querySelector('#_csrf').value;
+
     //Build a data string in the FORM-URLENCODED format.
-    const formData = `color=${color}`;
+    const formData = {color: color, _csrf: _csrf}
 
     let response = await fetch('/addCloud', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify(formData),
     });
 }
 export {

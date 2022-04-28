@@ -85,7 +85,7 @@ const addCloud = (request, response, body) => {
     message: 'A color is required.',
   };
 
-  if (!body.color) {
+  if (!request.body.color) {
     responseJSON.id = 'missingParam';
     return respondJSON(request, response, 400, responseJSON);
   }
