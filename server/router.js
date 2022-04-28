@@ -2,7 +2,7 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
-  app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
+  app.get('/init', mid.requiresSecure, controllers.Account.initPage);
 
   app.route('/getLevel')
     .get(mid.requiresSecure, controllers.Game.getLevel)
@@ -23,7 +23,6 @@ const router = (app) => {
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
-  app.get('/initGame', mid.requiresSecure, mid.requiresLogin, controllers.Account.initGame)
   app.post('/addCloud', mid.requiresSecure, mid.requiresLogin, controllers.Game.addCloud);
 
   app.get('/', mid.requiresSecure, controllers.Account.loginPage);

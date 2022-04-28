@@ -5,7 +5,9 @@ const { Account } = models;
 
 const loginPage = (req, res) => res.render('app', { csrfToken: req.csrfToken() });
 
-const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
+
+// Return whether or not there is an account in the request. They client uses this to know whether to display the signup form or just jump straight into the game.
+const initPage = (req, res) => res.json({ csrfToken: req.csrfToken(), account: req.session.account ? req.session.account : null });
 
 const redirect = (req, res) => res.redirect('/');
 
@@ -22,14 +24,6 @@ const logout = (req, res) => {
   res.redirect('/initGame');
   }
 };
-
-const initGame = (req, res) => {
-  return res.json({
-    username: req.session.account.username,
-    items: req.session.account.items,
-    color: req.session.account.color,
-  });
-}
 
 const addPlayer = (a) => {
   game.players.push({ username: a.username, color: a.color });
@@ -86,6 +80,7 @@ const signup = async (req, res) => {
       items: req.session.account.items,
       color: req.session.account.color,
     });
+
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use.' });
@@ -116,8 +111,7 @@ const updateItems = async (req, res) => {
 
     await doc.save();
 
-    req.session.account.items[item] = true;
-    console.log(req.session.account);
+    req.session.account = Account.toAPI(doc);
 
     return res.status(204);
   } catch (e) {
@@ -159,7 +153,6 @@ module.exports = {
   signup,
   updateItems,
   changePassword,
-  getToken,
+  initPage,
   redirect,
-  initGame
 };

@@ -155,7 +155,7 @@ const init = async () => {
     level.getData();
     gameComponents.init();
 
-    const response = await fetch('/getToken');
+    const response = await fetch('/init');
     const data = await response.json();
 
     const loginButton = document.getElementById('loginButton');
@@ -163,24 +163,6 @@ const init = async () => {
     const changePasswordButton = document.getElementById('changePasswordButton');
 
     document.getElementById('_csrf').value = data.csrfToken;
-
-    loginButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        ReactDOM.render(<LoginWindow />,
-            document.getElementById('formContent'));
-        signupButton.disabled = false;
-        loginButton.disabled = true;
-        return false;
-    });
-
-    signupButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        ReactDOM.render(<SignupWindow />,
-            document.getElementById('formContent'));
-        loginButton.disabled = false;
-        signupButton.disabled = true;
-        return false;
-    });
 
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
@@ -191,8 +173,33 @@ const init = async () => {
         return false;
     });
 
-    ReactDOM.render(<SignupWindow />,
-        document.getElementById('formContent'));
+    // If there is already a logged in user for this session stored on the server, just initialize the game.
+    if (data.account) {
+        initGame(data.account);
+        document.getElementById('createResponse').textContent = "Logged in as " + data.account.username;
+    }
+    // If the server does not have an account tied to this session, initalize the signup/login buttons and forms.
+    else {
+        loginButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            ReactDOM.render(<LoginWindow />,
+                document.getElementById('formContent'));
+            signupButton.disabled = false;
+            loginButton.disabled = true;
+            return false;
+        });
+
+        signupButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            ReactDOM.render(<SignupWindow />,
+                document.getElementById('formContent'));
+            loginButton.disabled = false;
+            signupButton.disabled = true;
+            return false;
+        });
+        ReactDOM.render(<SignupWindow />,
+            document.getElementById('formContent'));
+    }
 };
 
 const initGame = (player) => {
