@@ -8,7 +8,7 @@ const requiresLogin = (req, res, next) => {
 
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
-    return res.status(400).json({alreadyLoggedIn: true});
+    console.log(req.session.account);
   }
   return next();
 };

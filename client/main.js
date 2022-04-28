@@ -9,11 +9,9 @@ let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 
 // Stores images that are used as sprites.
-const imgs = {
-    'screwattack': document.getElementById('screwattack'),
-    'morphball': document.getElementById('morphball'),
-    'yellowswitch': document.getElementById('yellowswitch'),
-};
+// It is initialized later because this runs before the react component containing the images.
+const imgs = {};
+
 // Stores items that the player holds and their relevant properties.
 const items = {
     'screwattack': { obtained: false, collected: collectScrewAttack },
@@ -47,10 +45,8 @@ const init = (obj, name) => {
         if (obj.items) initItems(obj.items);
     }
     else {
-        console.log(obj);
+        return;
     }
-
-    console.log('initting');
 
     movementThisSecond.name = player.name;
     movementThisSecond.color = trueColor;
@@ -262,13 +258,17 @@ const CollisionsWithSpecialObjects = (p) => {
 };
 
 //If the player's data on the server shows they already have items, give them those items.
-const initItems = (items) => {
+const initItems = (savedItems) => {
+    imgs['screwattack'] = document.getElementById('screwattack');
+    imgs['morphball'] = document.getElementById('morphball');
+    imgs['yellowswitch'] = document.getElementById('yellowswitch');
+
     console.log(items);
-    if (items['morphball'] === true) {
+
+    if (savedItems['morphball'] === true) {
         collectMorphBall(false);
-        console.log(items);
     }
-    if (items['screwattack'] === true) {
+    if (savedItems['screwattack'] === true) {
         collectScrewAttack(false);
     }
 }

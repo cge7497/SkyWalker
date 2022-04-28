@@ -152,6 +152,9 @@ const ChangePasswordWindow = (props) => {
 };
 
 const init = async () => {
+    ReactDOM.render(<gameComponents.GameInfo />,
+    document.getElementById('gameInfo'));
+    
     level.getData();
 
     const response = await fetch('/getToken');
@@ -192,15 +195,13 @@ const init = async () => {
     });
 
     logoutButton.addEventListener('click', async (e) => {
-        fetch('/logout');
+        await fetch('/logout');
         window.location.reload();
         return false;
     });
 
     ReactDOM.render(<SignupWindow />,
         document.getElementById('content'));
-
-        gameComponents.init();
 };
 
 const initGame = (player) => {

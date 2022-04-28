@@ -9,9 +9,8 @@ const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 const redirect = (req, res) => res.redirect('/');
 
 const logout = (req, res) => {
-  console.log('logging out');
   req.session.destroy();
-  return res.status(204).json({message: "Logged out successfully"});
+  res.status(204);
 };
 
 const login = (req, res) => {
@@ -83,14 +82,13 @@ const updateItems = async (req, res) => {
     if (!doc) return res.json({ error: 'Account with that username not found.' });
 
     const key = `items.${item}`;
+
     // I was having trouble using the typical method of something like doc.items[item] = true.
     // It's likely because I'm setting an object property.
     // I found this solution here, and the [var] syntax for the set command: https://stackoverflow.com/a/23833060
     doc.set({ [key]: true });
 
-    await doc.save(); // doc.save isn't working. Try one of the more official methods?
-
-    console.log(doc);
+    await doc.save();
 
     return res.status(204);
   } catch (e) {
