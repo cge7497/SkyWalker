@@ -19,7 +19,7 @@ const data = {
       x: 0, y: 1500, width: 1030, height: 30, color: 'black',
     },
     {
-      x: -700, y: 1500, width: 700, height: 30, color: 'yellow',
+      x: -700, y: 1500, width: 700, height: 29, color: 'yellow',
     },
     {
       x: 0, y: 0, width: 1030, height: 30, color: 'orange',

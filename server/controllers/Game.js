@@ -90,7 +90,7 @@ const addCloud = (request, response, body) => {
     return respondJSON(request, response, 400, responseJSON);
   }
 
-  level.addCloud(body.color);
+  level.addCloud(request.body.color);
 
   // This returns if the cloud was added.
   return respondJSONMeta(request, response, 204);

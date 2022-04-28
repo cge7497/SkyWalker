@@ -5,8 +5,8 @@ const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
 
   app.route('/getLevel')
-    .get(mid.requiresSecure, mid.requiresLogout, controllers.Game.getLevel)
-    .head(mid.requiresSecure, mid.requiresLogout, controllers.Game.getLevelMeta);
+    .get(mid.requiresSecure, controllers.Game.getLevel)
+    .head(mid.requiresSecure, controllers.Game.getLevelMeta);
 
   app.route('/getPlayers')
     .get(mid.requiresSecure, controllers.Game.getPlayers)

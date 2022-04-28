@@ -67,6 +67,9 @@ const init = (obj, name) => {
     sky_audio = new Audio("assets/sound/world-sky.mp3");
     sky_audio.volume = 0.25;
 
+    bg_audio.play();
+    bg_audio.loop = true;
+
     let p_canvas = document.querySelector("#canvas_player");
     let w_canvas = document.querySelector("#canvas_walkers");
     let bg_canvas = document.querySelector("#canvas_bg");
@@ -317,6 +320,8 @@ function endGame() {
         //create a background rectangle of the player's selected color.
         bgRects.push(new level.bgRect(Math.random() * 640, Math.random() * 480, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor));
         requests.sendCloud(trueColor);
+
+        bg_audio.pause();
         whistle_audio.play();
 
         //Play the sky theme after the whistle audio is over. Could use an event listener instead.

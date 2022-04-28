@@ -116,6 +116,9 @@ const updateItems = async (req, res) => {
 
     await doc.save();
 
+    req.session.account.items[item] = true;
+    console.log(req.session.account);
+
     return res.status(204);
   } catch (e) {
     return res.status(400).json({ error: 'An error occurred' });

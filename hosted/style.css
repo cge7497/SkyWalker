@@ -201,6 +201,11 @@ canvas {
     height: 18px;
 }
 
+#gameInfo img {
+    margin: 0 10px;
+    margin-bottom: 10px;
+}
+
 button {
     font-family: 'Roboto', sans-serif;
     font-size: 1.2em;
