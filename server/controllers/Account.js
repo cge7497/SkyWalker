@@ -120,7 +120,7 @@ const updateItems = async (req, res) => {
 
     req.session.account.items[item] = true;
 
-    return res.status(204);
+    return res.status(204).json({messsage: "Successfully updated item."});
   } catch (e) {
     console.log(e);
     return res.status(400).json({ error: 'An error occurred' });
