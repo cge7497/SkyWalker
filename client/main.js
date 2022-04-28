@@ -38,13 +38,14 @@ let camXOffset = 0, camYOffset = 0
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
-const init = (obj, name) => {
+const init = (obj, immediate = false) => {
     if (obj && obj.username && obj.items && obj.color) {
         player.name = obj.username;
         trueColor = obj.color;
         if (obj.items) initItems(obj.items);
     }
     else {
+
     }
 
     movementThisSecond.name = player.name;
@@ -67,8 +68,18 @@ const init = (obj, name) => {
     sky_audio = new Audio("assets/sound/world-sky.mp3");
     sky_audio.volume = 0.25;
 
-    bg_audio.play();
-    bg_audio.loop = true;
+    // We must wait for them to interact with the page (click event listener has to fire) in order to play audio successfully.
+    // If the user was not automatically logged in, meaning they have had to interact with the page, just play the audio.
+    if (immediate) {
+        document.addEventListener('click', (e) => {
+            bg_audio.play();
+            bg_audio.loop = true;
+        }, {once:true});
+    }
+    else {
+        bg_audio.play();
+        bg_audio.loop = true;
+    }
 
     let p_canvas = document.querySelector("#canvas_player");
     let w_canvas = document.querySelector("#canvas_walkers");
@@ -81,7 +92,7 @@ const init = (obj, name) => {
 
     canvasWidth = w_canvas.width;
     canvasHeight = w_canvas.height;
-    //document.addEventListener("click",mouseClick);
+
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
 
@@ -323,6 +334,9 @@ function endGame() {
 
         bg_audio.pause();
         whistle_audio.play();
+
+        // Kind of fun to glitch around... I may uncomment this.
+        // document.getElementById('resetBtn').disabled = true;
 
         //Play the sky theme after the whistle audio is over. Could use an event listener instead.
         setTimeout(() => {

@@ -110,6 +110,11 @@ body {
     word-wrap: break-word;
 }
 
+#logoutLink{
+    text-decoration: none;
+    color: black;
+}
+
 #playerDisplay {
     margin-top: 20px;
     position: absolute;

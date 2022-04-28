@@ -175,7 +175,7 @@ const init = async () => {
 
     // If there is already a logged in user for this session stored on the server, just initialize the game.
     if (data.account) {
-        initGame(data.account);
+        initGame(data.account, true);
         document.getElementById('createResponse').textContent = "Logged in as " + data.account.username;
     }
     // If the server does not have an account tied to this session, initalize the signup/login buttons and forms.
@@ -202,10 +202,13 @@ const init = async () => {
     }
 };
 
-const initGame = (player) => {
-    game.init(player);
+const initGame = (player, immediate) => {
+    game.init(player, immediate);
 
     gameComponents.init();
+
+    document.getElementById('createResponse').textContent = "Logged in as " + player.username;
+    document.getElementById('resetBtn').disabled = false;
 
     document.getElementById('loginButton').classList.add('hidden');
     document.getElementById('signupButton').classList.add('hidden');
