@@ -167,7 +167,7 @@ const setShape = async (req, res) => {
 
     if (!doc) return res.json({ error: 'Account with that username not found.' });
 
-    doc["shape"] = shape;
+    doc.shape = shape;
 
     await doc.save();
 
