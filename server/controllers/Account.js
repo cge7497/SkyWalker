@@ -25,15 +25,15 @@ const initPage = (req, res) => {
 const redirect = (req, res) => res.redirect('/');
 
 const logout = (req, res) => {
+  console.log('running logout');
   // Remove this account from the list of online players.
   if (req.session.account) {
-    const player = { username: req.session.account.username, color: req.session.account.color };
-    if (game.players[player]) {
-      game.players.splice(game.players.indexOf(player), 1);
+    const index = game.players.findIndex((o) => o.username === req.session.account.username);
+    if (index>=0) {
+      game.players.splice(index, 1);
     }
-
     req.session.destroy();
-    res.redirect('/initGame');
+    res.redirect('/');
   }
 };
 
@@ -120,7 +120,7 @@ const updateItems = async (req, res) => {
 
     req.session.account.items[item] = true;
 
-    return res.status(204).json({messsage: "Successfully updated item."});
+    return res.status(204).json({ messsage: 'Successfully updated item.' });
   } catch (e) {
     console.log(e);
     return res.status(400).json({ error: 'An error occurred' });

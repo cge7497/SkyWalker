@@ -7,7 +7,7 @@ const PlayerDisplay = (props) => {
         const response = await fetch('/getPlayers');
         const players = await response.json();
         setPlayers(players)
-    }, []);
+    }, [displayMode]);
 
     const changeDisplay = () => {
         //if (!displayMode)  return setDisplayMode(0);
@@ -19,13 +19,13 @@ const PlayerDisplay = (props) => {
     if (!displayMode || displayMode === 0) {
         // render the objects with the className
         return (
-            <button onClick={(e) => { changeDisplay() }}> O -|- /\</button>
+            <button id="playerDisplayBtn" onClick={(e) => { changeDisplay() }}> O -|- /\</button>
         )
     }
     if (!players || players.length === 0) {
         return (
-            <div>
-                <h2>Loading Players...</h2>
+            <div id = "playerDisplayList">
+                <h2>No Players Yet...</h2>
             </div>
         )
     }
@@ -33,21 +33,25 @@ const PlayerDisplay = (props) => {
     const playerList = players.map((p) => {
         return (
             <table>
-                <tr>
-                    <th>Username</th>
-                    <th>Color</th>
-                </tr>
-                <tr key={p.username}>
-                    <td>{p.username}</td>
-                    <td style={{ backgroundColor: p.color }}>{p.color}</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr key={p.username}>
+                        <td>{p.username}</td>
+                        <td className = "colorText" style={{ backgroundColor: p.color }}></td>
+                    </tr>
+                </tbody>
             </table>
         )
     })
 
     return (
-        <div>
-            <h3>Current Players</h3>
+        <div id = "playerDisplayList">
+            <h3><u>Current Players</u></h3>
             {playerList}
         </div>
     );
@@ -96,13 +100,13 @@ const PayModelDisplay = (props) => {
 
     if (!displayMode || displayMode === 0) {
         return (
-            <button id = "payModelBtn" onClick={(e) => { changeDisplay() }}>&nabla; &#9634; &#9671;</button>
+            <button id="payModelBtn" onClick={(e) => { changeDisplay() }}>&nabla; &#9634; &#9671;</button>
         )
     }
 
     const ShapeList = () => {
         return (
-            <table id = "payModelTable">
+            <table id="payModelTable">
                 <thead>
                     <tr>
                         <th>Shape</th>

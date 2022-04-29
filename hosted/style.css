@@ -95,17 +95,72 @@ body {
     cursor: pointer;
 }
 
-#payModel {
+#payModelBtn {
     margin-top: 20px;
     position: absolute;
-    width: 20px;
-    right: -20px;
-    height: 35px;
+    right: -40px;
     top: 6px;
     word-wrap: break-word;
 }
 
-#logoutLink{
+#payModelTable{
+    margin-top: 20px;
+    position: absolute;
+    right: -140px;
+    top: 6px;
+}
+
+#playerDisplayBtn {
+    margin-top: 20px;
+    position: absolute;
+    left: -40px;
+    top: 6px;
+    word-wrap: break-word;
+}
+
+#playerDisplayList{
+    margin-top: 20px;
+    position: absolute;
+    left: -202px;
+    top: 6px;
+    border: 1px solid;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+#playerDisplayList table{
+    text-align: left;
+    width:200px;
+    border: 1px solid;
+    border-collapse:collapse;
+}
+
+#playerDisplayList table td{
+    width: 50px;
+    border: 1px solid;
+}
+
+#playerDisplayList table th{
+    width: 50px;
+    border: 1px solid;
+}
+
+
+.colorText{
+    color:black;
+    /*
+    font-size: 2em;
+    -webkit-text-stroke: 1px white;
+    */
+}
+
+#payModel button,
+#playerDisplay button {
+    height: 75px;
+    width: 40px;
+}
+
+#logoutLink {
     text-decoration: none;
     color: black;
     width: 185px;
@@ -126,22 +181,6 @@ body {
 #logoutLink:hover {
     background-color: #cbcee7;
     border: 2px solid;
-}
-
-#playerDisplay {
-    margin-top: 20px;
-    position: absolute;
-    width: 40px;
-    left: -40px;
-    top: 6px;
-    word-wrap: break-word;
-}
-
-#payModel button,
-#playerDisplay button {
-    margin-top: 0px;
-    height: 75px;
-    width: 40px;
 }
 
 .formSubmit:link,
