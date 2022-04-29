@@ -216,7 +216,7 @@ const init = () => {
     ReactDOM.render(<PlayerDisplay players={[]} displayMode={0} />,
         document.getElementById('playerDisplay'));
 
-    ReactDOM.render(<PayModelDisplay displayMode={0} disabled={true} />,
+    ReactDOM.render(<PayModelDisplay displayMode={0} disabled={true} selected = {0}/>,
         document.getElementById('payModel'));
 };
 

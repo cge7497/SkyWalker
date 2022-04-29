@@ -377,7 +377,8 @@ function endGame() {
 }
 
 const keyDown = (e) => {
-    //console.log(e);
+    // If the target is not the body for a keyClick- meaning the target is an input form- return and don't move player based on this input.
+    if (e.target != document.body) return;
     switch (e.keyCode) {
         //'A' press
         case 65:
@@ -412,6 +413,7 @@ const keyDown = (e) => {
 };
 
 const keyUp = (e) => {
+    if (e.target != document.body) return;
     switch (e.keyCode) {
         case 65:
             keysPressed[e.keyCode] = false;

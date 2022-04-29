@@ -1,7 +1,12 @@
-Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
+DONE Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
+
 Turn into cloud and fly offscreen like in Bob's game.
 Make audio volume decrease when you're near yellow button.
 window.onbeforeunload to send "mark me as offline" request to server...
+Restructure requests.js to just use help.erjs sendPost?
+Take some code out of main.js and into other files.
+
+GOOD I investigated the property toLowerCase of underfined... it occurs when the browser autofills. I'm not sure how to fix it.
 
 DONE Implement payment model:
     A button on the left side of the canvas that the player can click. It will open a menu over the canvas, where the player can select what item to buy.
