@@ -5,6 +5,7 @@ Make audio volume decrease when you're near yellow button.
 window.onbeforeunload to send "mark me as offline" request to server...
 Restructure requests.js to just use help.erjs sendPost?
 Take some code out of main.js and into other files.
+Optimize fire display: only display it within range of 640 px. Make two arrays for special objects: one of fire, one of items since they're rendered differently.
 
 GOOD I investigated the property toLowerCase of underfined... it occurs when the browser autofills. I'm not sure how to fix it.
 

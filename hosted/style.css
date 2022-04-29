@@ -98,7 +98,7 @@ body {
 #payModelBtn {
     margin-top: 20px;
     position: absolute;
-    right: -40px;
+    right: -44px;
     top: 6px;
     word-wrap: break-word;
 }
@@ -147,7 +147,7 @@ body {
 #playerDisplayBtn {
     margin-top: 20px;
     position: absolute;
-    left: -40px;
+    left: -44px;
     top: 6px;
     word-wrap: break-word;
 }

@@ -56,6 +56,28 @@ const drawRectangle = (x, y, width, height, ctx, color, fill) => {
   ctx.restore();
 }
 
+// Huge thanks to http://jsfiddle.net/ethertank/Eanf7/ for the logic/structure of this code.
+const drawFire = (x, y, width, height, ctx) => {
+  ctx.save();
+
+  for (let i = 0; i < 100; i++) {
+    ctx.beginPath();
+    ctx.lineWidth = 10;
+    var lX = parseInt(Math.random() * width, 10),
+      lsY = parseInt(Math.random() * (height - 100), 10) + 50,
+      leY = parseInt(Math.random() * (height - 100), 10) + 50,
+      r = RandomNum(100, 255),
+      g = RandomNum(0, 200),
+      b = RandomNum(0, 230);
+    ctx.moveTo(x + lX, y + lsY);
+    var sColor = "rgb(" + r + "," + g + "," + b + ")";
+    ctx.strokeStyle = sColor;
+    ctx.lineTo(x + lX, y + leY);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 const handlePlayerCrawl = (p, flip) => {
   let dif = 4; let totalDif = 0;
   if (flip) dif = -4;
@@ -104,7 +126,12 @@ const collidedFromTop = (p, r) => {
     (p.newY - (p.halfHeight + 2)) < (r.y + r.height);
 };
 
+const RandomNum = (min, max) => {
+  return Math.random() * (max - min) + min;
+};
+
 export {
   drawPlayer, drawRectangle, fadeBGColorToDarkBlue, drawDebugPlayer, handlePlayerCrawl,
-  collidedFromBottom, collidedFromLeft, collidedFromTop, collidedFromRight
+  collidedFromBottom, collidedFromLeft, collidedFromTop, collidedFromRight,
+  drawFire
 }

@@ -24,22 +24,22 @@ const player = { x: -450, y: 690, halfWidth: 4, halfHeight: 7, newX: 300, newY: 
 let trueColor = 0, bgRectColor = 0;
 
 let xSpeed = 3, ySpeed = 5;
-let canFlip = true; let infiniteFlip = false, inEndGame = false;
+let canFlip = true; let infiniteFlip = false, inEndGame = false, shouldUpdateGame = true;;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
-let btn_audio, item_audio, bg_audio, whistle_audio, sky_audio;
+let btn_audio, item_audio, bg_audio, whistle_audio, sky_audio, explode_audio;
 let walker_counter = 0;
 let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
-const WIDTH = 5;
+const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
 let camXOffset = 0, camYOffset = 0
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
 const init = (obj, immediate = false) => {
-    if (obj && obj.username && obj.items && obj.color && obj.shape>= 0) {
+    if (obj && obj.username && obj.items && obj.color && obj.shape >= 0) {
         player.name = obj.username;
         trueColor = obj.color;
         player.shape = obj.shape;
@@ -57,6 +57,10 @@ const init = (obj, immediate = false) => {
     btn_audio.volume = 0.25;
     item_audio = new Audio("assets/sound/itemGet.wav");
     item_audio.volume = 0.25;
+    item_audio = new Audio("assets/sound/itemGet.wav");
+    item_audio.volume = 0.25;
+    explode_audio = new Audio("assets/sound/explosion.wav");
+    explode_audio.volume = 0.25;
 
     // This is the song "The Earth" by J.S. Bach. It is the version from the film "Solaris"
     bg_audio = new Audio("assets/sound/the-earth.mp3");
@@ -74,7 +78,7 @@ const init = (obj, immediate = false) => {
         document.addEventListener('click', (e) => {
             bg_audio.play();
             bg_audio.loop = true;
-        }, {once:true});
+        }, { once: true });
     }
     else {
         bg_audio.play();
@@ -101,12 +105,12 @@ const init = (obj, immediate = false) => {
     //If getLevel (in level.js) got back a set of clouds, add them to the bgRects/clouds that will be displayed by the client.
     if (level.clouds && level.clouds.length > 0) {
         level.clouds.forEach((c) => {
-            bgRects.push(new level.bgRect(Math.random() * 630 + 5, Math.random() * 470 + 5, Math.random() * 10 + 30, Math.random() * 4 + 3, c));
+            bgRects.push(new level.bgRect(Math.random() * (GAME_WIDTH - 10) + 5, Math.random() * (GAME_HEIGHT - 10) + 5, Math.random() * 10 + 30, Math.random() * 4 + 3, c));
         })
     }
 
     for (let i = 0; i < 10; i++) {
-        bgRects.push(new level.bgRect(Math.random() * 640, Math.random() * 480, Math.random() * 10 + 30, Math.random() * 4 + 3, "rgba(0,0,0,0.3)"));
+        bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 3, "rgba(0,0,0,0.3)"));
     }
     drawBG();
 
@@ -120,12 +124,14 @@ const init = (obj, immediate = false) => {
 }
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
-    if (!inEndGame) {
+    if (!inEndGame && shouldUpdateGame) {
         updatePlayer();
-        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, undefined, undefined, player.shape);
+        // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
+        // So the player is always drawn with a black stroke.
+        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, player.color, undefined, player.shape);
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
-    else endGame();
+    else if (inEndGame) endGame();
     drawLevel();
 }
 
@@ -179,14 +185,15 @@ const drawLevel = () => {
         utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.color, true);
     });
     level.specialObjects.forEach((o) => {
-        if (o.id === "fire") return;
-        p_ctx.drawImage(imgs[o.id], o.x + camXOffset, o.y + camYOffset); //I should make these const references.
+        if (o.id != "fire") {
+            p_ctx.drawImage(imgs[o.id], o.x + camXOffset, o.y + camYOffset); //I should make these const references.
+        }
     });
 };
 
 //Draws background clouds onto the background canvas.
 const drawBG = () => {
-    bg_ctx.clearRect(0, 0, 640, 480);
+    bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     if (should_change_bg_color) {
         bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
         bg_color = "rgb(" + bg_color_rgb[0] + "," + bg_color_rgb[1] + "," + bg_color_rgb[2] + ")";
@@ -209,8 +216,12 @@ const drawBG = () => {
         else if (rect.y < -20) { rect.y = canvasHeight + 20 }
 
         utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.color, true)
-    }
-    )
+    });
+    level.specialObjects.forEach((o) => {
+        if (o.id == "fire") {
+            utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, bg_ctx);
+        }
+    });
 };
 
 // Sends the player's movement in the last second.
@@ -238,7 +249,7 @@ const drawOtherPlayerMovement = () => {
     keys.splice(keys.indexOf(player.name), 1); //remove this player's movement from the array, so it is not needlessly drawin them.
     if (keys.length < 1) return;
 
-    w_ctx.clearRect(0, 0, 640, 480);
+    w_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     keys.forEach((m) => {
         const f = otherPlayerMovement.movement[m].movement[otherPlayerMovementFrame];
         if (f) utilities.drawPlayer(f.x + camXOffset, f.y + camYOffset, w_ctx, f.flipped, 1, `${otherPlayerMovement.movement[m].color}55`, false);
@@ -272,10 +283,16 @@ const areColliding = (p, r) => {
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            //should give player this item... maybe it has an index, or a callback function
-            items[o.id].collected();
             if (o.id !== "fire") {
                 level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+                items[o.id].collected();
+            }
+            else {
+                shouldUpdateGame = false;
+                explode_audio.play();
+                const color = player.color;
+                player.color = "red";
+                setTimeout((e) => { shouldUpdateGame = true; movePlayerBackToStart(); player.color = color; }, 500);
             }
         }
     })
@@ -333,7 +350,7 @@ const movePlayerBackToStart = () => {
 function endGame() {
     if (!inEndGame) {
         //create a background rectangle of the player's selected color.
-        bgRects.push(new level.bgRect(Math.random() * 640, Math.random() * 480, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor));
+        bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor));
         requests.sendCloud(trueColor);
 
         bg_audio.pause();

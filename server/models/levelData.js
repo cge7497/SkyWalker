@@ -63,15 +63,14 @@ const data = {
     {
       x: 296, y: -16, width: 16, height: 16, id: 'yellowswitch',
     },
-    /* There should be fire here. Maybe just give it a huge width and height?
+    // There should be fire here. Maybe just give it a huge width and height to check for collision?
     {
-      x: -450, y: 998, width: 640, height: 480, id: 'fire',
+      x: -450, y: 998, width: 250, height: 50, id: 'fire',
     },
     // There should be fire here.
     {
-      x: -450, y: 700, width: 640, height: 480, id: 'fire',
+      x: -450, y: 700, width: 250, height: 50, id: 'fire',
     },
-    */
   ],
   clouds: [],
 };
