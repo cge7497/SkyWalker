@@ -377,6 +377,7 @@ function endGame() {
 }
 
 const keyDown = (e) => {
+    //console.log(e);
     switch (e.keyCode) {
         //'A' press
         case 65:

@@ -6,9 +6,12 @@ const PlayerDisplay = (props) => {
     const [displayMode, setDisplayMode] = React.useState(props.displayMode);
 
     React.useEffect(async () => {
-        const response = await fetch('/getPlayers');
-        const players = await response.json();
-        setPlayers(players)
+        // Only send the fetch request when the button/display opens- and not when it closes as it wouldn't be displayed..
+        if (displayMode === 1) {
+            const response = await fetch('/getPlayers');
+            const players = await response.json();
+            setPlayers(players)
+        }
     }, [displayMode]);
 
     const changeDisplay = () => {
@@ -35,6 +38,16 @@ const PlayerDisplay = (props) => {
 
     const playerList = players.map((p) => {
         return (
+            <tr key={p.username}>
+                <td>{p.username}</td>
+                <td className="colorText" style={{ backgroundColor: p.color }}></td>
+            </tr>
+        )
+    })
+
+    return (
+        <div id="playerDisplayList">
+            <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
             <table>
                 <caption><h3><u>Current Players</u></h3></caption>
                 <thead>
@@ -44,19 +57,9 @@ const PlayerDisplay = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr key={p.username}>
-                        <td>{p.username}</td>
-                        <td className="colorText" style={{ backgroundColor: p.color }}></td>
-                    </tr>
+                    {playerList}
                 </tbody>
             </table>
-        )
-    })
-
-    return (
-        <div id="playerDisplayList">
-            <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
-            {playerList}
         </div>
     );
 };
@@ -98,9 +101,9 @@ const BuyShape = (props) => {
     React.useEffect(async () => {
         setDisplayMode(props.displayMode);
     }, [props]);
-   
 
-    if (displayMode === 0){
+
+    if (displayMode === 0) {
         return null;
     }
 
@@ -117,8 +120,8 @@ const BuyShape = (props) => {
                 <label htmlFor="newPass">Payment Example: </label>
                 <input id="newPass" type="text" name="newPass" placeholder="Payment Info" />
             </div>
-            <button type='button' id = "closeForm" onClick = {(e) => {setDisplayMode(0)}}>Close Form</button>
-            <input className="formSubmit" id="changePasswordSubmit" type="submit" disabled = {true} value="Purchase (Demo)" />
+            <button type='button' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
+            <input className="formSubmit" id="changePasswordSubmit" type="submit" disabled={true} value="Purchase (Demo)" />
         </form>
     );
 };
@@ -127,7 +130,7 @@ const setShape = async (shape) => {
     const _csrf = document.getElementById('_csrf').value;
     const data = { shape, _csrf };
 
-    ReactDOM.render(<BuyShape displayMode = {2} />, document.getElementById('formContent'));
+    ReactDOM.render(<BuyShape displayMode={2} />, document.getElementById('formContent'));
 
     const response = await fetch('/setShape', {
         method: 'PUT',
@@ -143,7 +146,13 @@ const setShape = async (shape) => {
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PayModelDisplay = (props) => {
     const [displayMode, setDisplayMode] = React.useState(props.displayMode);
-    const [selected, setSelected] = React.useState(0);
+    const [disabled, setDisabled] = React.useState(props.disabled);
+    const [selected, setSelected] = React.useState(props.selected);
+
+    React.useEffect(async () => {
+        setDisabled(props.disabled);
+        setSelected(props.selected);
+    }, [props]);
 
     const changeDisplay = () => {
         if (displayMode === 0) setDisplayMode(1);
@@ -152,7 +161,7 @@ const PayModelDisplay = (props) => {
 
     if (!displayMode || displayMode === 0) {
         return (
-            <button id="payModelBtn" onClick={(e) => { changeDisplay() }}>&nabla; &#9634; &#9671;</button>
+            <button disabled={disabled} id="payModelBtn" onClick={changeDisplay}>&nabla; &#9634; &#9671;</button>
         )
     }
 
@@ -207,13 +216,9 @@ const init = () => {
     ReactDOM.render(<PlayerDisplay players={[]} displayMode={0} />,
         document.getElementById('playerDisplay'));
 
-    ReactDOM.render(<PayModelDisplay displayMode={0} />,
+    ReactDOM.render(<PayModelDisplay displayMode={0} disabled={true} />,
         document.getElementById('payModel'));
-
-    // document.getElementById("closeForm").addEventListener('click', (e)=> {});
 };
-
-window.onload = init;
 
 module.exports = {
     PlayerDisplay,

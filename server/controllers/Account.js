@@ -123,7 +123,6 @@ const updateItems = async (req, res) => {
 
     return res.status(204).json({ messsage: 'Successfully updated item.' });
   } catch (e) {
-    console.log(e);
     return res.status(400).json({ error: 'An error occurred' });
   }
 };
@@ -175,7 +174,6 @@ const setShape = async (req, res) => {
 
     return res.status(204).json({ messsage: 'Successfully updated shape.' });
   } catch (e) {
-    console.log(e);
     return res.status(400).json({ error: 'An error occurred' });
   }
 };

@@ -1,8 +1,13 @@
-Implement payment model:
+Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
+Turn into cloud and fly offscreen like in Bob's game.
+Make audio volume decrease when you're near yellow button.
+window.onbeforeunload to send "mark me as offline" request to server...
+
+DONE Implement payment model:
     A button on the left side of the canvas that the player can click. It will open a menu over the canvas, where the player can select what item to buy.
     Items to buy: Probably a flex container of different attributes, like big head, big arm, big leg.
 
-React components- need 5 of them. Turn game canvases (1), game instructuion + images (2), payment model (3), and player display (4) into react components.
+GOOD React components- need 5 of them. Turn game canvases (1), game instructuion + images (2), payment model (3), and player display (4) into react components.
 Could the fifth be the nav bar?
 
 DONE Why isn't updateItems returning anything if you've already collected the item? It seems to have been an error with the accept header- it expected JSON but the server was just returning a 204 code.
@@ -10,11 +15,6 @@ DONE Why isn't updateItems returning anything if you've already collected the it
 DONE Implement middleware status codes working. -they aren't super useful though, as the client mainly uses POST requests. I suppose requiresSecure is useful though- I only really see the effects of requiresLogin/Logout.
 
 DONE (account is not deleted- the server will tell the client to just the tart the game if there's already an account) Delete request account when refreshing so it doesn't log back in?
-
-Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
-Turn into cloud and fly offscreen like in Bob's game.
-Make audio volume decrease when you're near yellow button.
-window.onbeforeunload to send "mark me as offline" request to server...
 
 DONE Implement change password:
     Changing password will require user to enter their username, password, and new password. It'll send code to the server to update that. That'll use some bcrypt nuances...

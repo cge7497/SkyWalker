@@ -133,9 +133,9 @@ const ChangePasswordWindow = (props) => {
     React.useEffect(async () => {
         setDisplayMode(props.displayMode);
     }, [props]);
-   
 
-    if (displayMode === 0){
+
+    if (displayMode === 0) {
         return null;
     }
 
@@ -155,7 +155,7 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="newPass">New Password: </label>
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
-            <button type='button' id = "closeForm" onClick = {(e) => {setDisplayMode(0)}}>Close Form</button>
+            <button type='button' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
             <input className="formSubmit" id="changePasswordSubmit" type="submit" value="Set Password" />
         </form>
     );
@@ -163,10 +163,11 @@ const ChangePasswordWindow = (props) => {
 
 const init = async () => {
     level.getData();
-    gameComponents.init();
 
     const response = await fetch('/init');
     const data = await response.json();
+
+    gameComponents.init();
 
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
@@ -176,7 +177,7 @@ const init = async () => {
 
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<ChangePasswordWindow displayMode = {1} />,
+        ReactDOM.render(<ChangePasswordWindow displayMode={1} />,
             document.getElementById('formContent'));
         signupButton.disabled = false;
         loginButton.disabled = true;
@@ -215,7 +216,8 @@ const init = async () => {
 const initGame = (player, immediate) => {
     game.init(player, immediate);
 
-    gameComponents.init();
+    ReactDOM.render(<gameComponents.PayModelDisplay displayMode={0} disabled={false} selected = {player.shape} />,
+        document.getElementById('payModel'));
 
     document.getElementById('createResponse').textContent = "Logged in as " + player.username;
     document.getElementById('resetBtn').disabled = false;
