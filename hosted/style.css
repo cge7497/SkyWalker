@@ -136,7 +136,7 @@ body {
 }
 
 .selected {
-    background-color: aqua;
+    background-color: aqua !important;
 }
 
 #closeForm {

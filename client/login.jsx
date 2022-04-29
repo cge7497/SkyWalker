@@ -128,7 +128,16 @@ const SignupWindow = (props) => {
 };
 
 const ChangePasswordWindow = (props) => {
-    const [defaultText, setDefaultText] = React.useState(props.defaultText);
+    const [displayMode, setDisplayMode] = React.useState(props.displayMode);
+
+    React.useEffect(async () => {
+        setDisplayMode(props.displayMode);
+    }, [props]);
+   
+
+    if (displayMode === 0){
+        return null;
+    }
 
     return (
         <form id="changePasswordForm"
@@ -146,6 +155,7 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="newPass">New Password: </label>
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
+            <button type='button' id = "closeForm" onClick = {(e) => {setDisplayMode(0)}}>Close Form</button>
             <input className="formSubmit" id="changePasswordSubmit" type="submit" value="Set Password" />
         </form>
     );
@@ -166,7 +176,7 @@ const init = async () => {
 
     changePasswordButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<ChangePasswordWindow defaultText="password" />,
+        ReactDOM.render(<ChangePasswordWindow displayMode = {1} />,
             document.getElementById('formContent'));
         signupButton.disabled = false;
         loginButton.disabled = true;

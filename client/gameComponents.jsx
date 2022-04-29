@@ -27,6 +27,7 @@ const PlayerDisplay = (props) => {
     if (!players || players.length === 0) {
         return (
             <div id="playerDisplayList">
+                <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
                 <h2>No Players Yet...</h2>
             </div>
         )
@@ -90,7 +91,19 @@ const GameInfo = (props) => {
     )
 };
 
-const BuyShape = () => {
+const BuyShape = (props) => {
+
+    const [displayMode, setDisplayMode] = React.useState(props.displayMode);
+
+    React.useEffect(async () => {
+        setDisplayMode(props.displayMode);
+    }, [props]);
+   
+
+    if (displayMode === 0){
+        return null;
+    }
+
     return (
         <form id="changePasswordForm"
             name="changePasswordForm"
@@ -104,7 +117,7 @@ const BuyShape = () => {
                 <label htmlFor="newPass">Payment Example: </label>
                 <input id="newPass" type="text" name="newPass" placeholder="Payment Info" />
             </div>
-            <button id = "closeForm">Close Form</button>
+            <button type='button' id = "closeForm" onClick = {(e) => {setDisplayMode(0)}}>Close Form</button>
             <input className="formSubmit" id="changePasswordSubmit" type="submit" disabled = {true} value="Purchase (Demo)" />
         </form>
     );
@@ -113,7 +126,9 @@ const BuyShape = () => {
 const setShape = async (shape) => {
     const _csrf = document.getElementById('_csrf').value;
     const data = { shape, _csrf };
-    ReactDOM.render(<BuyShape />, document.getElementById('formContent'));
+
+    ReactDOM.render(<BuyShape displayMode = {2} />, document.getElementById('formContent'));
+
     const response = await fetch('/setShape', {
         method: 'PUT',
         headers: {
@@ -131,9 +146,7 @@ const PayModelDisplay = (props) => {
     const [selected, setSelected] = React.useState(0);
 
     const changeDisplay = () => {
-        //if (!displayMode)  return setDisplayMode(0);
-
-        if (displayMode == 0) setDisplayMode(1);
+        if (displayMode === 0) setDisplayMode(1);
         else setDisplayMode(0);
     };
 
