@@ -231,6 +231,10 @@ body {
     border: 2px solid;
 }
 
+#formContent{
+    min-height: 130px;
+}
+
 .formSubmit:link,
 .formSubmit:visited,
 .formSubmit:hover,
