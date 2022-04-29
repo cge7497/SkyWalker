@@ -90,9 +90,30 @@ const GameInfo = (props) => {
     )
 };
 
+const BuyShape = () => {
+    return (
+        <form id="changePasswordForm"
+            name="changePasswordForm"
+            className="inputForm"
+        >
+            <div className="floatLeft">
+                <label htmlFor="oldPass">Payment Example: </label>
+                <input id="oldPass" type="text" name="oldPass" placeholder="Payment Info" />
+            </div>
+            <div className="floatRight">
+                <label htmlFor="newPass">Payment Example: </label>
+                <input id="newPass" type="text" name="newPass" placeholder="Payment Info" />
+            </div>
+            <button id = "closeForm">Close Form</button>
+            <input className="formSubmit" id="changePasswordSubmit" type="submit" disabled = {true} value="Purchase (Demo)" />
+        </form>
+    );
+};
+
 const setShape = async (shape) => {
     const _csrf = document.getElementById('_csrf').value;
     const data = { shape, _csrf };
+    ReactDOM.render(<BuyShape />, document.getElementById('formContent'));
     const response = await fetch('/setShape', {
         method: 'PUT',
         headers: {
@@ -175,6 +196,8 @@ const init = () => {
 
     ReactDOM.render(<PayModelDisplay displayMode={0} />,
         document.getElementById('payModel'));
+
+    // document.getElementById("closeForm").addEventListener('click', (e)=> {});
 };
 
 window.onload = init;
