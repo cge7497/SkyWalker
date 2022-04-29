@@ -103,11 +103,40 @@ body {
     word-wrap: break-word;
 }
 
-#payModelTable{
+#payModelDisplay{
     margin-top: 20px;
+    max-height: 640px;
     position: absolute;
-    right: -140px;
+    right: -210px;
+    text-align: center;
+    border: 1px solid;
+    border-collapse: collapse;
     top: 6px;
+}
+
+#payModelDisplay table{
+    text-align: left;
+    width:200px;
+    border-collapse: collapse;
+}
+
+#payModelDisplay table td{
+    width: 50px;
+    border: 1px solid;
+}
+
+#payModelDisplay table tbody tr:hover{
+    background-color: rgb(255, 255, 136);
+    cursor:pointer;
+}
+
+#payModelDisplay table th{
+    width: 50px;
+    border: 1px solid;
+}
+
+.selected{
+    background-color: aqua;
 }
 
 #playerDisplayBtn {
@@ -120,10 +149,12 @@ body {
 
 #playerDisplayList{
     margin-top: 20px;
+    max-height: 640px;
     position: absolute;
-    left: -202px;
+    left: -207px;
     top: 6px;
     border: 1px solid;
+    border-collapse: collapse;
     text-align: center;
     word-wrap: break-word;
 }
@@ -143,6 +174,18 @@ body {
 #playerDisplayList table th{
     width: 50px;
     border: 1px solid;
+}
+
+#closeWidgetBtn{
+    width:24px !important;
+    height:24px !important;
+    margin: 0px !important;
+    padding:0px;
+    text-align: center;
+    position: absolute;
+    top:0px;
+    right: 0px;
+    border-collapse: collapse;
 }
 
 

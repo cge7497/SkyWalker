@@ -1,3 +1,5 @@
+const gameLogic = require('../client/main.js');
+
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PlayerDisplay = (props) => {
     const [players, setPlayers] = React.useState(props.players);
@@ -24,7 +26,7 @@ const PlayerDisplay = (props) => {
     }
     if (!players || players.length === 0) {
         return (
-            <div id = "playerDisplayList">
+            <div id="playerDisplayList">
                 <h2>No Players Yet...</h2>
             </div>
         )
@@ -33,6 +35,7 @@ const PlayerDisplay = (props) => {
     const playerList = players.map((p) => {
         return (
             <table>
+                <caption><h3><u>Current Players</u></h3></caption>
                 <thead>
                     <tr>
                         <th>Username</th>
@@ -42,7 +45,7 @@ const PlayerDisplay = (props) => {
                 <tbody>
                     <tr key={p.username}>
                         <td>{p.username}</td>
-                        <td className = "colorText" style={{ backgroundColor: p.color }}></td>
+                        <td className="colorText" style={{ backgroundColor: p.color }}></td>
                     </tr>
                 </tbody>
             </table>
@@ -50,8 +53,8 @@ const PlayerDisplay = (props) => {
     })
 
     return (
-        <div id = "playerDisplayList">
-            <h3><u>Current Players</u></h3>
+        <div id="playerDisplayList">
+            <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
             {playerList}
         </div>
     );
@@ -87,16 +90,31 @@ const GameInfo = (props) => {
     )
 };
 
+const setShape = async (shape) => {
+    const _csrf = document.getElementById('_csrf').value;
+    const data = { shape, _csrf };
+    const response = await fetch('/setShape', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    gameLogic.setShape(shape);
+}
+
 //I followed the structure of this React demo from class: https://github.com/IGM-RichMedia-at-RIT/React-Functional-Components-Done/blob/master/client/example3.jsx
 const PayModelDisplay = (props) => {
     const [displayMode, setDisplayMode] = React.useState(props.displayMode);
+    const [selected, setSelected] = React.useState(0);
 
     const changeDisplay = () => {
         //if (!displayMode)  return setDisplayMode(0);
 
         if (displayMode == 0) setDisplayMode(1);
         else setDisplayMode(0);
-    }
+    };
 
     if (!displayMode || displayMode === 0) {
         return (
@@ -107,6 +125,7 @@ const PayModelDisplay = (props) => {
     const ShapeList = () => {
         return (
             <table id="payModelTable">
+                <caption><h3><u>Shape Shop</u></h3></caption>
                 <thead>
                     <tr>
                         <th>Shape</th>
@@ -114,17 +133,25 @@ const PayModelDisplay = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Square</td>
-                        <td>$ Free </td>
+                    <tr className={selected == 0 ? "selected" : ""} onClick={(e) => { setSelected(0); setShape(0); }}>
+                        <td>Circle</td>
+                        <td><em>$ Free </em></td>
                     </tr>
-                    <tr>
-                        <td>Triangle</td>
-                        <td>$ Free </td>
+                    <tr className={selected == 1 ? "selected" : ""} onClick={(e) => { setSelected(1); setShape(1); }}>
+                        <td><strong>Big</strong></td>
+                        <td><em>$ Free </em></td>
                     </tr>
-                    <tr>
-                        <td>Diamond</td>
-                        <td>$ Free </td>
+                    <tr className={selected == 2 ? "selected" : ""} onClick={(e) => { setSelected(2); setShape(2); }}>
+                        <td>Tiny</td>
+                        <td><em>$ Free </em></td>
+                    </tr>
+                    <tr className={selected == 3 ? "selected" : ""} onClick={(e) => { setSelected(3); setShape(3); }}>
+                        <td>Spider</td>
+                        <td><em>$ Free </em></td>
+                    </tr>
+                    <tr className={selected == 4 ? "selected" : ""} onClick={(e) => { setSelected(4); setShape(4); }}>
+                        <td><em>Handsome</em></td>
+                        <td><em>$ Free </em></td>
                     </tr>
                 </tbody>
             </table>
@@ -132,7 +159,8 @@ const PayModelDisplay = (props) => {
     };
 
     return (
-        <div>
+        <div id="payModelDisplay">
+            <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
             <ShapeList />
         </div>
     );

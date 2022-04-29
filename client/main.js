@@ -39,13 +39,13 @@ let camXOffset = 0, camYOffset = 0
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
 const init = (obj, immediate = false) => {
-    if (obj && obj.username && obj.items && obj.color) {
+    if (obj && obj.username && obj.items && obj.color && obj.shape>= 0) {
         player.name = obj.username;
         trueColor = obj.color;
+        player.shape = obj.shape;
         if (obj.items) initItems(obj.items);
     }
     else {
-
     }
 
     movementThisSecond.name = player.name;
@@ -122,7 +122,7 @@ const init = (obj, immediate = false) => {
 const update = () => {
     if (!inEndGame) {
         updatePlayer();
-        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale);
+        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, undefined, undefined, player.shape);
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
     else endGame();
@@ -293,6 +293,10 @@ const initItems = (savedItems) => {
     if (savedItems['screwattack'] === true) {
         collectScrewAttack(false);
     }
+};
+
+const setShape = (shape = 0) => {
+    player.shape = shape;
 }
 
 // I made these 'functions' so they can be accessed in the items object declaration (as they are referenced before defined).
@@ -356,7 +360,7 @@ function endGame() {
         bgRectColor += 0.2; player.y += 0.5;
     }
 
-    utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`);
+    utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`, undefined, player.shape);
 
     bgRects.forEach((r) => {
         if (bgRects.indexOf(r) != bgRects.length - 1) {
@@ -426,4 +430,4 @@ const keyUp = (e) => {
     }
 };
 
-export { init };
+export { init, setShape };

@@ -25,11 +25,10 @@ const initPage = (req, res) => {
 const redirect = (req, res) => res.redirect('/');
 
 const logout = (req, res) => {
-  console.log('running logout');
   // Remove this account from the list of online players.
   if (req.session.account) {
     const index = game.players.findIndex((o) => o.username === req.session.account.username);
-    if (index>=0) {
+    if (index >= 0) {
       game.players.splice(index, 1);
     }
     req.session.destroy();
@@ -57,6 +56,7 @@ const login = (req, res) => {
       username: req.session.account.username,
       items: req.session.account.items,
       color: req.session.account.color,
+      shape: req.session.account.shape,
     });
   });
 };
@@ -87,6 +87,7 @@ const signup = async (req, res) => {
       username: req.session.account.username,
       items: req.session.account.items,
       color: req.session.account.color,
+      shape: req.session.account.shape,
     });
   } catch (err) {
     if (err.code === 11000) {
@@ -154,12 +155,38 @@ const changePassword = async (req, res) => {
   });
 };
 
+const setShape = async (req, res) => {
+  const shape = `${req.body.shape}`;
+
+  if (!shape) {
+    return res.status(400).json({ error: 'Shape (an integer 0-3) is required!' });
+  }
+
+  try {
+    const doc = await Account.findOne({ username: req.session.account.username }).exec();
+
+    if (!doc) return res.json({ error: 'Account with that username not found.' });
+
+    doc["shape"] = shape;
+
+    await doc.save();
+
+    req.session.account.shape = shape;
+
+    return res.status(204).json({ messsage: 'Successfully updated shape.' });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ error: 'An error occurred' });
+  }
+};
+
 module.exports = {
   loginPage,
   login,
   logout,
   signup,
   updateItems,
+  setShape,
   changePassword,
   initPage,
   redirect,

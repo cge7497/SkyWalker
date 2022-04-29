@@ -66,6 +66,7 @@ AccountSchema.statics.toAPI = (doc) => ({
   username: doc.username,
   color: doc.color,
   items: doc.items,
+  shape: doc.shape,
   _id: doc._id,
 });
 

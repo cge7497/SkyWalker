@@ -24,6 +24,7 @@ const router = (app) => {
   app.get('/logout', mid.requiresSecure, mid.requiresLogin, controllers.Account.logout);
 
   app.post('/addCloud', mid.requiresSecure, mid.requiresLogin, controllers.Game.addCloud);
+  app.put('/setShape', mid.requiresSecure, mid.requiresLogin, controllers.Account.setShape);
 
   app.get('/', mid.requiresSecure, controllers.Account.loginPage);
   app.get('/*', mid.requiresSecure, controllers.Account.redirect);
