@@ -47,28 +47,12 @@ const getPlayer = (request, response) => {
 };
 
 // adds to the global movement array for this second.
-const addMovement = (request, response) => {
-  let responseJSON = {
-    message: 'This endpoint requires a player JSON object with a name, color, and array of >=30 JSON objects with an X, Y, and flipped variable. They were not present in the request.',
-    id: 'missingParams',
-  };
-
-  if (!request.body.movement) return respondJSON(request, response, 400, responseJSON);
-
-  const movement = JSON.parse(request.body.movement);
+const addMovement = (movement) => {
+  if (!movement) return false;
 
   if (!movement.name || !movement.color || !movement.movement) {
-    return respondJSON(request, response, 400, responseJSON);
+    return false;
   }
-
-  if (!players[movement.name]) {
-    responseJSON.id = 'invalidPlayer';
-    responseJSON.message = `The player '${request.body.name}' does not exist on the server.`;
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
-  responseJSON = { movement: playerMovementThisSecond };
-  respondJSON(request, response, 200, responseJSON);
 
   playerMovementThisSecond[movement.name] = {
     name: movement.name,
@@ -76,7 +60,7 @@ const addMovement = (request, response) => {
     movement: movement.movement,
   };
 
-  return 0;
+  return true;
 };
 
 // Add a cloud to the level data JSON object.
@@ -97,10 +81,7 @@ const addCloud = (request, response) => {
 };
 
 // returns global player movement. Currently not used by front-end, but helpful for testing.
-const getMovement = (request, response) => {
-  const responseJSON = { movement: playerMovementThisSecond };
-  respondJSON(request, response, 200, responseJSON);
-};
+const getMovement = () => playerMovementThisSecond;
 
 // Returns the level data.
 const getLevel = (request, response) => {

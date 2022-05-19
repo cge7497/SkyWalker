@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { Server } = require('socket.io');
 
 const path = require('path');
 const express = require('express');
@@ -13,6 +14,7 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const redis = require('redis');
 const csrf = require('csurf');
+const game = require('./controllers/Game.js');
 
 const router = require('./router.js');
 
@@ -77,7 +79,19 @@ app.engine('handlebars', expressHandlebars.engine({ defaultLayout: '' }));
 
 router(app);
 
-app.listen(port, (err) => {
+const server = app.listen(port, (err) => {
   if (err) { throw err; }
   console.log(`Listening on port ${port}`);
+});
+
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('sendMovement', (movement) => {
+    if (game.addMovement(movement)) {
+      socket.emit('receiveMovement', game.getMovement());
+    }
+  });
 });

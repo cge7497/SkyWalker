@@ -7,6 +7,10 @@
   <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
   <link rel="shortcut icon" href="/assets/img/favicon.png" />
   <link rel="stylesheet" type="text/css" href="/assets/style.css" />
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+  </script>
 </head>
 
 <body>
@@ -14,7 +18,7 @@
     <button id="signupButton" class="inline" disabled=true>Sign up </button></div>
     <button id="loginButton" class="inline">Login </button></div>
     <button id="changePasswordButton" class="inline hidden">Change Password</button></div>
-    <a id = "logoutLink" class="inline hidden" href = '/logout'>Save and Quit</a></div>
+    <a id="logoutLink" class="inline hidden" href='/logout'>Save and Quit</a></div>
     <input id="_csrf" type="hidden" name="_csrf" />
   </section>
   <section id="formContent">

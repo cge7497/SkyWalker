@@ -34,7 +34,8 @@ let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
 const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
-let camXOffset = 0, camYOffset = 0
+let camXOffset = 0, camYOffset = 0;
+
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
@@ -44,6 +45,8 @@ const init = (obj, immediate = false) => {
         trueColor = obj.color;
         player.shape = obj.shape;
         if (obj.items) initItems(obj.items);
+
+        setupSocket();
     }
     else {
     }
@@ -119,8 +122,8 @@ const init = (obj, immediate = false) => {
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
-    //setInterval(sendAndReceiveMovement, 1000);
-    //setInterval(drawOtherPlayerMovement, 1000/30);
+    setInterval(sendAndReceiveMovement, 1000);
+    setInterval(drawOtherPlayerMovement, 1000/30);
 }
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
@@ -227,7 +230,8 @@ const drawBG = () => {
 // Sends the player's movement in the last second.
 const sendAndReceiveMovement = async () => {
     if (movementThisSecond && !inEndGame) {
-        otherPlayerMovement = await requests.sendMovement(movementThisSecond);
+        console.log(socket);
+        socket.emit("sendMovement", movementThisSecond);
         otherPlayerMovementFrame = 0;
         movementThisSecond.movement = [];
     }
@@ -240,10 +244,10 @@ const drawOtherPlayerMovement = () => {
     movementThisSecond.movement.push({ x: player.x + player.halfWidth, y: player.y + player.halfHeight, flipped: player.flip });
 
     let keys;
-    if (otherPlayerMovement.movement) {
+    if (otherPlayerMovement) {
         // I got this Object.keys() function from https://stackoverflow.com/questions/37673454/javascript-iterate-key-value-from-json
         // It gets the property names (meaning the player names) of the movementJSONObject.
-        keys = Object.keys(otherPlayerMovement.movement);
+        keys = Object.keys(otherPlayerMovement);
     }
     else return;
     keys.splice(keys.indexOf(player.name), 1); //remove this player's movement from the array, so it is not needlessly drawin them.
@@ -251,8 +255,8 @@ const drawOtherPlayerMovement = () => {
 
     w_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     keys.forEach((m) => {
-        const f = otherPlayerMovement.movement[m].movement[otherPlayerMovementFrame];
-        if (f) utilities.drawPlayer(f.x + camXOffset, f.y + camYOffset, w_ctx, f.flipped, 1, `${otherPlayerMovement.movement[m].color}55`, false);
+        const f = otherPlayerMovement[m].movement[otherPlayerMovementFrame];
+        if (f) utilities.drawPlayer(f.x + camXOffset - 1.5, f.y + camYOffset - 7, w_ctx, f.flipped, 1, `${otherPlayerMovement[m].color}55`, false);
     });
     otherPlayerMovementFrame += 1;
 };
@@ -392,6 +396,13 @@ function endGame() {
         r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.5)`;
     });
 }
+
+const setupSocket = () => {
+    socket.on('receiveMovement', (movement) => {
+        console.log(movement);
+        otherPlayerMovement = movement;
+    });
+};
 
 const keyDown = (e) => {
     // If the target is not the body for a keyClick- meaning the target is an input form- return and don't move player based on this input.
