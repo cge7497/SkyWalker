@@ -21,6 +21,7 @@ const items = {
     'screwattack': { obtained: false, collected: collectScrewAttack },
     'morphball': { obtained: false, collected: collectMorphBall },
     'yellowswitch': { collected: endGame },
+    'redswitch': { collected: stopFire },
     'fire': { collected: collectMorphBall },
 };
 
@@ -310,6 +311,7 @@ const initItems = (savedItems) => {
     imgs['screwattack'] = document.getElementById('screwattack');
     imgs['morphball'] = document.getElementById('morphball');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
+    imgs['redswitch'] = document.getElementById('redswitch');
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);
@@ -342,6 +344,12 @@ function collectScrewAttack(shouldSendPost = true) {
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'screwattack');
         item_audio.play();
+    }
+}
+
+function stopFire(){
+    for (let i = level.specialObjects.length-1; i >= 0; i--){
+        if (level.specialObjects[i].id === "fire") level.specialObjects.splice(i, 1);
     }
 }
 

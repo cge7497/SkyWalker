@@ -79,7 +79,9 @@ const GameInfo = (props) => {
             <img id="morphball" src='assets/img/morphball.png' style={{ display: 'none' }} width="16" height="16"
                 alt="Shrinking Powerup" />
             <img id="yellowswitch" src='assets/img/yellowswitch.png' style={{ display: 'none' }} width="32" height="32"
-                alt="Final Powerup" />
+                alt="Yellow Switch" />
+            <img id="redswitch" src='assets/img/redswitch.png' style={{ display: 'none' }} width="32" height="32"
+                alt="Red Switch" />
             {/* Update this inner html when you get an item. */}
             <div className="center" id="instructions">
                 <div id="moveInstructions" className="inline">Use '<strong>A</strong>' and

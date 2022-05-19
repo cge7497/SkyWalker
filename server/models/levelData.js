@@ -7,7 +7,7 @@ const data = {
       x: 284, y: 315, width: 31, height: 30, color: 'blue',
     },
     {
-      x: 0, y: 0, width: 30, height: 800, color: 'red',
+      x: 0, y: 2, width: 30, height: 800, color: 'red',
     },
     {
       x: 0, y: 950, width: 30, height: 502, color: 'blue',
@@ -62,6 +62,9 @@ const data = {
     },
     {
       x: 296, y: -16, width: 16, height: 16, id: 'yellowswitch',
+    },
+    {
+      x: 296, y: 500, width: 16, height: 16, id: 'redswitch',
     },
     // There should be fire here. Maybe just give it a huge width and height to check for collision?
     {
