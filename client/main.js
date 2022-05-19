@@ -8,6 +8,10 @@ const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 
+import { io } from "socket.io-client";
+let socket;
+
+
 // Stores images that are used as sprites.
 // It is initialized later because this runs before the react component containing the images.
 const imgs = {};
@@ -397,6 +401,7 @@ function endGame() {
 }
 
 const setupSocket = () => {
+    socket = io();
     socket.on('receiveMovement', (movement) => {
         otherPlayerMovement = movement;
     });

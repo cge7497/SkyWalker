@@ -9,6 +9,7 @@ Restructure requests.js to just use help.erjs sendPost?
 Take some code out of main.js and into other files.
 Optimize fire display: only display it within range of 640 px. Make two arrays for special objects: one of fire, one of items since they're rendered differently.
 
+DONE Could refactor code so socket isn't a global variable- only in game's main.js?
 
 DONE Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
 
