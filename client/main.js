@@ -230,7 +230,6 @@ const drawBG = () => {
 // Sends the player's movement in the last second.
 const sendAndReceiveMovement = async () => {
     if (movementThisSecond && !inEndGame) {
-        console.log(socket);
         socket.emit("sendMovement", movementThisSecond);
         otherPlayerMovementFrame = 0;
         movementThisSecond.movement = [];
@@ -399,7 +398,6 @@ function endGame() {
 
 const setupSocket = () => {
     socket.on('receiveMovement', (movement) => {
-        console.log(movement);
         otherPlayerMovement = movement;
     });
 };
