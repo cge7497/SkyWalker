@@ -5,7 +5,7 @@ Don't get stuck on right side of platforms: don't move down, yet can't move left
 Turn into cloud and fly offscreen like in Bob's game.
 Make audio volume decrease when you're near yellow button.
 window.onbeforeunload to send "mark me as offline" request to server...
-Restructure requests.js to just use help.erjs sendPost?
+Restructure requests.js to just use helper.js sendPost?
 Take some code out of main.js and into other files.
 Optimize fire display: only display it within range of 640 px. Make two arrays for special objects: one of fire, one of items since they're rendered differently.
 

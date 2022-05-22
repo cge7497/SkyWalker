@@ -68,11 +68,11 @@ const data = {
     },
     // There should be fire here. Maybe just give it a huge width and height to check for collision?
     {
-      x: -450, y: 998, width: 250, height: 50, id: 'fire',
+      x: -450, y: 998, width: 250, height: 50, col_width: 800, col_height: 500, id: 'fire',
     },
     // There should be fire here.
     {
-      x: -450, y: 700, width: 250, height: 50, id: 'fire',
+      x: -450, y: 700, width: 250, height: 50, col_width: 500, col_height: 500, id: 'fire',
     },
   ],
   clouds: [],

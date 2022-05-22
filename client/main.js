@@ -84,12 +84,12 @@ const init = (obj, immediate = false) => {
     // If the user was not automatically logged in, meaning they have had to interact with the page, just play the audio.
     if (immediate) {
         document.addEventListener('click', (e) => {
-            bg_audio.play();
+            //bg_audio.play();
             bg_audio.loop = true;
         }, { once: true });
     }
     else {
-        bg_audio.play();
+        //bg_audio.play();
         bg_audio.loop = true;
     }
 
@@ -226,7 +226,7 @@ const drawBG = () => {
         utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.color, true)
     });
     level.specialObjects.forEach((o) => {
-        if (o.id == "fire") {
+        if (o.id == "fire" && fireIsOnScreen(player, o)) {
             utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, bg_ctx);
         }
     });
@@ -286,6 +286,11 @@ const CollisionsWithLevel = (p, xDif, yDif) => {
 const areColliding = (p, r) => {
     return (p.newX - p.halfWidth < r.x + r.width && p.newX + p.halfWidth > r.x
         && p.newY - p.halfHeight < r.y + r.height && p.newY + p.halfHeight > r.y);
+};
+
+const fireIsOnScreen = (p, f) => {
+    return (p.newX - p.halfWidth < f.x + f.col_width && p.newX + p.halfWidth > f.x - f.col_width
+        && p.newY - p.halfHeight < f.y + f.col_height && p.newY + p.halfHeight > f.y - f.col_height);
 }
 
 const CollisionsWithSpecialObjects = (p) => {

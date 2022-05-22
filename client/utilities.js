@@ -66,9 +66,9 @@ const drawFire = (x, y, width, height, ctx) => {
     var lX = parseInt(Math.random() * width, 10),
       lsY = parseInt(Math.random() * (height - 100), 10) + 50,
       leY = parseInt(Math.random() * (height - 100), 10) + 50,
-      r = RandomNum(100, 255),
-      g = RandomNum(0, 200),
-      b = RandomNum(0, 230);
+      r = RandomNum(150, 255),
+      g = RandomNum(0, 150),
+      b = RandomNum(0, 150);
     ctx.moveTo(x + lX, y + lsY);
     var sColor = "rgb(" + r + "," + g + "," + b + ")";
     ctx.strokeStyle = sColor;
