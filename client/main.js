@@ -165,7 +165,7 @@ const updateCloud = () => {
     playerCloud.hSpeed = Math.cos(playerCloud.dirRad);
     playerCloud.vSpeed = Math.sin(playerCloud.dirRad);
 
-    playerCloud.x += playerCloud.hSpeed/2; playerCloud.y += playerCloud.vSpeed/2;
+    playerCloud.x += playerCloud.hSpeed / 2; playerCloud.y += playerCloud.vSpeed / 2;
 
     // makes the rectangle wrap around the screen.
     // if (playerCloud.x > canvasWidth + 20) { playerCloud.x = -20 }
@@ -173,7 +173,7 @@ const updateCloud = () => {
     if (playerCloud.y > canvasHeight + 20) { playerCloud.y = -20 }
     else if (playerCloud.y < -20) { playerCloud.y = canvasHeight + 20 }
 
-    camXOffset -= playerCloud.hSpeed/2.5;
+    camXOffset -= playerCloud.hSpeed / 2.5;
 };
 
 // Updates player movement based on input and collision.
