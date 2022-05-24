@@ -7,6 +7,7 @@ const sq_walkers = [], arc_walkers = [];
 const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
+let cloudsShouldLoop = true;
 
 import { io } from "socket.io-client";
 let socket;
@@ -20,16 +21,17 @@ const imgs = {};
 const items = {
     'screwattack': { obtained: false, collected: collectScrewAttack },
     'morphball': { obtained: false, collected: collectMorphBall },
-    'yellowswitch': { collected: endGame },
+    'yellowswitch': { collected: cloudState },
     'redswitch': { collected: stopFire },
     'fire': { collected: collectMorphBall },
 };
 
-const player = { x: -450, y: 690, halfWidth: 4, halfHeight: 7, newX: 300, newY: 300, scale: 1, name: '', flip: false };
+const player = { x: 300, y: 300, halfWidth: 4, halfHeight: 7, newX: 300, newY: 300, scale: 1, name: '', flip: false };
+let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 
 let xSpeed = 3, ySpeed = 5;
-let canFlip = true; let infiniteFlip = false, inEndGame = false, shouldUpdateGame = true;;
+let canFlip = true; let infiniteFlip = false, inClouds = false, shouldUpdateGame = true;;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
@@ -123,25 +125,56 @@ const init = (obj, immediate = false) => {
     drawBG();
 
     w_ctx.fillStyle = "black";
-    player.x = player.y = 300;
+
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
     setInterval(sendAndReceiveMovement, 1000);
-    setInterval(drawOtherPlayerMovement, 1000/30);
+    setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
-    if (!inEndGame && shouldUpdateGame) {
+    if (!inClouds && shouldUpdateGame) {
         updatePlayer();
         // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
         // So the player is always drawn with a black stroke.
         utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, player.color, undefined, player.shape);
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
-    else if (inEndGame) endGame();
+    else if (inClouds) {
+        cloudState();
+        if (shouldUpdateGame) {
+            updateCloud();
+            utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset);
+        }
+    }
+
     drawLevel();
-}
+};
+
+const updateCloud = () => {
+
+    if (keysPressed[65]) {
+        playerCloud.dirRad += 0.01;
+    }
+
+    if (keysPressed[68]) {
+        playerCloud.dirRad -= 0.01;
+    }
+
+    playerCloud.hSpeed = Math.cos(playerCloud.dirRad);
+    playerCloud.vSpeed = Math.sin(playerCloud.dirRad);
+
+    playerCloud.x += playerCloud.hSpeed/2; playerCloud.y += playerCloud.vSpeed/2;
+
+    // makes the rectangle wrap around the screen.
+    // if (playerCloud.x > canvasWidth + 20) { playerCloud.x = -20 }
+    // else if (playerCloud.x < -20) { playerCloud.x = canvasWidth + 20 }
+    if (playerCloud.y > canvasHeight + 20) { playerCloud.y = -20 }
+    else if (playerCloud.y < -20) { playerCloud.y = canvasHeight + 20 }
+
+    camXOffset -= playerCloud.hSpeed/2.5;
+};
 
 // Updates player movement based on input and collision.
 const updatePlayer = () => {
@@ -211,17 +244,20 @@ const drawBG = () => {
     bgRects.forEach(function (rect) {
         //bg_dir_rad is 0 at the start and changes value when the green diamond is collected.
         //When that happens, the rectangles's speeds will change slightly every time they are drawn.
-        rect.hSpeed = Math.cos(bg_dir_rad) * BG_DIR_MULTIPLIER;
-        rect.vSpeed = Math.sin(bg_dir_rad) * BG_DIR_MULTIPLIER;
+
+        //rect.hSpeed = Math.cos(bg_dir_rad) * BG_DIR_MULTIPLIER;
+        //rect.vSpeed = Math.sin(bg_dir_rad) * BG_DIR_MULTIPLIER;
 
         rect.x += rect.hSpeed;
         rect.y += rect.vSpeed;
 
         //makes the rectangle wrap around the screen.
-        if (rect.x > canvasWidth + 20) { rect.x = -20 }
-        else if (rect.x < -20) { rect.x = canvasWidth + 20 }
-        if (rect.y > canvasHeight + 20) { rect.y = -20 }
-        else if (rect.y < -20) { rect.y = canvasHeight + 20 }
+        if (cloudsShouldLoop) {
+            if (rect.x > canvasWidth + 20) { rect.x = -20 }
+            else if (rect.x < -20) { rect.x = canvasWidth + 20 }
+            if (rect.y > canvasHeight + 20) { rect.y = -20 }
+            else if (rect.y < -20) { rect.y = canvasHeight + 20 }
+        }
 
         utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.color, true)
     });
@@ -234,7 +270,7 @@ const drawBG = () => {
 
 // Sends the player's movement in the last second.
 const sendAndReceiveMovement = async () => {
-    if (movementThisSecond && !inEndGame) {
+    if (movementThisSecond && !inClouds) {
         socket.emit("sendMovement", movementThisSecond);
         otherPlayerMovementFrame = 0;
         movementThisSecond.movement = [];
@@ -242,7 +278,7 @@ const sendAndReceiveMovement = async () => {
 };
 // Draws the movement of other players onto the walkers canvas, which is above the bg and behind the player.
 const drawOtherPlayerMovement = () => {
-    if (inEndGame) return;
+    if (inClouds) return;
 
     //store this player's coordinate
     movementThisSecond.movement.push({ x: player.x + player.halfWidth, y: player.y + player.halfHeight, flipped: player.flip });
@@ -271,6 +307,7 @@ const CollisionsWithLevel = (p, xDif, yDif) => {
     level.rects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding = true;
+            //have to adjust the X that is used in the next equation...
             if (utilities.collidedFromBottom(p, r) || utilities.collidedFromTop(p, r)) {
                 p.newY -= yDif;
                 if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
@@ -352,8 +389,8 @@ function collectScrewAttack(shouldSendPost = true) {
     }
 }
 
-function stopFire(){
-    for (let i = level.specialObjects.length-1; i >= 0; i--){
+function stopFire() {
+    for (let i = level.specialObjects.length - 1; i >= 0; i--) {
         if (level.specialObjects[i].id === "fire") level.specialObjects.splice(i, 1);
     }
 }
@@ -367,10 +404,17 @@ const movePlayerBackToStart = () => {
 
 // Runs every update (60 fps) once the player has clicked the yellow button.
 // Displays some cool graphics/effects.
-function endGame() {
-    if (!inEndGame) {
+function cloudState() {
+    //Runs the first frame the player turns into cloud: creates the cloud object, plays audio.
+    if (!inClouds) {
+        shouldUpdateGame = false;
+
         //create a background rectangle of the player's selected color.
-        bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor));
+        playerCloud = new level.bgRect(player.x, -20, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor);
+        playerCloud.dirRad = Math.PI / 2;
+        playerCloud.halfWidth = playerCloud.width / 2;
+        playerCloud.halfHeight = playerCloud.height / 2;
+
         requests.sendCloud(trueColor);
 
         bg_audio.pause();
@@ -382,6 +426,8 @@ function endGame() {
         //Play the sky theme after the whistle audio is over. Could use an event listener instead.
         setTimeout(() => {
             sky_audio.play();
+            shouldUpdateGame = true;
+            cloudsShouldLoop = false;
             // I got this code for perfect audio looping (as the loop attribute has delay) from https://stackoverflow.com/a/22446616
             sky_audio.addEventListener('timeupdate', (e) => {
                 const buffer = 0.12;
@@ -391,23 +437,22 @@ function endGame() {
                 }
             })
         }, 4000);
-        inEndGame = true;
+        inClouds = true;
     }
+
     if (bgRectColor < 254) {
-        bgRectColor += 0.2; player.y += 0.5;
+        bgRectColor += 0.2;
+        player.y += 0.85;
     }
 
     utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`, undefined, player.shape);
 
     bgRects.forEach((r) => {
-        if (bgRects.indexOf(r) != bgRects.length - 1) {
-            r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.1)`;
-        }
-        else {
-            //toString(16) converts the number to hexadecimal. I got it from https://www.w3docs.com/snippets/javascript/how-to-convert-decimal-to-hexadecimal-in-javascript.html
-            r.color = `${trueColor}${bgRectColor.toString(16).substring(0, 2)}`;
-        }
+        r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.1)`;
     });
+
+    playerCloud.color = `${trueColor}${bgRectColor.toString(16).substring(0, 2)}`;
+
     level.rects.forEach((r) => {
         r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.5)`;
     });

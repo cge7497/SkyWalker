@@ -56,6 +56,28 @@ const drawRectangle = (x, y, width, height, ctx, color, fill) => {
   ctx.restore();
 }
 
+const drawPlayerCloud = (p, ctx, camX) => {
+  ctx.save();
+  ctx.translate(p.x + camX, p.y);
+  ctx.rotate(p.dirRad);
+
+  //have to fix this
+  ctx.beginPath();
+
+  // it's too big: don't include p.y, just height? or width... 
+  // Top left corner, top right etc.r
+  ctx.moveTo(-p.halfWidth, -p.halfHeight);
+  ctx.lineTo(p.halfWidth,-p.halfHeight);
+  ctx.lineTo(p.halfWidth, p.halfHeight);
+  ctx.lineTo(-p.halfWidth, p.halfHeight);
+  ctx.closePath();
+
+  ctx.fillStyle = p.color; ctx.fill();
+  ctx.stroke();
+
+  ctx.restore();
+}
+
 // Huge thanks to http://jsfiddle.net/ethertank/Eanf7/ for the logic/structure of this code.
 const drawFire = (x, y, width, height, ctx) => {
   ctx.save();
@@ -117,8 +139,8 @@ const collidedFromLeft = (p, r) => {
 };
 
 const collidedFromBottom = (p, r) => {
-  return (p.y + (p.halfHeight - 2)) < r.y &&
-    (p.newY + (p.halfHeight + 2)) >= r.y;
+  return (p.y + (p.halfHeight - 1)) < r.y &&
+    (p.newY + (p.halfHeight + 1)) >= r.y;
 };
 
 const collidedFromTop = (p, r) => {
@@ -133,5 +155,5 @@ const RandomNum = (min, max) => {
 export {
   drawPlayer, drawRectangle, fadeBGColorToDarkBlue, drawDebugPlayer, handlePlayerCrawl,
   collidedFromBottom, collidedFromLeft, collidedFromTop, collidedFromRight,
-  drawFire
+  drawFire, drawPlayerCloud
 }

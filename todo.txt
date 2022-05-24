@@ -1,5 +1,6 @@
-Make it so you don't collide with yellow floor on bottom when coming from right.
+AVOIDED Make it so you don't collide with yellow floor on bottom when coming from right.
 Don't get stuck on right side of platforms: don't move down, yet can't move left is an error.
+This is easily testable on the top right, where you can get stuck trying to crawl into the little crevace.
 
 
 Turn into cloud and fly offscreen like in Bob's game.

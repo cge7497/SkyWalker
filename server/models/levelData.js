@@ -13,16 +13,13 @@ const data = {
       x: 0, y: 950, width: 30, height: 502, color: 'blue',
     },
     {
-      x: 1000, y: 36, width: 30, height: 1494, color: 'green',
+      x: 1000, y: 40, width: 30, height: 1490, color: 'green',
     },
     {
-      x: 0, y: 1500, width: 1030, height: 30, color: 'black',
+      x: -600, y: 1500, width: 1630, height: 30, color: 'black',
     },
     {
-      x: -700, y: 1500, width: 700, height: 29, color: 'yellow',
-    },
-    {
-      x: 0, y: 0, width: 1030, height: 30, color: 'orange',
+      x: 60, y: 0, width: 1030, height: 30, color: 'orange', //should be 0 x
     },
 
     // Screw Attack room
@@ -43,6 +40,20 @@ const data = {
     },
     {
       x: -650, y: 750, width: 50, height: 250, color: 'blue',
+    },
+
+    //Bottom left maze
+    {
+      x: -650, y: 1100, width: 200, height: 20, color: 'blue',
+    },
+    {
+      x: -200, y: 998, width: 200, height: 20, color: 'blue',
+    },
+    {
+      x: -650, y: 998, width: 200, height: 20, color: 'blue',
+    },
+    {
+      x: -650, y: 750, width: 50, height: 20, color: 'blue',
     },
 
     // Adds clear boxes for collision with switch

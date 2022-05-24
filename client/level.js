@@ -5,7 +5,7 @@ class bgRect {
     this.width = width;
     this.height = height;
     this.color = color;
-    this.hSpeed = (height * width) / 15;
+    this.hSpeed = (height * width) / 150;
     this.vSpeed = 0;
   }
 }
