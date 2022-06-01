@@ -3,39 +3,29 @@ Don't get stuck on right side of platforms: don't move down, yet can't move left
 This is easily testable on the top right, where you can get stuck trying to crawl into the little crevace.
 
 
-Turn into cloud and fly offscreen like in Bob's game.
 Make audio volume decrease when you're near yellow button.
 window.onbeforeunload to send "mark me as offline" request to server...
 Restructure requests.js to just use helper.js sendPost?
 Take some code out of main.js and into other files.
-Optimize fire display: only display it within range of 640 px. Make two arrays for special objects: one of fire, one of items since they're rendered differently.
 
+DONE Turn into cloud and fly offscreen like in Bob's game.
+DONE Optimize fire display: only display it within range of 640 px. Make two arrays for special objects: one of fire, one of items since they're rendered differently.
 DONE Could refactor code so socket isn't a global variable- only in game's main.js?
-
 DONE Make canvas only react to inputs when it is the focus. When typing changePasword it'll affect it. Or, implement pause feature. probably not necessary unless I want to display components on top of canvas.
-
 GOOD I investigated the property toLowerCase of underfined... it occurs when the browser autofills. I'm not sure how to fix it.
-
 DONE Implement payment model:
     A button on the left side of the canvas that the player can click. It will open a menu over the canvas, where the player can select what item to buy.
     Items to buy: Probably a flex container of different attributes, like big head, big arm, big leg.
-
 GOOD React components- need 5 of them. Turn game canvases (1), game instructuion + images (2), payment model (3), and player display (4) into react components.
 Could the fifth be the nav bar?
-
 DONE Why isn't updateItems returning anything if you've already collected the item? It seems to have been an error with the accept header- it expected JSON but the server was just returning a 204 code.
-
 DONE Implement middleware status codes working. -they aren't super useful though, as the client mainly uses POST requests. I suppose requiresSecure is useful though- I only really see the effects of requiresLogin/Logout.
-
 DONE (account is not deleted- the server will tell the client to just the tart the game if there's already an account) Delete request account when refreshing so it doesn't log back in?
-
 DONE Implement change password:
     Changing password will require user to enter their username, password, and new password. It'll send code to the server to update that. That'll use some bcrypt nuances...
     Check on client if the two passwords are different.
     Use same kind of function as updateItems in Account controller.
-
 GOOD Improve styling of log in button (formSubmit)
     Make sure it uses no code from Domo-change colors, and borders if I want to.
-
 DONE Fix item saving.
     It is not actually saving on the server. The .save() function doesn't actually save to the mongoDB.
