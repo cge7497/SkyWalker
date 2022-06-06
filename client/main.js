@@ -223,7 +223,7 @@ const updatePlayer = () => {
 //Draws the level (composed of rectangles and special objects) onto the player canvas.
 const drawLevel = () => {
     level.rects.forEach((r) => {
-        utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.color, true);
+        utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true);
     });
     level.specialObjects.forEach((o) => {
         if (o.id != "fire") {

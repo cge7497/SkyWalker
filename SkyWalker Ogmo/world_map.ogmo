@@ -1,0 +1,72 @@
+{
+  "name": "World Map",
+  "ogmoVersion": "3.4.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#ffffffff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 1, "y": 1},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 128, "y": 128},
+  "levelMaxSize": {"x": 4096, "y": 4096},
+  "levelValues": [],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": [],
+  "layers": [
+    {
+      "definition": "entity",
+      "name": "entities",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "45093158",
+      "requiredTags": [],
+      "excludedTags": []
+    }
+  ],
+  "entities": [
+    {
+      "exportID": "45106715",
+      "name": "rectangle",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "color", "definition": "Color", "display": 1, "defaults": "#6b3434ff", "includeAlpha": false}
+      ]
+    }
+  ],
+  "tilesets": [
+    {"label": "Rectangles", "path": "rect_tileset.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAYAAADS1n9/AAAAAXNSR0IArs4c6QAAAX5JREFUeJzt2s0qhGEAhuFvEJMyJZT8hRkLSX6aJlJyCHaWHICNU3AKFjaytrK2dQCKQuwmRSMb42eD4iCele772j9fb1937+otFUXxWwSmJ+vJvKiWy9F+qv8z2s+O90b7zdGXaP+1sBHth6rZ/++I1vr3DADOAOAMAM4A4AwAzgDgDADOAOAMAM4A4AwAzgDgDADOAOBK32+N6D3A8ftIdICr+2a0v7hdj/aDN+fRvuche4/QbA9F+77OtWjvDQBnAHAGAGcAcAYAZwBwBgBnAHAGAGcAcAYAZwBwBgBnAHAGAFda3NmP3gPMVbajA5TnJ6L9z/JjtN+tDEf7eq0z2h+dnkX756vLaO8NAGcAcAYAZwBwBgBnAHAGAGcAcAYAZwBwBgBnAHAGAGcAcAYA17Xa24o+8Nrai/YD1yvRvnF4Eu0rM0vR/q62Fe0/xg6ifXf7Kdp7A8AZAJwBwBkAnAHAGQCcAcAZAJwBwBkAnAHAGQCcAcAZAJwBwP0BhssrgtxbN/IAAAAASUVORK5CYII=", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+  ]
+}

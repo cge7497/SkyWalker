@@ -22,8 +22,9 @@ const getData = async () => {
 
   const obj = await response.json();
 
-  if (obj.level && obj.level.rects && obj.level.specialObjects) {
-    rects = obj.level.rects;
+  if (obj.level) {
+    rects = obj.level;
+    console.log(rects);
     specialObjects = obj.level.specialObjects;
   }
 
