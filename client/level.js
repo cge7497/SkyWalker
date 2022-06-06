@@ -25,7 +25,7 @@ const getData = async () => {
   if (obj.level) {
     rects = obj.level;
     console.log(rects);
-    specialObjects = obj.level.specialObjects;
+    //specialObjects = obj.level.specialObjects;
   }
 
   if (obj.level.clouds && obj.level.clouds.length > 0) {
