@@ -6,7 +6,7 @@
   "gridColor": "#3c4049cc",
   "anglesRadians": true,
   "directoryDepth": 5,
-  "layerGridDefaultSize": {"x": 1, "y": 1},
+  "layerGridDefaultSize": {"x": 25, "y": 25},
   "levelDefaultSize": {"x": 320, "y": 240},
   "levelMinSize": {"x": 128, "y": 128},
   "levelMaxSize": {"x": 4096, "y": 4096},
@@ -20,7 +20,7 @@
     {
       "definition": "entity",
       "name": "entities",
-      "gridSize": {"x": 8, "y": 8},
+      "gridSize": {"x": 25, "y": 25},
       "exportID": "45093158",
       "requiredTags": [],
       "excludedTags": []
@@ -29,9 +29,9 @@
   "entities": [
     {
       "exportID": "45106715",
-      "name": "rectangle",
+      "name": "big_rect",
       "limit": -1,
-      "size": {"x": 16, "y": 16},
+      "size": {"x": 50, "y": 50},
       "origin": {"x": 0, "y": 0},
       "originAnchored": true,
       "shape": {
@@ -63,6 +63,44 @@
       "tags": [],
       "values": [
         {"name": "color", "definition": "Color", "display": 1, "defaults": "#6b3434ff", "includeAlpha": false}
+      ]
+    },
+    {
+      "exportID": "56093695",
+      "name": "small_rect",
+      "limit": -1,
+      "size": {"x": 25, "y": 25},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#0016ffff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "color", "definition": "Color", "display": 0, "defaults": "#ad5959ff", "includeAlpha": false}
       ]
     }
   ],
