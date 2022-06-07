@@ -23,9 +23,10 @@ const getData = async () => {
   const obj = await response.json();
 
   if (obj.level) {
-    rects = obj.level;
+    rects = obj.level.layers[0].entities;
     console.log(rects);
-    //specialObjects = obj.level.specialObjects;
+    specialObjects = obj.level.layers[1].entities;
+    console.log(specialObjects);
   }
 
   if (obj.level.clouds && obj.level.clouds.length > 0) {

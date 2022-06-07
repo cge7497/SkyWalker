@@ -86,8 +86,8 @@ const drawFire = (x, y, width, height, ctx) => {
     ctx.beginPath();
     ctx.lineWidth = 10;
     var lX = parseInt(Math.random() * width, 10),
-      lsY = parseInt(Math.random() * (height - 100), 10) + 50,
-      leY = parseInt(Math.random() * (height - 100), 10) + 50,
+      lsY = parseInt(Math.random() * height, 10),
+      leY = parseInt(Math.random() * height, 10),
       r = RandomNum(150, 255),
       g = RandomNum(0, 150),
       b = RandomNum(0, 150);

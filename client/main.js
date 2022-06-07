@@ -128,9 +128,9 @@ const init = (obj, immediate = false) => {
 
 
     setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 15);
-    setInterval(sendAndReceiveMovement, 1000);
-    setInterval(drawOtherPlayerMovement, 1000 / 30);
+    setInterval(drawBG, 1000 / 30);
+    // setInterval(sendAndReceiveMovement, 1000);
+    // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
@@ -226,8 +226,8 @@ const drawLevel = () => {
         utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true);
     });
     level.specialObjects.forEach((o) => {
-        if (o.id != "fire") {
-            p_ctx.drawImage(imgs[o.id], o.x + camXOffset, o.y + camYOffset); //I should make these const references.
+        if (o.name != "fire") {
+            p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y + camYOffset); //I should make these const references.
         }
     });
 };
@@ -262,7 +262,7 @@ const drawBG = () => {
         utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.color, true)
     });
     level.specialObjects.forEach((o) => {
-        if (o.id == "fire" && fireIsOnScreen(player, o)) {
+        if (o.name == "fire" && fireIsOnScreen(player, o)) {
             utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, bg_ctx);
         }
     });
@@ -326,16 +326,16 @@ const areColliding = (p, r) => {
 };
 
 const fireIsOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x + f.col_width && p.newX + p.halfWidth > f.x - f.col_width
-        && p.newY - p.halfHeight < f.y + f.col_height && p.newY + p.halfHeight > f.y - f.col_height);
+    return (p.newX - p.halfWidth < f.x + 800 && p.newX + p.halfWidth > f.x - 800
+        && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            if (o.id !== "fire") {
+            if (o.name !== "fire") {
                 level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
-                items[o.id].collected();
+                items[o.name].collected();
             }
             else {
                 shouldUpdateGame = false;
