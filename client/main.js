@@ -128,7 +128,7 @@ const init = (obj, immediate = false) => {
 
 
     setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 30);
+    setInterval(drawBG, 1000 / 15);
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }

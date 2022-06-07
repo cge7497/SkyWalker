@@ -1,5 +1,5 @@
 // Stores the data of the level.
-const data = require('../../SkyWalker Ogmo/1.json');
+const data = require('../../ogmo/1.json');
 // I could swap it out on the server, and the player will get the new one upon refresh.
 /*
 const data = {
