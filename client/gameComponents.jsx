@@ -71,7 +71,9 @@ const GameInfo = (props) => {
             {/*} I got the screw attack image from https://strategywiki.org/wiki/File:SMetroidScrewAttackIcon.png, 
     and the morph ball image from https://strategywiki.org/wiki/File:Super_Metroid_Items_Morph_Ball.png, 
     though they are both originally from Super Metroid games.
-    The Yellow Button image is from Super Mario World, and I got it from here: https://strategywiki.org/wiki/Super_Mario_World/Yellow_Switch_Palace 
+    The Yellow and Red Switch image is from Super Mario World, and I got it from here: https://strategywiki.org/wiki/Super_Mario_World/Yellow_Switch_Palace
+    The right arrow is from Kenney Assets by Kenney.nl
+    These are also used as game icons.
     {*/}
             <h3>Items</h3>
             <img id="screwattack" src='assets/img/screwattack.png' style={{ display: 'none' }} width="16" height="16"
@@ -82,6 +84,8 @@ const GameInfo = (props) => {
                 alt="Yellow Switch" />
             <img id="redswitch" src='assets/img/redswitch.png' style={{ display: 'none' }} width="32" height="32"
                 alt="Red Switch" />
+            <img id="hflip" src='assets/img/hflip.png' style={{ display: 'none' }} width="25" height="25"
+                alt="Arrow Right" />
             {/* Update this inner html when you get an item. */}
             <div className="center" id="instructions">
                 <div id="moveInstructions" className="inline">Use '<strong>A</strong>' and

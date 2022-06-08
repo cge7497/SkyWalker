@@ -1,3 +1,8 @@
+// Thank you to https://www.schemecolor.com/sky-on-fire.php for this color palette.
+const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
+
+
+
 // draws the player shape, which is a combination of canvas lines and arcs.
 const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, shape = 0) => {
   if (flipPlayer) scale *= -1;
@@ -67,7 +72,7 @@ const drawPlayerCloud = (p, ctx, camX) => {
   // it's too big: don't include p.y, just height? or width... 
   // Top left corner, top right etc.r
   ctx.moveTo(-p.halfWidth, -p.halfHeight);
-  ctx.lineTo(p.halfWidth,-p.halfHeight);
+  ctx.lineTo(p.halfWidth, -p.halfHeight);
   ctx.lineTo(p.halfWidth, p.halfHeight);
   ctx.lineTo(-p.halfWidth, p.halfHeight);
   ctx.closePath();
@@ -78,25 +83,27 @@ const drawPlayerCloud = (p, ctx, camX) => {
   ctx.restore();
 }
 
-// Huge thanks to http://jsfiddle.net/ethertank/Eanf7/ for the logic/structure of this code.
-const drawFire = (x, y, width, height, ctx) => {
+const drawFire = (x, y, width, height, ctx, startColor = 0) => {
   ctx.save();
 
-  for (let i = 0; i < 100; i++) {
-    ctx.beginPath();
-    ctx.lineWidth = 10;
-    var lX = parseInt(Math.random() * width, 10),
-      lsY = parseInt(Math.random() * height, 10),
-      leY = parseInt(Math.random() * height, 10),
-      r = RandomNum(150, 255),
-      g = RandomNum(0, 150),
-      b = RandomNum(0, 150);
-    ctx.moveTo(x + lX, y + lsY);
-    var sColor = "rgb(" + r + "," + g + "," + b + ")";
-    ctx.strokeStyle = sColor;
-    ctx.lineTo(x + lX, y + leY);
-    ctx.stroke();
+  let clr = startColor;
+
+  ctx.fillStyle = fireColors[clr];
+  ctx.fillRect(x, y, width, height);
+
+  let inc = 3;
+
+  for (let i = 9; i > 2; i -= inc) {
+    clr +=1;
+    if (clr >= 5) clr = 0;
+
+    inc -= 0.4;
+
+    ctx.fillStyle = fireColors[clr];
+    const factor = 1 - (2 / i);
+    ctx.fillRect(x + width / i, y + height / i, width * factor, height * factor);
   }
+
   ctx.restore();
 }
 

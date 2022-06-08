@@ -24,11 +24,13 @@ const items = {
     'yellowswitch': { collected: cloudState },
     'redswitch': { collected: stopFire },
     'fire': { collected: collectMorphBall },
+    'hflip': {collected: rotateRight},
 };
 
-const player = { x: 300, y: 300, halfWidth: 4, halfHeight: 7, newX: 300, newY: 300, scale: 1, name: '', flip: false };
+const player = { x: 825, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
+let fireAnimColor = 0;
 
 let xSpeed = 3, ySpeed = 5;
 let canFlip = true; let infiniteFlip = false, inClouds = false, shouldUpdateGame = true;;
@@ -41,7 +43,7 @@ let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
 const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
-let camXOffset = 0, camYOffset = 0;
+let camXOffset = -525, camYOffset = 100;
 
 
 // Initializes the game mainly based on data gotten in level.js getData. 
@@ -110,7 +112,7 @@ const init = (obj, immediate = false) => {
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
 
-    utilities.drawPlayer(300, 300, p_ctx, false);
+    utilities.drawPlayer(800, 235, p_ctx, false);
 
     //If getLevel (in level.js) got back a set of clouds, add them to the bgRects/clouds that will be displayed by the client.
     if (level.clouds && level.clouds.length > 0) {
@@ -128,7 +130,7 @@ const init = (obj, immediate = false) => {
 
 
     setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 15);
+    setInterval(drawBG, 1000 / 3);
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
@@ -186,6 +188,8 @@ const updatePlayer = () => {
     if (player.flip) yDif = -ySpeed;
     else yDif = ySpeed;
 
+    if (player.right) xDif = ySpeed
+
     //If the player hasn't crawled recently (so we don;t get a duplicate input)
     if (canCrawl) {
         if (keysPressed[87]) {
@@ -227,7 +231,10 @@ const drawLevel = () => {
     });
     level.specialObjects.forEach((o) => {
         if (o.name != "fire") {
-            p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y + camYOffset); //I should make these const references.
+            p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
+        }
+        else if (fireIsOnScreen(player, o)) {
+            utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
         }
     });
 };
@@ -235,6 +242,10 @@ const drawLevel = () => {
 //Draws background clouds onto the background canvas.
 const drawBG = () => {
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+    fireAnimColor+=1;
+    if (fireAnimColor>=5) fireAnimColor = 0;
+
     if (should_change_bg_color) {
         bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
         bg_color = "rgb(" + bg_color_rgb[0] + "," + bg_color_rgb[1] + "," + bg_color_rgb[2] + ")";
@@ -260,11 +271,6 @@ const drawBG = () => {
         }
 
         utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.color, true)
-    });
-    level.specialObjects.forEach((o) => {
-        if (o.name == "fire" && fireIsOnScreen(player, o)) {
-            utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, bg_ctx);
-        }
     });
 };
 
@@ -354,6 +360,7 @@ const initItems = (savedItems) => {
     imgs['morphball'] = document.getElementById('morphball');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
+    imgs['hflip'] = document.getElementById('hflip');
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);
@@ -366,6 +373,10 @@ const initItems = (savedItems) => {
 const setShape = (shape = 0) => {
     player.shape = shape;
 }
+
+function rotateRight(){
+    p.dir = 'right';
+};
 
 // I made these 'functions' so they can be accessed in the items object declaration (as they are referenced before defined).
 // They handle giving the player the relevant item. They displays the relevant image next to items, updates instruction text,
@@ -397,9 +408,9 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
-    player.x = 300; player.y = 300; player.flip = false;
+    player.x = 825; player.y = 200; player.flip = false;
     player.newX = 300; player.newY = 300;
-    camXOffset = 0; camYOffset = 0;
+    camXOffset = -525; camYOffset = 100;
 }
 
 // Runs every update (60 fps) once the player has clicked the yellow button.
