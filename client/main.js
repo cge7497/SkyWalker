@@ -27,7 +27,7 @@ const items = {
     'hflip': { collected: rotateRight },
 };
 
-const player = { x: 825, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0 };
+const player = { x: 825, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0;
@@ -130,7 +130,7 @@ const init = (obj, immediate = false) => {
 
 
     setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 3);
+    setInterval(drawBG, 1000 / 15);
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
@@ -201,7 +201,7 @@ const updatePlayer = () => {
 
     //If the player hasn't crawled recently (so we don;t get a duplicate input)
     if (canCrawl) {
-        if (player.g===0 && keysPressed[87] || player.g===1 && keysPressed[68]) {
+        if (player.g === 0 && keysPressed[87] || player.g === 1 && keysPressed[68]) {
             //make sure the camera stays centered on player despite edits to their y coordinates caused by crawling.
             camYOffset -= utilities.handlePlayerCrawl(player, player.flip);
 
@@ -237,12 +237,18 @@ const drawLevel = () => {
     level.rects.forEach((r) => {
         utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true);
     });
+    //An optimization would be making an array of functions tied to each special object, rather than doing this if then statement.
     level.specialObjects.forEach((o) => {
-        if (o.name != "fire") {
-            p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
+        if (o.name === "fire") {
+            if (fireIsOnScreen(player, o)) {
+                utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
+            }
         }
-        else if (fireIsOnScreen(player, o)) {
-            utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
+        else if (o.name === "checkpoint") {
+            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, "gray", false);
+        }
+        else {
+            p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
         }
     });
 };
@@ -344,14 +350,31 @@ const fireIsOnScreen = (p, f) => {
         && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
+
+//make array of collision and collected functions to avoid this if then statement
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            if (o.name !== "fire") {
+            if (o.name !== "fire" && o.name !== "checkpoint" && o.name !== "yellowswitch") {
                 level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
                 items[o.name].collected();
             }
-            else {
+            else if (o.name === "checkpoint") {
+                o.color = "yellow";
+                
+                player.spawn=[o.x + o.width / 2 ,o.y-8];
+
+                const sound = sfxr.generate("explosion");
+
+                sfxr.play(sound);
+            }
+            else if (o.name === "yellowswitch"){
+                if (p.g===0 && p.flipped === false){
+                    level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+                    items[o.name].collected();
+                }
+            }
+            else if (o.name === "fire") {
                 shouldUpdateGame = false;
                 explode_audio.play();
                 const color = player.color;
@@ -384,6 +407,11 @@ const setShape = (shape = 0) => {
 
 function rotateRight() {
     player.g = 1;
+    player.flipped = false;
+
+    const sound = sfxr.generate("powerUp");
+
+    sfxr.play(sound);
 };
 
 // I made these 'functions' so they can be accessed in the items object declaration (as they are referenced before defined).
@@ -416,9 +444,9 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
-    player.x = 825; player.y = 200; player.flip = false;
+    player.x = player.spawn[0]; player.y = player.spawn[1]; player.flip = false;
     player.newX = 300; player.newY = 300;
-    camXOffset = -525; camYOffset = 100;
+    camXOffset = 300 - player.x; camYOffset = 300 - player.y;
 }
 
 // Runs every update (60 fps) once the player has clicked the yellow button.
@@ -519,6 +547,9 @@ const keyDown = (e) => {
                 if (canFlip || infiniteFlip) {
                     player.flip = !player.flip;
                     canFlip = false;
+
+                    const sound = sfxr.generate("jump");
+                    sfxr.play(sound);
                 }
             }
             keysPressed[e.keyCode] = true;

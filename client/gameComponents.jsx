@@ -80,7 +80,7 @@ const GameInfo = (props) => {
                 alt="Infinite Flip Powerup" />
             <img id="morphball" src='assets/img/morphball.png' style={{ display: 'none' }} width="16" height="16"
                 alt="Shrinking Powerup" />
-            <img id="yellowswitch" src='assets/img/yellowswitch.png' style={{ display: 'none' }} width="32" height="32"
+            <img id="yellowswitch" src='assets/img/yellowswitch.png' style={{ display: 'none' }} width="25" height="25"
                 alt="Yellow Switch" />
             <img id="redswitch" src='assets/img/redswitch.png' style={{ display: 'none' }} width="32" height="32"
                 alt="Red Switch" />

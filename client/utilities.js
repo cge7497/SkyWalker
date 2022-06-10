@@ -11,13 +11,14 @@ const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, s
   // Circle, square, triangle, diamond
   p_ctx.save();
 
-  p_ctx.beginPath();
   p_ctx.translate(x,y);
 
   if (g === 1) {
     p_ctx.rotate(Math.PI/2);
   }
 
+  p_ctx.beginPath();
+  
   switch (shape) {
     case 0:
       p_ctx.arc(0, -(3 * scale), 3, 0, 2 * Math.PI);
@@ -45,8 +46,8 @@ const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, s
   p_ctx.lineTo(-(2 * scale), (8 * scale)); //draws left leg
   p_ctx.moveTo(0, (5 * scale)); //moving to leg beginning
   p_ctx.lineTo((2 * scale), (8 * scale)); //right leg
-  p_ctx.moveTo(-(3 * scale), (3 * scale));
-  p_ctx.lineTo((3 * scale), (3 * scale));
+  p_ctx.moveTo(-(3 * scale), (3 * scale)); //move to beginning of arms
+  p_ctx.lineTo((3 * scale), (3 * scale)); //arms
   if (color) p_ctx.strokeStyle = color;
   p_ctx.stroke();
   p_ctx.closePath();
@@ -54,7 +55,7 @@ const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, s
   p_ctx.restore();
 }
 
-const drawRectangle = (x, y, width, height, ctx, color, fill) => {
+const drawRectangle = (x, y, width, height, ctx, color, fill=true) => {
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(x, y);

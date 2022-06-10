@@ -112,11 +112,49 @@
       ]
     },
     {
+      "exportID": "89538969",
+      "name": "transparent_rectangle",
+      "limit": -1,
+      "size": {"x": 25, "y": 20},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#8b95fcb3",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "white", "definition": "Color", "display": 0, "defaults": "#000000ff", "includeAlpha": false}
+      ]
+    },
+    {
       "exportID": "56834300",
       "name": "yellowswitch",
       "limit": -1,
       "size": {"x": 16, "y": 16},
-      "origin": {"x": -4, "y": -11},
+      "origin": {"x": -4, "y": 0},
       "originAnchored": true,
       "shape": {
         "label": "Rectangle",
@@ -328,6 +366,42 @@
       "values": [],
       "texture": "../../../../OneDrive/Pictures/Kenney Assets/2D assets/Game Icons/PNG/Black/1x/arrowRight.png",
       "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAABGdBTUEAALGPC/xhBQAAAB5QTFRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtyhvagAAAAl0Uk5T7z/P369vX58AEzDFmAAAAHhJREFUOMvt00ENwCAMQNGJwAQScIEMJFTCFLSp2x2WjDL6p2C9vvyEFDhOmuOXVYoPkOoK4h6ityjKjDZRlCfaRaMUjzOC1EU0iHsSZaIod5SKohiKkBieQKa0JLmlJ0myUcNdC4nhzQmJ4QuRXFpIVukh+f/2p1zXkaQa6KE/5gAAAABJRU5ErkJggg=="
+    },
+    {
+      "exportID": "87615520",
+      "name": "checkpoint",
+      "limit": -1,
+      "size": {"x": 50, "y": 25},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ecff00ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
     }
   ],
   "tilesets": [
