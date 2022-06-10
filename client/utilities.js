@@ -89,9 +89,9 @@ const drawPlayerCloud = (p, ctx, camX) => {
   ctx.restore();
 }
 
+//Maybe include a less graphically internsive fire option: just a sprite.
 const drawFire = (x, y, width, height, ctx, startColor = 0) => {
   ctx.save();
-
   let clr = startColor;
 
   ctx.fillStyle = fireColors[clr];
