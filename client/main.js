@@ -24,10 +24,10 @@ const items = {
     'yellowswitch': { collected: cloudState },
     'redswitch': { collected: stopFire },
     'fire': { collected: collectMorphBall },
-    'hflip': {collected: rotateRight},
+    'hflip': { collected: rotateRight },
 };
 
-const player = { x: 825, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false };
+const player = { x: 825, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0 };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0;
@@ -140,7 +140,7 @@ const update = () => {
         updatePlayer();
         // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
         // So the player is always drawn with a black stroke.
-        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, player.color, undefined, player.shape);
+        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, player.color, undefined, player.shape, player.g);
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
     else if (inClouds) {
@@ -181,18 +181,27 @@ const updateCloud = () => {
 // Updates player movement based on input and collision.
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
-    if (keysPressed[65]) xDif = -xSpeed;
-    if (keysPressed[68]) xDif = xSpeed;
-    //else if (crawlInc<crawlIncMax) 
 
-    if (player.flip) yDif = -ySpeed;
-    else yDif = ySpeed;
+    if (player.g === 0) {
+        if (keysPressed[65]) xDif = -xSpeed;
+        if (keysPressed[68]) xDif = xSpeed;
+        //else if (crawlInc<crawlIncMax) 
 
-    if (player.right) xDif = ySpeed
+        if (player.flip) yDif = -ySpeed;
+        else yDif = ySpeed;
+    }
+    else if (player.g === 1) {
+        if (keysPressed[87]) yDif = -xSpeed;
+        if (keysPressed[83]) yDif = xSpeed;
+        //else if (crawlInc<crawlIncMax) 
+
+        if (player.flip) xDif = ySpeed;
+        else xDif = -ySpeed;
+    }
 
     //If the player hasn't crawled recently (so we don;t get a duplicate input)
     if (canCrawl) {
-        if (keysPressed[87]) {
+        if (player.g===0 && keysPressed[87] || player.g===1 && keysPressed[68]) {
             //make sure the camera stays centered on player despite edits to their y coordinates caused by crawling.
             camYOffset -= utilities.handlePlayerCrawl(player, player.flip);
 
@@ -205,7 +214,6 @@ const updatePlayer = () => {
         crawlInputTimer -= 1;
         if (crawlInputTimer <= 0) canCrawl = true;
     }
-
     player.newX = player.x + xDif;
     player.newY = player.y + yDif;
 
@@ -243,8 +251,8 @@ const drawLevel = () => {
 const drawBG = () => {
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    fireAnimColor+=1;
-    if (fireAnimColor>=5) fireAnimColor = 0;
+    fireAnimColor += 1;
+    if (fireAnimColor >= 5) fireAnimColor = 0;
 
     if (should_change_bg_color) {
         bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
@@ -374,8 +382,8 @@ const setShape = (shape = 0) => {
     player.shape = shape;
 }
 
-function rotateRight(){
-    p.dir = 'right';
+function rotateRight() {
+    player.g = 1;
 };
 
 // I made these 'functions' so they can be accessed in the items object declaration (as they are referenced before defined).
@@ -490,6 +498,12 @@ const keyDown = (e) => {
             keysPressed[e.keyCode] = true;
             break;
 
+        //'S' press
+        case 83:
+            console.log('s');
+            keysPressed[e.keyCode] = true;
+            break;
+
         //'W' press, which should only do something after the player collects the morph ball
         case 87:
             if (canCrawl) {
@@ -523,6 +537,9 @@ const keyUp = (e) => {
             keysPressed[e.keyCode] = false;
             break;
 
+        case 83:
+            keysPressed[e.keyCode] = false;
+            break;
         case 87:
             keysPressed[e.keyCode] = false;
             break;

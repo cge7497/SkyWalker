@@ -4,47 +4,53 @@ const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
 
 
 // draws the player shape, which is a combination of canvas lines and arcs.
-const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, shape = 0) => {
+const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, shape = 0, g=0) => {
   if (flipPlayer) scale *= -1;
   if (shouldClear) p_ctx.clearRect(0, 0, 640, 480);
 
   // Circle, square, triangle, diamond
   p_ctx.save();
+
   p_ctx.beginPath();
+  p_ctx.translate(x,y);
+
+  if (g === 1) {
+    p_ctx.rotate(Math.PI/2);
+  }
 
   switch (shape) {
     case 0:
-      p_ctx.arc(x, y - (3 * scale), 3, 0, 2 * Math.PI);
+      p_ctx.arc(0, -(3 * scale), 3, 0, 2 * Math.PI);
       break;
     case 1:
       scale *= 2;
-      p_ctx.arc(x, y - (3 * scale), Math.abs(3 * scale), 0, 2 * Math.PI);
+      p_ctx.arc(0, -(3 * scale), Math.abs(3 * scale), 0, 2 * Math.PI);
       break;
     case 2:
       scale *= 0.5;
-      p_ctx.arc(x, y - (3 * scale), Math.abs(3 * scale), 0, 2 * Math.PI);
+      p_ctx.arc(0, -(3 * scale), Math.abs(3 * scale), 0, 2 * Math.PI);
       break;
     case 3:
-      p_ctx.rect(x, y, 5 * scale, 5 * scale);
+      p_ctx.rect(0, 0, 5 * scale, 5 * scale);
       break;
     case 4:
-      p_ctx.rect(x - (3 * scale), y - (6 * scale), 6 * scale, 6 * scale);
+      p_ctx.rect(-(3 * scale), -(6 * scale), 6 * scale, 6 * scale);
       break;
     default:
-      p_ctx.arc(x, y - (3 * scale), 3, 0, 2 * Math.PI);
+      p_ctx.arc(0, -(3 * scale), 3, 0, 2 * Math.PI);
       break;
   }
   //draws line body from head
-  p_ctx.moveTo(x, y);
-  p_ctx.lineTo(x, y + (5 * scale));
-  p_ctx.lineTo(x - (2 * scale), y + (8 * scale)); //draws left leg
-  p_ctx.moveTo(x, y + (5 * scale)); //moving to leg beginning
-  p_ctx.lineTo(x + (2 * scale), y + (8 * scale)); //right leg
-  p_ctx.moveTo(x - (3 * scale), y + (3 * scale));
-  p_ctx.lineTo(x + (3 * scale), y + (3 * scale));
+  p_ctx.lineTo(0, (5 * scale));
+  p_ctx.lineTo(-(2 * scale), (8 * scale)); //draws left leg
+  p_ctx.moveTo(0, (5 * scale)); //moving to leg beginning
+  p_ctx.lineTo((2 * scale), (8 * scale)); //right leg
+  p_ctx.moveTo(-(3 * scale), (3 * scale));
+  p_ctx.lineTo((3 * scale), (3 * scale));
   if (color) p_ctx.strokeStyle = color;
   p_ctx.stroke();
   p_ctx.closePath();
+
   p_ctx.restore();
 }
 
