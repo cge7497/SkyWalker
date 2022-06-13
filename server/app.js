@@ -86,6 +86,7 @@ const server = app.listen(port, (err) => {
 
 const io = new Server(server);
 
+/*
 io.on('connection', (socket) => {
   console.log('a user connected');
 
@@ -95,3 +96,4 @@ io.on('connection', (socket) => {
     }
   });
 });
+*/

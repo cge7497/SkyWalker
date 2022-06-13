@@ -9,6 +9,8 @@ let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 let cloudsShouldLoop = true;
 
+var test = "hello";
+
 import { io } from "socket.io-client";
 let socket;
 
@@ -55,7 +57,8 @@ const init = (obj, immediate = false) => {
         player.shape = obj.shape;
         if (obj.items) initItems(obj.items);
 
-        setupSocket();
+        what_is_my_name = "uh... " + obj.username;
+        //setupSocket();
     }
     else {
     }
@@ -126,7 +129,7 @@ const init = (obj, immediate = false) => {
 
 
     setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 5);
+    setInterval(drawBG, 1000 / 15);
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
@@ -288,7 +291,7 @@ const drawBG = () => {
 // Sends the player's movement in the last second.
 const sendAndReceiveMovement = async () => {
     if (movementThisSecond && !inClouds) {
-        socket.emit("sendMovement", movementThisSecond);
+        //socket.emit("sendMovement", movementThisSecond);
         otherPlayerMovementFrame = 0;
         movementThisSecond.movement = [];
     }
@@ -367,8 +370,6 @@ const CollisionsWithSpecialObjects = (p) => {
                 sfxr.play(sound);
             }
             else if (o.name === "yellowswitch") {
-                console.log(p.g);
-                console.log(p.flip);
                 if (p.g === 0 && p.flip === false) {
                     level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
                     items[o.name].collected();
@@ -507,13 +508,14 @@ function cloudState() {
     });
 }
 
+/*
 const setupSocket = () => {
     socket = io();
     socket.on('receiveMovement', (movement) => {
         otherPlayerMovement = movement;
     });
 };
-
+*/
 const keyDown = (e) => {
     // If the target is not the body for a keyClick- meaning the target is an input form- return and don't move player based on this input.
     if (e.target != document.body) return;
