@@ -25,7 +25,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Teal"}
+          "values": {"color": "DarkSalmon"}
         },
         {
           "name": "big_rect",
@@ -37,7 +37,7 @@
           "height": 525,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "OrangeRed"}
+          "values": {"color": "DarkViolet"}
         },
         {
           "name": "big_rect",
@@ -49,7 +49,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "DarkSeaGreen"}
+          "values": {"color": "DarkOrange"}
         },
         {
           "name": "big_rect",
@@ -61,7 +61,7 @@
           "height": 1300,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "DarkOliveGreen"}
+          "values": {"color": "DeepPink"}
         },
         {
           "name": "big_rect",
@@ -73,7 +73,7 @@
           "height": 750,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Tan"}
+          "values": {"color": "Black"}
         },
         {
           "name": "big_rect",
@@ -85,7 +85,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "HotPink"}
+          "values": {"color": "SpringGreen"}
         },
         {
           "name": "big_rect",
@@ -97,7 +97,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "AliceBlue"}
+          "values": {"color": "RosyBrown"}
         },
         {
           "name": "big_rect",
@@ -109,7 +109,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Bisque"}
+          "values": {"color": "DeepSkyBlue"}
         },
         {
           "name": "big_rect",
@@ -121,7 +121,7 @@
           "height": 225,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "PaleGoldenRod"}
+          "values": {"color": "DarkSalmon"}
         },
         {
           "name": "big_rect",
@@ -133,7 +133,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "LightGoldenRodYellow"}
+          "values": {"color": "DarkRed"}
         },
         {
           "name": "small_rect",
@@ -145,7 +145,7 @@
           "height": 150,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Beige"}
+          "values": {"color": "PaleGoldenRod"}
         },
         {
           "name": "small_rect",
@@ -157,7 +157,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "ForestGreen"}
+          "values": {"color": "Lime"}
         },
         {
           "name": "small_rect",
@@ -169,7 +169,7 @@
           "height": 125,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Brown"}
+          "values": {"color": "SandyBrown"}
         },
         {
           "name": "small_rect",
@@ -181,7 +181,7 @@
           "height": 75,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "RoyalBlue"}
+          "values": {"color": "Gainsboro"}
         },
         {
           "name": "small_rect",
@@ -193,7 +193,7 @@
           "height": 75,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "CadetBlue"}
+          "values": {"color": "IndianRed"}
         },
         {
           "name": "small_rect",
@@ -205,7 +205,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Purple"}
+          "values": {"color": "DarkViolet"}
         },
         {
           "name": "small_rect",
@@ -217,7 +217,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Azure"}
+          "values": {"color": "DarkTurquoise"}
         },
         {
           "name": "small_rect",
@@ -229,7 +229,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "SlateGray"}
+          "values": {"color": "LightSlateGrey"}
         },
         {
           "name": "small_rect",
@@ -241,7 +241,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Tan"}
+          "values": {"color": "SandyBrown"}
         },
         {
           "name": "small_rect",
@@ -253,7 +253,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "DeepPink"}
+          "values": {"color": "RebeccaPurple"}
         },
         {
           "name": "small_rect",
@@ -265,7 +265,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "LightGray"}
+          "values": {"color": "Azure"}
         },
         {
           "name": "small_rect",
@@ -277,7 +277,7 @@
           "height": 325,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "HotPink"}
+          "values": {"color": "OliveDrab"}
         },
         {
           "name": "small_rect",
@@ -289,7 +289,7 @@
           "height": 75,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Maroon"}
+          "values": {"color": "MistyRose"}
         },
         {
           "name": "small_rect",
@@ -301,7 +301,7 @@
           "height": 150,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Ivory"}
+          "values": {"color": "LightCyan"}
         },
         {
           "name": "small_rect",
@@ -313,7 +313,7 @@
           "height": 175,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Snow"}
+          "values": {"color": "PaleGoldenRod"}
         },
         {
           "name": "small_rect",
@@ -325,7 +325,7 @@
           "height": 200,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "YellowGreen"}
+          "values": {"color": "Red"}
         },
         {
           "name": "small_rect",
@@ -337,7 +337,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "DarkOrchid"}
+          "values": {"color": "Plum"}
         },
         {
           "name": "small_rect",
@@ -349,7 +349,7 @@
           "height": 75,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "LimeGreen"}
+          "values": {"color": "GoldenRod"}
         },
         {
           "name": "small_rect",
@@ -361,7 +361,7 @@
           "height": 75,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "LightSalmon"}
+          "values": {"color": "Gray"}
         },
         {
           "name": "small_rect",
@@ -373,7 +373,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Tomato"}
+          "values": {"color": "Navy"}
         },
         {
           "name": "small_rect",
@@ -385,7 +385,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "LightGoldenRodYellow"}
+          "values": {"color": "Linen"}
         },
         {
           "name": "small_rect",
@@ -397,7 +397,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "HotPink"}
+          "values": {"color": "Aquamarine"}
         },
         {
           "name": "small_rect",
@@ -409,7 +409,7 @@
           "height": 75,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Coral"}
+          "values": {"color": "DarkSlateGrey"}
         },
         {
           "name": "small_rect",
@@ -421,7 +421,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "OldLace"}
+          "values": {"color": "DarkRed"}
         },
         {
           "name": "small_rect",
@@ -433,7 +433,7 @@
           "height": 50,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "MediumBlue"}
+          "values": {"color": "Peru"}
         },
         {
           "name": "small_rect",
@@ -445,7 +445,7 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "HotPink"}
+          "values": {"color": "DarkViolet"}
         },
         {
           "name": "small_rect",
@@ -457,19 +457,19 @@
           "height": 25,
           "originX": 0,
           "originY": 0,
-          "values": {"color": "Khaki"}
+          "values": {"color": "SteelBlue"}
         },
         {
           "name": "transparent_rectangle",
-          "id": 40,
+          "id": 42,
           "_eid": "89538969",
           "x": 825,
-          "y": 80,
+          "y": 84,
           "width": 25,
-          "height": 25,
+          "height": 16,
           "originX": 0,
           "originY": 0,
-          "values": {"white": "#000000ff", "color": "OliveDrab"}
+          "values": {"white": "#000000ff", "color": "MediumSeaGreen"}
         }
       ]
     },

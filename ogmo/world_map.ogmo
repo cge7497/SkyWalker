@@ -115,7 +115,7 @@
       "exportID": "89538969",
       "name": "transparent_rectangle",
       "limit": -1,
-      "size": {"x": 25, "y": 20},
+      "size": {"x": 25, "y": 16},
       "origin": {"x": 0, "y": 0},
       "originAnchored": true,
       "shape": {

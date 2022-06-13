@@ -8,6 +8,10 @@ body {
     display: inline-block;
 }
 
+.noDisplay{
+    display:none;
+}
+
 .inputForm {
     width: 650px;
     margin: 0 auto;
@@ -313,7 +317,10 @@ canvas {
 
 #gameInfo img {
     margin: 0 10px;
-    margin-bottom: 10px;
+}
+
+#moveInstructions{
+    margin-top: 20px;
 }
 
 button {

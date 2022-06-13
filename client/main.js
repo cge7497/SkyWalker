@@ -27,7 +27,7 @@ const items = {
     'hflip': { collected: rotateRight },
 };
 
-const player = { x: 825, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
+const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0;
@@ -43,7 +43,7 @@ let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
 const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
-let camXOffset = -525, camYOffset = 100;
+let camXOffset = -538, camYOffset = 100;
 
 
 // Initializes the game mainly based on data gotten in level.js getData. 
@@ -66,13 +66,9 @@ const init = (obj, immediate = false) => {
 
     //I created these sounds with SFXR (http://sfxr.me/)
     btn_audio = new Audio("assets/sound/buttonClick.wav");
-    btn_audio.volume = 0.25;
     item_audio = new Audio("assets/sound/itemGet.wav");
-    item_audio.volume = 0.25;
     item_audio = new Audio("assets/sound/itemGet.wav");
-    item_audio.volume = 0.25;
     explode_audio = new Audio("assets/sound/explosion.wav");
-    explode_audio.volume = 0.25;
 
     // This is the song "The Earth" by J.S. Bach. It is the version from the film "Solaris"
     bg_audio = new Audio("assets/sound/the-earth.mp3");
@@ -130,7 +126,7 @@ const init = (obj, immediate = false) => {
 
 
     setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 15);
+    setInterval(drawBG, 1000 / 5);
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
@@ -191,7 +187,7 @@ const updatePlayer = () => {
         else yDif = ySpeed;
     }
     else if (player.g === 1) {
-        if (keysPressed[87]) yDif = -xSpeed;
+        if (keysPressed[87]) { yDif = -xSpeed;}
         if (keysPressed[83]) yDif = xSpeed;
         //else if (crawlInc<crawlIncMax) 
 
@@ -199,9 +195,10 @@ const updatePlayer = () => {
         else xDif = -ySpeed;
     }
 
-    //If the player hasn't crawled recently (so we don;t get a duplicate input)
+    //If the player hasn't crawled recently (so we don't get a duplicate input)
     if (canCrawl) {
         if (player.g === 0 && keysPressed[87] || player.g === 1 && keysPressed[68]) {
+
             //make sure the camera stays centered on player despite edits to their y coordinates caused by crawling.
             camYOffset -= utilities.handlePlayerCrawl(player, player.flip);
 
@@ -301,7 +298,7 @@ const drawOtherPlayerMovement = () => {
     if (inClouds) return;
 
     //store this player's coordinate
-    movementThisSecond.movement.push({ x: player.x + player.halfWidth, y: player.y + player.halfHeight, flipped: player.flip });
+    movementThisSecond.movement.push({ x: player.x + player.halfWidth, y: player.y + player.halfHeight, flip: player.flip });
 
     let keys;
     if (otherPlayerMovement) {
@@ -316,7 +313,7 @@ const drawOtherPlayerMovement = () => {
     w_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     keys.forEach((m) => {
         const f = otherPlayerMovement[m].movement[otherPlayerMovementFrame];
-        if (f) utilities.drawPlayer(f.x + camXOffset - 1.5, f.y + camYOffset - 7, w_ctx, f.flipped, 1, `${otherPlayerMovement[m].color}55`, false);
+        if (f) utilities.drawPlayer(f.x + camXOffset - 1.5, f.y + camYOffset - 7, w_ctx, f.flip, 1, `${otherPlayerMovement[m].color}55`, false);
     });
     otherPlayerMovementFrame += 1;
 };
@@ -330,10 +327,11 @@ const CollisionsWithLevel = (p, xDif, yDif) => {
             //have to adjust the X that is used in the next equation...
             if (utilities.collidedFromBottom(p, r) || utilities.collidedFromTop(p, r)) {
                 p.newY -= yDif;
-                if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
+                if (p.g === 0 && !infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
             }
             if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
                 p.newX -= xDif;
+                if (p.g === 1 && !infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
             }
         }
     });
@@ -361,15 +359,17 @@ const CollisionsWithSpecialObjects = (p) => {
             }
             else if (o.name === "checkpoint") {
                 o.color = "yellow";
-                
-                player.spawn=[o.x + o.width / 2 ,o.y-8];
+
+                player.spawn = [o.x + o.width / 2, o.y - 8];
 
                 const sound = sfxr.generate("explosion");
 
                 sfxr.play(sound);
             }
-            else if (o.name === "yellowswitch"){
-                if (p.g===0 && p.flipped === false){
+            else if (o.name === "yellowswitch") {
+                console.log(p.g);
+                console.log(p.flip);
+                if (p.g === 0 && p.flip === false) {
                     level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
                     items[o.name].collected();
                 }
@@ -407,7 +407,7 @@ const setShape = (shape = 0) => {
 
 function rotateRight() {
     player.g = 1;
-    player.flipped = false;
+    player.flip = true;
 
     const sound = sfxr.generate("powerUp");
 
@@ -418,7 +418,8 @@ function rotateRight() {
 // They handle giving the player the relevant item. They displays the relevant image next to items, updates instruction text,
 // and may send a POST request to the server updating this player's items.
 function collectMorphBall(shouldSendPost = true) {
-    document.getElementById('morphball').style.display = 'inline';
+    document.getElementById('morphball').classList.remove("noDisplay");
+    document.getElementById('morphball').classList.add("inline");
     document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move, `;
     canCrawl = true; hasMorphBall = true;
     if (shouldSendPost === true) {
@@ -427,7 +428,8 @@ function collectMorphBall(shouldSendPost = true) {
     }
 }
 function collectScrewAttack(shouldSendPost = true) {
-    document.getElementById('screwattack').style.display = 'inline';
+    document.getElementById('screwattack').classList.remove("noDisplay");
+    document.getElementById('screwattack').classList.add("inline");
     document.getElementById('spaceInstructions').innerHTML = `<strong>&nbsp;SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
@@ -528,15 +530,12 @@ const keyDown = (e) => {
 
         //'S' press
         case 83:
-            console.log('s');
             keysPressed[e.keyCode] = true;
             break;
 
         //'W' press, which should only do something after the player collects the morph ball
         case 87:
-            if (canCrawl) {
-                keysPressed[e.keyCode] = true;
-            }
+            keysPressed[e.keyCode] = true;
             break;
 
         //Space is pressed.
