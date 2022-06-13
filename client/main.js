@@ -111,8 +111,6 @@ const init = (obj, immediate = false) => {
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
 
-    utilities.drawPlayer(800, 235, p_ctx, false);
-
     //If getLevel (in level.js) got back a set of clouds, add them to the bgRects/clouds that will be displayed by the client.
     if (level.clouds && level.clouds.length > 0) {
         level.clouds.forEach((c) => {
@@ -137,9 +135,11 @@ const init = (obj, immediate = false) => {
 const update = () => {
     if (!inClouds && shouldUpdateGame) {
         updatePlayer();
+
         // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
         // So the player is always drawn with a black stroke.
-        utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, player.color, undefined, player.shape, player.g);
+        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, undefined, fireAnimColor);
+
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
     else if (inClouds) {
@@ -190,7 +190,7 @@ const updatePlayer = () => {
         else yDif = ySpeed;
     }
     else if (player.g === 1) {
-        if (keysPressed[87]) { yDif = -xSpeed;}
+        if (keysPressed[87]) { yDif = -xSpeed; }
         if (keysPressed[83]) yDif = xSpeed;
         //else if (crawlInc<crawlIncMax) 
 
@@ -316,7 +316,10 @@ const drawOtherPlayerMovement = () => {
     w_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     keys.forEach((m) => {
         const f = otherPlayerMovement[m].movement[otherPlayerMovementFrame];
-        if (f) utilities.drawPlayer(f.x + camXOffset - 1.5, f.y + camYOffset - 7, w_ctx, f.flip, 1, `${otherPlayerMovement[m].color}55`, false);
+        if (f) {
+            f.color = `${otherPlayerMovement[m].color}55`;
+            utilities.drawPlayer(f, camXOffset, camYOffset, w_ctx, false, 0);
+        }
     });
     otherPlayerMovementFrame += 1;
 };
@@ -404,6 +407,10 @@ const initItems = (savedItems) => {
 
 const setShape = (shape = 0) => {
     player.shape = shape;
+
+    if (shape === 1) player.scale = 2;
+    else if (shape === 2) player.scale = 0.5;
+    else player.scale = 1;
 }
 
 function rotateRight() {
@@ -465,7 +472,7 @@ function cloudState() {
         playerCloud.halfWidth = playerCloud.width / 2;
         playerCloud.halfHeight = playerCloud.height / 2;
 
-        requests.sendCloud(trueColor);
+        //requests.sendCloud(trueColor);
 
         bg_audio.pause();
         whistle_audio.play();
@@ -487,6 +494,7 @@ function cloudState() {
                 }
             })
         }, 4000);
+
         inClouds = true;
     }
 
@@ -495,7 +503,12 @@ function cloudState() {
         player.y += 0.85;
     }
 
-    utilities.drawPlayer(player.x + camXOffset, player.y + camYOffset, p_ctx, player.flip, player.scale, `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`, undefined, player.shape);
+    //Makes the player's alpha decrease.
+    player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
+
+    console.log(player.color);
+
+    utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, false, 0);
 
     bgRects.forEach((r) => {
         r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.1)`;

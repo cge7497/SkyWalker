@@ -4,55 +4,59 @@ const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
 
 
 // draws the player shape, which is a combination of canvas lines and arcs.
-const drawPlayer = (x, y, p_ctx, flipPlayer, scale, color, shouldClear = true, shape = 0, g=0) => {
-  if (flipPlayer) scale *= -1;
-  if (shouldClear) p_ctx.clearRect(0, 0, 640, 480);
+const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
+
+  const x = p.x + camX;
+  const y = p.y + camY;
+
+  if (p.flip) p.scale *= -1;
+  if (shouldClear) ctx.clearRect(0, 0, 640, 480);
 
   // Circle, square, triangle, diamond
-  p_ctx.save();
+  ctx.save();
 
-  p_ctx.translate(x,y);
+  ctx.translate(x,y);
 
-  if (g === 1) {
-    p_ctx.rotate(Math.PI/2);
+  if (p.g === 1) {
+    ctx.rotate(Math.PI/2);
   }
 
-  p_ctx.beginPath();
+  ctx.beginPath();
   
-  switch (shape) {
+  switch (p.shape) {
     case 0:
-      p_ctx.arc(0, -(3 * scale), 3, 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), 3, 0, 2 * Math.PI);
       break;
     case 1:
-      scale *= 2;
-      p_ctx.arc(0, -(3 * scale), Math.abs(3 * scale), 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), 0, 2 * Math.PI);
       break;
     case 2:
-      scale *= 0.5;
-      p_ctx.arc(0, -(3 * scale), Math.abs(3 * scale), 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), 0, 2 * Math.PI);
       break;
     case 3:
-      p_ctx.rect(0, 0, 5 * scale, 5 * scale);
+      ctx.rect(0, 0, 5 * p.scale, 5 * p.scale);
       break;
     case 4:
-      p_ctx.rect(-(3 * scale), -(6 * scale), 6 * scale, 6 * scale);
+      ctx.rect(-(3 * p.scale), -(6 * p.scale), 6 * p.scale, 6 * p.scale);
       break;
     default:
-      p_ctx.arc(0, -(3 * scale), 3, 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), 3, 0, 2 * Math.PI);
       break;
   }
-  //draws line body from head
-  p_ctx.lineTo(0, (5 * scale));
-  p_ctx.lineTo(-(2 * scale), (8 * scale)); //draws left leg
-  p_ctx.moveTo(0, (5 * scale)); //moving to leg beginning
-  p_ctx.lineTo((2 * scale), (8 * scale)); //right leg
-  p_ctx.moveTo(-(3 * scale), (3 * scale)); //move to beginning of arms
-  p_ctx.lineTo((3 * scale), (3 * scale)); //arms
-  if (color) p_ctx.strokeStyle = color;
-  p_ctx.stroke();
-  p_ctx.closePath();
+  const legOffset = (2 + frame / 5) * p.scale;
 
-  p_ctx.restore();
+  //draws line body from head
+  ctx.lineTo(0, (5 * p.scale));
+  ctx.lineTo(-legOffset, (8 * p.scale)); //draws left leg
+  ctx.moveTo(0, (5 * p.scale)); //moving to leg beginning
+  ctx.lineTo(legOffset, (8 * p.scale)); //right leg
+  ctx.moveTo(-(3 * p.scale), (3 * p.scale)); //move to beginning of arms
+  ctx.lineTo((3 * p.scale), (3 * p.scale)); //arms
+  if (p.color) ctx.strokeStyle = p.color;
+  ctx.stroke();
+  ctx.closePath();
+
+  ctx.restore();
 }
 
 const drawRectangle = (x, y, width, height, ctx, color, fill=true) => {
