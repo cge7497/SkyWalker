@@ -32,7 +32,7 @@ const items = {
 const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
-let fireAnimColor = 0;
+let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
 
 let xSpeed = 3, ySpeed = 5;
 let canFlip = true; let infiniteFlip = false, inClouds = false, shouldUpdateGame = true;;
@@ -138,7 +138,7 @@ const update = () => {
 
         // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
         // So the player is always drawn with a black stroke.
-        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, undefined, fireAnimColor);
+        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, undefined, playerWalkAnimCounter);
 
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
@@ -180,18 +180,18 @@ const updateCloud = () => {
 // Updates player movement based on input and collision.
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
-
+    let walked = false;
     if (player.g === 0) {
-        if (keysPressed[65]) xDif = -xSpeed;
-        if (keysPressed[68]) xDif = xSpeed;
+        if (keysPressed[65]) { xDif = -xSpeed; walked = true; }
+        if (keysPressed[68]) { xDif = xSpeed; walked = true; }
         //else if (crawlInc<crawlIncMax) 
 
         if (player.flip) yDif = -ySpeed;
         else yDif = ySpeed;
     }
     else if (player.g === 1) {
-        if (keysPressed[87]) { yDif = -xSpeed; }
-        if (keysPressed[83]) yDif = xSpeed;
+        if (keysPressed[87]) { yDif = -xSpeed; walked = true; }
+        if (keysPressed[83]) { yDif = xSpeed; walked = true; }
         //else if (crawlInc<crawlIncMax) 
 
         if (player.flip) xDif = ySpeed;
@@ -214,11 +214,12 @@ const updatePlayer = () => {
         crawlInputTimer -= 1;
         if (crawlInputTimer <= 0) canCrawl = true;
     }
+
     player.newX = player.x + xDif;
     player.newY = player.y + yDif;
 
     let colliding = CollisionsWithLevel(player, xDif, yDif); //returns a bool if not colliding, otherwise returns an array of collisions.
-    if (!colliding) {
+    if (!colliding[0]) {
         player.x += xDif; player.y += yDif;
         camXOffset -= xDif;
         camYOffset -= yDif;
@@ -229,6 +230,9 @@ const updatePlayer = () => {
         player.x = player.newX;
         player.y = player.newY;
     }
+
+    updatePlayerWalkAnim(walked, colliding[1]);
+
     CollisionsWithSpecialObjects(player);
 }
 
@@ -326,18 +330,24 @@ const drawOtherPlayerMovement = () => {
 
 //Returns true if there are collisions. It also fixes these collisions.
 const CollisionsWithLevel = (p, xDif, yDif) => {
-    let colliding = false;
+    let colliding = [false, false]; // 0 shows whether any collisions occured. 1 shows whether a collision with the ground (based on g) occurred.
     level.rects.forEach((r) => {
         if (areColliding(p, r)) {
-            colliding = true;
+            colliding[0] = true;
             //have to adjust the X that is used in the next equation...
             if (utilities.collidedFromBottom(p, r) || utilities.collidedFromTop(p, r)) {
                 p.newY -= yDif;
-                if (p.g === 0 && !infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
+                if (p.g === 0) {
+                    if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
+                    colliding[1] = true;
+                }
             }
             if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
                 p.newX -= xDif;
-                if (p.g === 1 && !infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
+                if (p.g === 1) {
+                    if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
+                    colliding[1] = true;
+                }
             }
         }
     });
@@ -413,6 +423,23 @@ const setShape = (shape = 0) => {
     else player.scale = 1;
 }
 
+const updatePlayerWalkAnim = (walked = false, onGround = false) => {
+    if (walked && onGround) {
+        if (playerWalkAnimOut) {
+            playerWalkAnimCounter += 0.25;
+            if (playerWalkAnimCounter >= 2) playerWalkAnimOut = false;
+        }
+        else {
+            playerWalkAnimCounter -= 0.25;
+            if (playerWalkAnimCounter <= -2) playerWalkAnimOut = true;
+        }
+    }
+    //Revert back to 2
+    else if (playerWalkAnimCounter !== 0) {
+        playerWalkAnimCounter += 0 - playerWalkAnimCounter;
+    }
+};
+
 function rotateRight() {
     player.g = 1;
     player.flip = true;
@@ -421,6 +448,8 @@ function rotateRight() {
 
     sfxr.play(sound);
 };
+
+
 
 // I made these 'functions' so they can be accessed in the items object declaration (as they are referenced before defined).
 // They handle giving the player the relevant item. They displays the relevant image next to items, updates instruction text,
@@ -560,6 +589,7 @@ const keyDown = (e) => {
             if (!keysPressed[e.keyCode]) {
                 if (canFlip || infiniteFlip) {
                     player.flip = !player.flip;
+                    player.scale *= -1;
                     canFlip = false;
 
                     const sound = sfxr.generate("jump");

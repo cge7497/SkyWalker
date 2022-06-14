@@ -1,6 +1,7 @@
 // Thank you to https://www.schemecolor.com/sky-on-fire.php for this color palette.
 const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
-
+const PI3DIV2 = 3 * Math.PI / 2;
+const NPIDIV2 = -Math.PI/2;
 
 
 // draws the player shape, which is a combination of canvas lines and arcs.
@@ -9,29 +10,27 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
   const x = p.x + camX;
   const y = p.y + camY;
 
-  if (p.flip) p.scale *= -1;
   if (shouldClear) ctx.clearRect(0, 0, 640, 480);
 
   // Circle, square, triangle, diamond
   ctx.save();
 
-  ctx.translate(x,y);
+  ctx.translate(x, y);
+  ctx.beginPath();
 
   if (p.g === 1) {
-    ctx.rotate(Math.PI/2);
+    ctx.rotate(Math.PI / 2);
   }
 
-  ctx.beginPath();
-  
   switch (p.shape) {
     case 0:
-      ctx.arc(0, -(3 * p.scale), 3, 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), 3, NPIDIV2, PI3DIV2);
       break;
     case 1:
-      ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), NPIDIV2, PI3DIV2);
       break;
     case 2:
-      ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), NPIDIV2, PI3DIV2);
       break;
     case 3:
       ctx.rect(0, 0, 5 * p.scale, 5 * p.scale);
@@ -40,11 +39,13 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
       ctx.rect(-(3 * p.scale), -(6 * p.scale), 6 * p.scale, 6 * p.scale);
       break;
     default:
-      ctx.arc(0, -(3 * p.scale), 3, 0, 2 * Math.PI);
+      ctx.arc(0, -(3 * p.scale), 3, NPIDIV2, PI3DIV2);
       break;
   }
-  const legOffset = (2 + frame / 5) * p.scale;
+  const legOffset = (2 + frame) * p.scale;
 
+  ctx.moveTo(0, -p.scale);
+  
   //draws line body from head
   ctx.lineTo(0, (5 * p.scale));
   ctx.lineTo(-legOffset, (8 * p.scale)); //draws left leg
@@ -52,21 +53,25 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
   ctx.lineTo(legOffset, (8 * p.scale)); //right leg
   ctx.moveTo(-(3 * p.scale), (3 * p.scale)); //move to beginning of arms
   ctx.lineTo((3 * p.scale), (3 * p.scale)); //arms
+
+  ctx.closePath();
+
   if (p.color) ctx.strokeStyle = p.color;
   ctx.stroke();
-  ctx.closePath();
 
   ctx.restore();
 }
 
-const drawRectangle = (x, y, width, height, ctx, color, fill=true) => {
+const drawRectangle = (x, y, width, height, ctx, color, fill = true) => {
   ctx.save();
+
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x + width, y);
   ctx.lineTo(x + width, y + height);
   ctx.lineTo(x, y + height);
   ctx.closePath();
+
   if (fill) { ctx.fillStyle = color; ctx.fill() }
   else { ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke(); }
   ctx.restore();
@@ -105,7 +110,7 @@ const drawFire = (x, y, width, height, ctx, startColor = 0) => {
   let inc = 3;
 
   for (let i = 9; i > 2; i -= inc) {
-    clr +=1;
+    clr += 1;
     if (clr >= 5) clr = 0;
 
     inc -= 0.4;
