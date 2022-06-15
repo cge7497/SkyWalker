@@ -2,12 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        game: './client/main.js',
         page: './client/login.jsx',
-        game: {
-            import: './client/main.js',
-            dependOn: 'shared'
-        },
         page: {
             import: './client/login.jsx',
             dependOn: 'shared'

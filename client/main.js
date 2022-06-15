@@ -5,7 +5,7 @@ import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-let w_ctx, p_ctx, bg_ctx, scene, renderer, camera;
+let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera;
 const sq_walkers = [], arc_walkers = [];
 const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
@@ -108,6 +108,7 @@ const startGameLogic = (obj, immediate = false) => {
     w_ctx = w_canvas.getContext('2d');
     p_ctx = p_canvas.getContext('2d');
     bg_ctx = bg_canvas.getContext('2d');
+    js3_ctx = js3_canvas.getContext('2d');
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -167,6 +168,8 @@ const startGameLogic = (obj, immediate = false) => {
 const animate = () => {
     scene.rotation.x += 0.01;
     scene.rotation.y += 0.01;
+
+    scene.position.x += 1;
 
     renderer.render(scene, camera);
 };
