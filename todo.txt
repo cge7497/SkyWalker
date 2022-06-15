@@ -2,6 +2,8 @@ AVOIDED Make it so you don't collide with yellow floor on bottom when coming fro
 Don't get stuck on right side of platforms: don't move down, yet can't move left is an error.
 This is easily testable on the top right, where you can get stuck trying to crawl into the little crevace.
 
+Make gameBundle and pageBundle not both include main.js. I think this makes pageBundle include main=>three.js which makes it too big.
+    To accomplish this, tie start game logic to an event in game.js?
 Observable universe (cloud background) image by Pablo Carlos Budassi:
 Link to wikipedia user page: https://commons.wikimedia.org/wiki/User:Unmismoobjetivo
 Link to license: https://creativecommons.org/licenses/by-sa/3.0/

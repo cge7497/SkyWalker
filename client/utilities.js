@@ -33,7 +33,7 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
       ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), NPIDIV2, PI3DIV2);
       break;
     case 3:
-      ctx.rect(0, 0, 5 * p.scale, 5 * p.scale);
+      ctx.rect(0, 0, 5 * p.scale, 5 * p.scale);//
       break;
     case 4:
       ctx.rect(-(3 * p.scale), -(6 * p.scale), 6 * p.scale, 6 * p.scale);

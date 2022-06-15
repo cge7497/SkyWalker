@@ -277,15 +277,20 @@ canvas {
 }
 
 #canvas_player {
-    z-index: 2;
+    z-index: 3;
     position: absolute;
     border: 0.5rem outset rgba(131, 220, 250, 0.7);
 }
 
 #canvas_walkers {
-    z-index: 1;
+    z-index: 2;
     position: absolute;
     border: 0.5rem outset lightpink;
+}
+#canvas_js3{
+    z-index: 1;
+    position: absolute;
+    border: 0.5rem outset lightgreen;
 }
 
 #canvas_bg {

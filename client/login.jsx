@@ -1,6 +1,6 @@
 const helper = require('./helper.js');
 const level = require('./level.js');
-const game = require('./main.js');
+const {startGameLogic} = require('./main.js');
 const gameComponents = require('./gameComponents.jsx');
 
 const handleLogin = (e) => {
@@ -214,7 +214,7 @@ const init = async () => {
 };
 
 const initGame = (player, immediate) => {
-    game.init(player, immediate);
+    startGameLogic(player, immediate);
 
     ReactDOM.render(<gameComponents.PayModelDisplay displayMode={0} disabled={false} selected = {player.shape} />,
         document.getElementById('payModel'));

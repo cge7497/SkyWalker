@@ -2,8 +2,10 @@ import * as utilities from "./utilities.js";
 import * as THREE from 'three';
 import * as level from "./level.js"
 import * as requests from './requests.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-let w_ctx, p_ctx, bg_ctx;
+
+let w_ctx, p_ctx, bg_ctx, scene, renderer, camera;
 const sq_walkers = [], arc_walkers = [];
 const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
@@ -30,7 +32,7 @@ const items = {
     'hflip': { collected: rotateRight },
 };
 
-const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
+const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, ame: '', flip: false, g: 0, spawn: [825, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
@@ -50,7 +52,7 @@ let camXOffset = -538, camYOffset = 100;
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
-const init = (obj, immediate = false) => {
+const startGameLogic = (obj, immediate = false) => {
     if (obj && obj.username && obj.items && obj.color && obj.shape >= 0) {
         player.name = obj.username;
         trueColor = obj.color;
@@ -99,6 +101,7 @@ const init = (obj, immediate = false) => {
     let p_canvas = document.querySelector("#canvas_player");
     let w_canvas = document.querySelector("#canvas_walkers");
     let bg_canvas = document.querySelector("#canvas_bg");
+    let js3_canvas = document.querySelector("#canvas_js3");
     document.getElementById('resetBtn').onclick = movePlayerBackToStart;
 
 
@@ -106,19 +109,30 @@ const init = (obj, immediate = false) => {
     p_ctx = p_canvas.getContext('2d');
     bg_ctx = bg_canvas.getContext('2d');
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    // Thanks to https://stackoverflow.com/a/20496296 for describing how to have a clear background in three.js.
+    renderer = new THREE.WebGLRenderer({ canvas: js3_canvas, alpha: true });
+    renderer.setClearColor(0x000000, 0);
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    const light = new THREE.AmbientLight(0xffffff); // soft white light
+    scene.add(light);
+
+    // White directional light at half intensity shining from the top.
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    scene.add(directionalLight);
 
     camera.position.z = 5;
+
+    const loader = new GLTFLoader();
+
+    loader.load('assets/img/SavePc.glb', function (gltf) {
+        scene.add(gltf.scene);
+        // renderer.render(scene, camera);
+    }, undefined, function (error) {
+        console.error(error);
+    });
 
 
     canvasWidth = w_canvas.width;
@@ -144,10 +158,19 @@ const init = (obj, immediate = false) => {
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
-    requestAnimationFrame(() => { renderer.render(scene, camera) });
+    setInterval(animate, 1000 / 30);
+
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
+
+const animate = () => {
+    scene.rotation.x += 0.01;
+    scene.rotation.y += 0.01;
+
+    renderer.render(scene, camera);
+};
+
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
     if (!inClouds && shouldUpdateGame) {
@@ -166,6 +189,10 @@ const update = () => {
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset);
         }
     }
+
+    //scene.translateX(1);
+    //scene.translateY(1);
+    // js3_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     drawLevel();
 };
@@ -347,6 +374,7 @@ const drawOtherPlayerMovement = () => {
 
 //Returns true if there are collisions. It also fixes these collisions.
 const CollisionsWithLevel = (p, xDif, yDif) => {
+    //
     let colliding = [false, false]; // 0 shows whether any collisions occured. 1 shows whether a collision with the ground (based on g) occurred.
     level.rects.forEach((r) => {
         if (areColliding(p, r)) {
@@ -642,4 +670,4 @@ const keyUp = (e) => {
     }
 };
 
-export { init, setShape };
+export { startGameLogic, setShape };
