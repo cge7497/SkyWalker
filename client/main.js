@@ -1,4 +1,5 @@
 import * as utilities from "./utilities.js";
+import * as THREE from 'three';
 import * as level from "./level.js"
 import * as requests from './requests.js';
 
@@ -46,7 +47,6 @@ let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color =
 const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
 let camXOffset = -538, camYOffset = 100;
-
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
@@ -101,9 +101,25 @@ const init = (obj, immediate = false) => {
     let bg_canvas = document.querySelector("#canvas_bg");
     document.getElementById('resetBtn').onclick = movePlayerBackToStart;
 
+
     w_ctx = w_canvas.getContext('2d');
     p_ctx = p_canvas.getContext('2d');
     bg_ctx = bg_canvas.getContext('2d');
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
 
     canvasWidth = w_canvas.width;
     canvasHeight = w_canvas.height;
@@ -128,6 +144,7 @@ const init = (obj, immediate = false) => {
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
+    requestAnimationFrame(() => { renderer.render(scene, camera) });
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
