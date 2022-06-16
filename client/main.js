@@ -48,7 +48,7 @@ let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
 const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
-let camXOffset = -538, camYOffset = 100;
+let camXOffset = -538, camYOffset = 100, prevCamXOffset = 0, prevCamYOffset = 0;
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
@@ -110,7 +110,7 @@ const startGameLogic = (obj, immediate = false) => {
     bg_ctx = bg_canvas.getContext('2d');
 
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.OrthographicCamera(0, GAME_WIDTH, GAME_HEIGHT, 0, 0, 10);
 
     // Thanks to https://stackoverflow.com/a/20496296 for describing how to have a clear background in three.js.
     renderer = new THREE.WebGLRenderer({ canvas: js3_canvas, alpha: true });
@@ -129,6 +129,8 @@ const startGameLogic = (obj, immediate = false) => {
 
     loader.load('assets/img/SavePc.glb', function (gltf) {
         scene.add(gltf.scene);
+        scene.scale.x = scene.scale.y = 30;
+
         // renderer.render(scene, camera);
     }, undefined, function (error) {
         console.error(error);
@@ -165,8 +167,14 @@ const startGameLogic = (obj, immediate = false) => {
 }
 
 const animate = () => {
-    scene.rotation.x += 0.01;
-    scene.rotation.y += 0.01;
+    if (camXOffset === prevCamXOffset && camYOffset === prevCamYOffset) return;
+
+    scene.position.x = camXOffset + 1000;
+    scene.position.y = GAME_HEIGHT - camYOffset - 1625;
+
+    prevCamXOffset = camXOffset; prevCamYOffset = camYOffset;
+
+    // console.log(scene.position);
 
     renderer.render(scene, camera);
 };
