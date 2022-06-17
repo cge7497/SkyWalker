@@ -5,7 +5,9 @@ import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-let w_ctx, p_ctx, bg_ctx, scene, renderer, camera;
+let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
+let vpOffset = [0, 0];
+
 const sq_walkers = [], arc_walkers = [];
 const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
@@ -15,6 +17,7 @@ let cloudsShouldLoop = true;
 var test = "hello";
 
 import { io } from "socket.io-client";
+import { Scene } from "three";
 let socket;
 
 
@@ -30,6 +33,8 @@ const items = {
     'redswitch': { collected: stopFire },
     'fire': { collected: collectMorphBall },
     'hflip': { collected: rotateRight },
+    '3DPerson': {},
+    '3DComp': {},
 };
 
 const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, ame: '', flip: false, g: 0, spawn: [825, 200] };
@@ -108,9 +113,14 @@ const startGameLogic = (obj, immediate = false) => {
     w_ctx = w_canvas.getContext('2d');
     p_ctx = p_canvas.getContext('2d');
     bg_ctx = bg_canvas.getContext('2d');
+    //js3_ctx = js3_canvas.getContext('webgl');
 
     scene = new THREE.Scene();
-    camera = new THREE.OrthographicCamera(0, GAME_WIDTH, GAME_HEIGHT, 0, 0, 10);
+    camera = new THREE.PerspectiveCamera(40, GAME_WIDTH / GAME_HEIGHT, 0.1, 1000);
+    camera.position.set(2, 2, 10);
+    camera.lookAt(0, 0, 0);
+
+    // camera = new THREE.OrthographicCamera(0, GAME_WIDTH, GAME_HEIGHT, 0, 0, 10);
 
     // Thanks to https://stackoverflow.com/a/20496296 for describing how to have a clear background in three.js.
     renderer = new THREE.WebGLRenderer({ canvas: js3_canvas, alpha: true });
@@ -123,15 +133,34 @@ const startGameLogic = (obj, immediate = false) => {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     scene.add(directionalLight);
 
-    camera.position.z = 5;
+
+
+    camera.position.z = 100;
 
     const loader = new GLTFLoader();
 
-    loader.load('assets/img/SavePc.glb', function (gltf) {
-        scene.add(gltf.scene);
-        scene.scale.x = scene.scale.y = 30;
+    loader.load('assets/img/character.glb', function (gltf) {
+        characterModel = gltf.scene;
+        //scene.add(characterModel);
+        characterModel.scale.x = characterModel.scale.y = 1;
+
+        items['3DPerson'].file = gltf.scene;
+
+        // console.log(characterModel.position);
 
         // renderer.render(scene, camera);
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    loader.load('assets/img/SavePc.glb', function (gltf) {
+        compModel = gltf.scene;
+
+        items['3DComp'].file = gltf.scene;
+
+        //scene.add(gltf.scene);
+        // renderer.render(scene, camera);
+
     }, undefined, function (error) {
         console.error(error);
     });
@@ -160,24 +189,23 @@ const startGameLogic = (obj, immediate = false) => {
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
-    setInterval(animate, 1000 / 30);
+    // setInterval(animate, 1000 / 30);
 
     // setInterval(sendAndReceiveMovement, 1000);
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
 
 const animate = () => {
-    if (camXOffset === prevCamXOffset && camYOffset === prevCamYOffset) return;
+    // if (camXOffset === prevCamXOffset && camYOffset === prevCamYOffset) return;
 
-    scene.position.x = camXOffset + 1000;
-    scene.position.y = GAME_HEIGHT - camYOffset - 1625;
+    //js3_ctx.translate(camXOffset + 1000, GAME_HEIGHT - camYOffset - 1850);
+    renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
 
-    prevCamXOffset = camXOffset; prevCamYOffset = camYOffset;
+    // console.log('X: ' + (vpOffset[0] + camXOffset));
+    // console.log('Y: ' + (vpOffset[1] - camYOffset));
 
-    if (scene.rotation.y <= Math.PI){
-        scene.rotation.y += 0.1;
-    }
-    else scene.rotation.y = 0;
+    scene.rotation.y += 0.01;
+    scene.rotation.x += 0.01;
 
 
     renderer.render(scene, camera);
@@ -293,12 +321,26 @@ const drawLevel = () => {
     level.rects.forEach((r) => {
         utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true);
     });
+    let shouldDraw3DObjs = false;
     //An optimization would be making an array of functions tied to each special object, rather than doing this if then statement.
     level.specialObjects.forEach((o) => {
         if (o.name === "fire") {
             if (fireIsOnScreen(player, o)) {
                 utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
             }
+        }
+        else if (o.name.substring(0, 2) === '3D') {
+            utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
+            if (fireIsOnScreen(player, o)) {
+                shouldDraw3DObjs = true;
+                if (!currentlyDrawnModel) {
+                    console.log(o);
+                    scene.add(items[o.name].file);
+                    currentlyDrawnModel = items[o.name].file;
+                    vpOffset = [o.x - 438, o.y + 100];
+                    console.log(vpOffset);
+                }
+            };
         }
         else if (o.name === "checkpoint") {
             utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, "gray", false);
@@ -307,6 +349,12 @@ const drawLevel = () => {
             p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
         }
     });
+
+    if (shouldDraw3DObjs) animate();
+    else if (currentlyDrawnModel) {
+        scene.remove(currentlyDrawnModel);
+        currentlyDrawnModel = false;
+    }
 };
 
 //Draws background clouds onto the background canvas.
