@@ -174,7 +174,11 @@ const animate = () => {
 
     prevCamXOffset = camXOffset; prevCamYOffset = camYOffset;
 
-    // console.log(scene.position);
+    if (scene.rotation.y <= Math.PI){
+        scene.rotation.y += 0.1;
+    }
+    else scene.rotation.y = 0;
+
 
     renderer.render(scene, camera);
 };
@@ -197,10 +201,6 @@ const update = () => {
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset);
         }
     }
-
-    //scene.translateX(1);
-    //scene.translateY(1);
-    // js3_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     drawLevel();
 };
