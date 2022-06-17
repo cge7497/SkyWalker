@@ -142,7 +142,7 @@ const startGameLogic = (obj, immediate = false) => {
     loader.load('assets/img/character.glb', function (gltf) {
         characterModel = gltf.scene;
         //scene.add(characterModel);
-        characterModel.scale.x = characterModel.scale.y = 1;
+        characterModel.scale.x = characterModel.scale.y = characterModel.scale.z  = 1;
 
         items['3DPerson'].file = gltf.scene;
 
@@ -155,11 +155,8 @@ const startGameLogic = (obj, immediate = false) => {
 
     loader.load('assets/img/SavePc.glb', function (gltf) {
         compModel = gltf.scene;
-
+        compModel.scale.x = compModel.scale.y = compModel.scale.z = 1;
         items['3DComp'].file = gltf.scene;
-
-        //scene.add(gltf.scene);
-        // renderer.render(scene, camera);
 
     }, undefined, function (error) {
         console.error(error);
@@ -201,8 +198,8 @@ const animate = () => {
     //js3_ctx.translate(camXOffset + 1000, GAME_HEIGHT - camYOffset - 1850);
     renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
 
-    // console.log('X: ' + (vpOffset[0] + camXOffset));
-    // console.log('Y: ' + (vpOffset[1] - camYOffset));
+    //console.log('X: ' + (vpOffset[0] + camXOffset));
+    //console.log('Y: ' + (vpOffset[1] + camYOffset));
 
     scene.rotation.y += 0.01;
     scene.rotation.x += 0.01;
@@ -337,7 +334,8 @@ const drawLevel = () => {
                     console.log(o);
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
-                    vpOffset = [o.x - 438, o.y + 100];
+                    //vpOffset = [0,0];
+                    vpOffset = [o.x - 438, -o.y + 100];
                     console.log(vpOffset);
                 }
             };
