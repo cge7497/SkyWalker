@@ -6,8 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
-let vpOffset = [0, 0];
-
+let vpOffset = [0, 0], shouldRotateComp = false;
 const sq_walkers = [], arc_walkers = [];
 const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
@@ -34,7 +33,7 @@ const items = {
     'fire': { collected: collectMorphBall },
     'hflip': { collected: rotateRight },
     '3DPerson': {},
-    '3DComp': {},
+    '3DComp': {collected: () => {shouldRotateComp = true;}},
 };
 
 const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, ame: '', flip: false, g: 0, spawn: [825, 200] };
@@ -155,8 +154,12 @@ const startGameLogic = (obj, immediate = false) => {
 
     loader.load('assets/img/SavePc.glb', function (gltf) {
         compModel = gltf.scene;
-        compModel.scale.x = compModel.scale.y = compModel.scale.z = 1;
+        compModel.scale.x = compModel.scale.y = compModel.scale.z = 8;
+        compModel.rotation.y = -Math.PI;
+        
         items['3DComp'].file = gltf.scene;
+        compModel.position.y -= 25;
+        // compModel.position.x -= 20;
 
     }, undefined, function (error) {
         console.error(error);
@@ -198,11 +201,12 @@ const animate = () => {
     //js3_ctx.translate(camXOffset + 1000, GAME_HEIGHT - camYOffset - 1850);
     renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
 
-    //console.log('X: ' + (vpOffset[0] + camXOffset));
-    //console.log('Y: ' + (vpOffset[1] + camYOffset));
+    if (shouldRotateComp){
+        if (compModel.rotation.y <= 0 ) compModel.rotation.y += 0.01;
+        else shouldRotateComp = false;
+    }
 
-    scene.rotation.y += 0.01;
-    scene.rotation.x += 0.01;
+    // scene.rotation.y += 0.01;
 
 
     renderer.render(scene, camera);
@@ -331,12 +335,9 @@ const drawLevel = () => {
             if (fireIsOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
                 if (!currentlyDrawnModel) {
-                    console.log(o);
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
-                    //vpOffset = [0,0];
                     vpOffset = [o.x - 438, -o.y + 100];
-                    console.log(vpOffset);
                 }
             };
         }
@@ -349,7 +350,7 @@ const drawLevel = () => {
     });
 
     if (shouldDraw3DObjs) animate();
-    else if (currentlyDrawnModel) {
+    else if (currentlyDrawnModel!==false) {
         scene.remove(currentlyDrawnModel);
         currentlyDrawnModel = false;
     }
@@ -469,7 +470,7 @@ const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
             if (o.name !== "fire" && o.name !== "checkpoint" && o.name !== "yellowswitch") {
-                level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+                if (o.name.substring(0,2)!='3D') level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
                 items[o.name].collected();
             }
             else if (o.name === "checkpoint") {
@@ -634,7 +635,7 @@ function cloudState() {
     //Makes the player's alpha decrease.
     player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
 
-    console.log(player.color);
+    // console.log(player.color);
 
     utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, false, 0);
 
