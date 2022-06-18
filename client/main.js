@@ -30,10 +30,11 @@ const items = {
     'morphball': { obtained: false, collected: collectMorphBall },
     'yellowswitch': { collected: cloudState },
     'redswitch': { collected: stopFire },
+    'greyswitch': { collected: ()=>{shouldRotateComp=true} },
     'fire': { collected: collectMorphBall },
     'hflip': { collected: rotateRight },
     '3DPerson': {},
-    '3DComp': {collected: () => {shouldRotateComp = true;}},
+    '3DComp': {},
 };
 
 const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, ame: '', flip: false, g: 0, spawn: [825, 200] };
@@ -116,7 +117,7 @@ const startGameLogic = (obj, immediate = false) => {
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(40, GAME_WIDTH / GAME_HEIGHT, 0.1, 1000);
-    camera.position.set(2, 2, 10);
+    camera.position.set(0, 0, 10);
     camera.lookAt(0, 0, 0);
 
     // camera = new THREE.OrthographicCamera(0, GAME_WIDTH, GAME_HEIGHT, 0, 0, 10);
@@ -154,11 +155,12 @@ const startGameLogic = (obj, immediate = false) => {
 
     loader.load('assets/img/SavePc.glb', function (gltf) {
         compModel = gltf.scene;
-        compModel.scale.x = compModel.scale.y = compModel.scale.z = 8;
+        compModel.scale.x = compModel.scale.y = compModel.scale.z = 9;
         compModel.rotation.y = -Math.PI;
+        compModel.rotation.x = -0.25;
         
         items['3DComp'].file = gltf.scene;
-        compModel.position.y -= 25;
+        compModel.position.y -= 30;
         // compModel.position.x -= 20;
 
     }, undefined, function (error) {
@@ -337,7 +339,7 @@ const drawLevel = () => {
                 if (!currentlyDrawnModel) {
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
-                    vpOffset = [o.x - 438, -o.y + 100];
+                    vpOffset = [o.x - 320, -o.y + 240];
                 }
             };
         }
@@ -503,6 +505,7 @@ const CollisionsWithSpecialObjects = (p) => {
 const initItems = (savedItems) => {
     imgs['screwattack'] = document.getElementById('screwattack');
     imgs['morphball'] = document.getElementById('morphball');
+    imgs['greyswitch'] = document.getElementById('greyswitch');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
     imgs['hflip'] = document.getElementById('hflip');

@@ -84,6 +84,8 @@ const GameInfo = (props) => {
                 alt="Yellow Switch" />
             <img id="redswitch" src='assets/img/redswitch.png' className='noDisplay' width="32" height="32"
                 alt="Red Switch" />
+            <img id="greyswitch" src='assets/img/greyswitch.png' className='noDisplay' width="25" height="25"
+                alt="Grey Switch" />
             <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
                 alt="Arrow Right" />
             {/* Update this inner html when you get an item. */}
