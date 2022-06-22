@@ -30,11 +30,12 @@ const items = {
     'morphball': { obtained: false, collected: collectMorphBall },
     'yellowswitch': { collected: cloudState },
     'redswitch': { collected: stopFire },
-    'greyswitch': { collected: ()=>{shouldRotateComp=true} },
+    'greyswitch': { collected: ()=>{shouldRotateComp=true; console.log('Hello')} },
     'fire': { collected: collectMorphBall },
     'hflip': { collected: rotateRight },
     '3DPerson': {},
     '3DComp': {},
+    '3DArrow': {collected: rotateRight}
 };
 
 const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, ame: '', flip: false, g: 0, spawn: [825, 200] };
@@ -153,6 +154,23 @@ const startGameLogic = (obj, immediate = false) => {
         console.error(error);
     });
 
+    
+    loader.load('assets/img/arrowright.glb', function (gltf) {
+        // characterModel = gltf.scene;
+        //scene.add(gltf.scene);
+        // characterModel.scale.x = characterModel.scale.y = characterModel.scale.z  = 1;
+        gltf.scene.scale.set(0.25,0.25, 1);
+        gltf.scene.position.x+=10;
+
+        items['3DArrow'].file = gltf.scene;
+
+        // console.log(characterModel.position);
+
+        // renderer.render(scene, camera);
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
     loader.load('assets/img/SavePc.glb', function (gltf) {
         compModel = gltf.scene;
         compModel.scale.x = compModel.scale.y = compModel.scale.z = 9;
@@ -208,8 +226,8 @@ const animate = () => {
         else shouldRotateComp = false;
     }
 
-    // scene.rotation.y += 0.01;
-
+    // Figure out how to pass delta time bro
+    scene.rotation.x += 0.005;
 
     renderer.render(scene, camera);
 };
@@ -281,7 +299,7 @@ const updatePlayer = () => {
         else xDif = -ySpeed;
     }
 
-    //If the player hasn't crawled recently (so we don't get a duplicate input)
+    /* If the player hasn't crawled recently (so we don't get a duplicate input)
     if (canCrawl) {
         if (player.g === 0 && keysPressed[87] || player.g === 1 && keysPressed[68]) {
 
@@ -297,6 +315,7 @@ const updatePlayer = () => {
         crawlInputTimer -= 1;
         if (crawlInputTimer <= 0) canCrawl = true;
     }
+    */
 
     player.newX = player.x + xDif;
     player.newY = player.y + yDif;
@@ -341,7 +360,7 @@ const drawLevel = () => {
                     currentlyDrawnModel = items[o.name].file;
                     vpOffset = [o.x - 320, -o.y + 240];
                 }
-            };
+            }
         }
         else if (o.name === "checkpoint") {
             utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, "gray", false);
@@ -436,7 +455,9 @@ const CollisionsWithLevel = (p, xDif, yDif) => {
     level.rects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
-            //have to adjust the X that is used in the next equation...
+            // The order of which directions are checked matters! It affects whether player gets stuck if they move from one rect to another on the same y coord.
+            // It may be worth it to do an if then for player.g== 1 (since we should check horizontal collisions first, so the player doesn't get stuck when moving
+            // across two same x-coord walls). As of now, no walls that do this exist so I do not do this check.
             if (utilities.collidedFromBottom(p, r) || utilities.collidedFromTop(p, r)) {
                 p.newY -= yDif;
                 if (p.g === 0) {
@@ -444,7 +465,7 @@ const CollisionsWithLevel = (p, xDif, yDif) => {
                     colliding[1] = true;
                 }
             }
-            if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
+            else if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
                 p.newX -= xDif;
                 if (p.g === 1) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
@@ -462,7 +483,7 @@ const areColliding = (p, r) => {
 };
 
 const fireIsOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x + 800 && p.newX + p.halfWidth > f.x - 800
+    return (p.newX - p.halfWidth < f.x + 500 && p.newX + p.halfWidth > f.x - 500
         && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
@@ -471,8 +492,8 @@ const fireIsOnScreen = (p, f) => {
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            if (o.name !== "fire" && o.name !== "checkpoint" && o.name !== "yellowswitch") {
-                if (o.name.substring(0,2)!='3D') level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+            if (o.name !== "fire" && o.name !== "checkpoint" && o.name !== "yellowswitch" && o.name.substring(0,2)!=='3D') {
+                level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
                 items[o.name].collected();
             }
             else if (o.name === "checkpoint") {
@@ -545,6 +566,8 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
 
 function rotateRight() {
     player.g = 1;
+    player.halfHeight = 4;
+    player.halfWidth = 7;
     player.flip = true;
 
     const sound = sfxr.generate("powerUp");
@@ -696,6 +719,7 @@ const keyDown = (e) => {
                     canFlip = false;
 
                     const sound = sfxr.generate("jump");
+                    sound.sound_vol = 0.1;
                     sfxr.play(sound);
                 }
             }
