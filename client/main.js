@@ -26,19 +26,95 @@ const imgs = {};
 
 // Stores items that the player holds and their relevant properties.
 const items = {
-    'screwattack': { obtained: false, collected: collectScrewAttack },
-    'morphball': { obtained: false, collected: collectMorphBall },
-    'yellowswitch': { collected: cloudState },
-    'redswitch': { collected: stopFire },
-    'greyswitch': { collected: ()=>{shouldRotateComp=true; console.log('Hello')} },
-    'fire': { collected: collectMorphBall },
-    'hflip': { collected: rotateRight },
-    '3DPerson': {},
-    '3DComp': {},
-    '3DArrow': {collected: rotateRight}
+    'screwattack': {
+        obtained: false, collected: collectScrewAttack,
+        draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
+    },
+    'morphball': {
+        obtained: false, collected: collectMorphBall,
+        draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
+    },
+    'yellowswitch': { collected: cloudState, draw: (o) => { drawImage(o) }, collide: (o) => { collideYellowSwitch(o) } },
+    'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) } },
+    'greyswitch': {
+        collected: () => { shouldRotateComp = true; console.log('Hello') },
+        draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
+    },
+    'fire': {
+        collected: collectMorphBall, draw: (o) => { drawFire(o) },
+        collide: (o) => { collideFire(o) }
+    },
+    'hflip': {
+        collected: rotateRight, draw: (o) => { drawImage(o) },
+        collide: (o) => { collideItem(o) }
+    },
+    'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
+    '3DPerson': { draw: (o) => { draw3D(o) } },
+    '3DComp': { draw: (o) => { draw3D(o) } },
+    '3DArrow': { draw: (o) => { draw3D(o) }, collected: rotateRight, collide: (o) => { collideItem(o) } }
 };
 
-const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, ame: '', flip: false, g: 0, spawn: [825, 200] };
+const drawFire = (o) => {
+    if (fireIsOnScreen(player, o)) {
+        utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
+    }
+};
+
+const collideFire = () => {
+    shouldUpdateGame = false;
+    explode_audio.play();
+    const color = player.color;
+    player.color = "red";
+    setTimeout((e) => { shouldUpdateGame = true; movePlayerBackToStart(); player.color = color; }, 500);
+};
+
+const collideYellowSwitch = (o) => {
+    if (p.g === 0 && p.flip === false) {
+        level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+        items["yellowswitch"].collected();
+    };
+};
+
+const collideCheckpoint = (o) => {
+    if (!o.active) {
+        o.color = "yellow";
+        player.spawn = [o.x + o.width / 2, o.y - 8];
+        const sound = sfxr.generate("explosion");
+        sfxr.play(sound);
+    }
+    o.active = true;
+};
+
+const collideItem = (o) => {
+    level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+    items[o.name].collected();
+};
+
+const draw3D = (o) => {
+    utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
+    if (fireIsOnScreen(player, o)) {
+        shouldDraw3DObjs = true;
+        if (!currentlyDrawnModel) {
+            scene.add(items[o.name].file);
+            currentlyDrawnModel = items[o.name].file;
+            vpOffset = [o.x - 320, -o.y + 240];
+        }
+    }
+};
+
+const drawCheckpoint = (o) => {
+    let color = "gray";
+    if (o.color){ color = o.color; }
+    utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false);
+};
+
+const drawImage = (o) => {
+    p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
+};
+
+
+
+const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
@@ -143,7 +219,7 @@ const startGameLogic = (obj, immediate = false) => {
     loader.load('assets/img/character.glb', function (gltf) {
         characterModel = gltf.scene;
         //scene.add(characterModel);
-        characterModel.scale.x = characterModel.scale.y = characterModel.scale.z  = 1;
+        characterModel.scale.x = characterModel.scale.y = characterModel.scale.z = 1;
 
         items['3DPerson'].file = gltf.scene;
 
@@ -154,13 +230,13 @@ const startGameLogic = (obj, immediate = false) => {
         console.error(error);
     });
 
-    
+
     loader.load('assets/img/arrowright.glb', function (gltf) {
         // characterModel = gltf.scene;
         //scene.add(gltf.scene);
         // characterModel.scale.x = characterModel.scale.y = characterModel.scale.z  = 1;
-        gltf.scene.scale.set(0.25,0.25, 1);
-        gltf.scene.position.x+=10;
+        gltf.scene.scale.set(0.25, 0.25, 1);
+        gltf.scene.position.x += 10;
 
         items['3DArrow'].file = gltf.scene;
 
@@ -176,7 +252,7 @@ const startGameLogic = (obj, immediate = false) => {
         compModel.scale.x = compModel.scale.y = compModel.scale.z = 9;
         compModel.rotation.y = -Math.PI;
         compModel.rotation.x = -0.25;
-        
+
         items['3DComp'].file = gltf.scene;
         compModel.position.y -= 30;
         // compModel.position.x -= 20;
@@ -221,13 +297,13 @@ const animate = () => {
     //js3_ctx.translate(camXOffset + 1000, GAME_HEIGHT - camYOffset - 1850);
     renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
 
-    if (shouldRotateComp){
-        if (compModel.rotation.y <= 0 ) compModel.rotation.y += 0.01;
+    if (shouldRotateComp) {
+        if (compModel.rotation.y <= 0) compModel.rotation.y += 0.01;
         else shouldRotateComp = false;
     }
 
     // Figure out how to pass delta time bro
-    scene.rotation.x += 0.005;
+    // scene.rotation.x += 0.005;
 
     renderer.render(scene, camera);
 };
@@ -344,14 +420,10 @@ const drawLevel = () => {
         utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true);
     });
     let shouldDraw3DObjs = false;
+
     //An optimization would be making an array of functions tied to each special object, rather than doing this if then statement.
     level.specialObjects.forEach((o) => {
-        if (o.name === "fire") {
-            if (fireIsOnScreen(player, o)) {
-                utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
-            }
-        }
-        else if (o.name.substring(0, 2) === '3D') {
+        if (o.name.substring(0, 2) === '3D') {
             utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
             if (fireIsOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
@@ -361,17 +433,11 @@ const drawLevel = () => {
                     vpOffset = [o.x - 320, -o.y + 240];
                 }
             }
-        }
-        else if (o.name === "checkpoint") {
-            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, "gray", false);
-        }
-        else {
-            p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
-        }
+        } else items[o.name].draw(o);
     });
 
     if (shouldDraw3DObjs) animate();
-    else if (currentlyDrawnModel!==false) {
+    else if (currentlyDrawnModel !== false) {
         scene.remove(currentlyDrawnModel);
         currentlyDrawnModel = false;
     }
@@ -483,7 +549,7 @@ const areColliding = (p, r) => {
 };
 
 const fireIsOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x + 500 && p.newX + p.halfWidth > f.x - 500
+    return (p.newX - p.halfWidth < f.x + 550 && p.newX + p.halfWidth > f.x - 550
         && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
@@ -492,34 +558,11 @@ const fireIsOnScreen = (p, f) => {
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            if (o.name !== "fire" && o.name !== "checkpoint" && o.name !== "yellowswitch" && o.name.substring(0,2)!=='3D') {
-                level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
-                items[o.name].collected();
-            }
-            else if (o.name === "checkpoint") {
-                o.color = "yellow";
-
-                player.spawn = [o.x + o.width / 2, o.y - 8];
-
-                const sound = sfxr.generate("explosion");
-
-                sfxr.play(sound);
-            }
-            else if (o.name === "yellowswitch") {
-                if (p.g === 0 && p.flip === false) {
-                    level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
-                    items[o.name].collected();
-                }
-            }
-            else if (o.name === "fire") {
-                shouldUpdateGame = false;
-                explode_audio.play();
-                const color = player.color;
-                player.color = "red";
-                setTimeout((e) => { shouldUpdateGame = true; movePlayerBackToStart(); player.color = color; }, 500);
+            if (o.name.substring(0, 2) !== '3D') {
+                items[o.name].collide(o);
             }
         }
-    })
+    });
 };
 
 //If the player's data on the server shows they already have items, give them those items.
@@ -609,7 +652,8 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
-    player.x = player.spawn[0]; player.y = player.spawn[1]; player.flip = false;
+    player.x = player.spawn[0]; player.y = player.spawn[1]; 
+    player.flip = false; player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;
     camXOffset = 300 - player.x; camYOffset = 300 - player.y;
 }
