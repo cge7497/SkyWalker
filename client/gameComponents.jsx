@@ -97,7 +97,7 @@ const GameInfo = (props) => {
                 </div>
             </div>
 
-            <button id="resetBtn" disabled={true}>Back to Start</button>
+            <button id="resetBtn" disabled={true} >Back to Start</button>
         </div>
     )
 };

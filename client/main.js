@@ -50,7 +50,7 @@ const items = {
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
     '3DPerson': { draw: (o) => { draw3D(o) } },
     '3DComp': { draw: (o) => { draw3D(o) } },
-    '3DArrow': { draw: (o) => { draw3D(o) }, collected: rotateRight, collide: (o) => { collideItem(o) } }
+    '3DArrow': { draw: (o) => { draw3D(o) }, collected: rotateRight, collide: (o) => { rotateRight() } }
 };
 
 const drawFire = (o) => {
@@ -184,7 +184,7 @@ const startGameLogic = (obj, immediate = false) => {
     let w_canvas = document.querySelector("#canvas_walkers");
     let bg_canvas = document.querySelector("#canvas_bg");
     let js3_canvas = document.querySelector("#canvas_js3");
-    document.getElementById('resetBtn').onclick = movePlayerBackToStart;
+    document.getElementById('resetBtn').onmousedown = (e) => {e.preventDefault(); movePlayerBackToStart(); }
 
 
     w_ctx = w_canvas.getContext('2d');
@@ -230,7 +230,7 @@ const startGameLogic = (obj, immediate = false) => {
     loader.load('assets/img/arrowright.glb', function (gltf) {
         gltf.scene.scale.set(0.25, 0.25, 1);
         gltf.scene.position.x += 2;
-        gltf.scene.position.y -= 2;
+        gltf.scene.position.y += 2;
         gltf.scene.name = '3DArrow';
 
         items['3DArrow'].file = gltf.scene;
@@ -417,7 +417,7 @@ const drawLevel = () => {
     //An optimization would be making an array of functions tied to each special object, rather than doing this if then statement.
     level.specialObjects.forEach((o) => {
         if (o.name.substring(0, 2) === '3D') {
-            // utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", true);
+            utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
             if (fireIsOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
                 // console.log(`current model: ${currentlyDrawnModel}, o.name: ${o.name}`);
@@ -610,9 +610,7 @@ function rotateRight() {
     player.halfHeight = 4;
     player.halfWidth = 7;
     player.flip = true;
-    player.scale = Math.abs(player.scale);
-
-    scene.remove(currentlyDrawnModel);
+    player.scale = Math.abs(player.scale) * -1;
 
     const sound = sfxr.generate("powerUp");
     sfxr.play(sound);
