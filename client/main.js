@@ -16,7 +16,6 @@ let cloudsShouldLoop = true;
 var test = "hello";
 
 import { io } from "socket.io-client";
-import { Scene } from "three";
 let socket;
 
 
@@ -86,8 +85,8 @@ const collideCheckpoint = (o) => {
 };
 
 const collideItem = (o) => {
-    level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
     items[o.name].collected();
+    level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
 };
 
 const draw3D = (o) => {
@@ -103,8 +102,9 @@ const draw3D = (o) => {
 };
 
 const drawCheckpoint = (o) => {
+    collideCheckpoint(o);
     let color = "gray";
-    if (o.color){ color = o.color; }
+    if (o.color) { color = o.color; }
     utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false);
 };
 
@@ -218,31 +218,23 @@ const startGameLogic = (obj, immediate = false) => {
 
     loader.load('assets/img/character.glb', function (gltf) {
         characterModel = gltf.scene;
-        //scene.add(characterModel);
         characterModel.scale.x = characterModel.scale.y = characterModel.scale.z = 1;
+        gltf.scene.name = '3DPerson';
 
         items['3DPerson'].file = gltf.scene;
-
-        // console.log(characterModel.position);
-
-        // renderer.render(scene, camera);
     }, undefined, function (error) {
         console.error(error);
     });
 
 
     loader.load('assets/img/arrowright.glb', function (gltf) {
-        // characterModel = gltf.scene;
-        //scene.add(gltf.scene);
-        // characterModel.scale.x = characterModel.scale.y = characterModel.scale.z  = 1;
         gltf.scene.scale.set(0.25, 0.25, 1);
-        gltf.scene.position.x += 10;
+        gltf.scene.position.x += 2;
+        gltf.scene.position.y -= 2;
+        gltf.scene.name = '3DArrow';
 
         items['3DArrow'].file = gltf.scene;
 
-        // console.log(characterModel.position);
-
-        // renderer.render(scene, camera);
     }, undefined, function (error) {
         console.error(error);
     });
@@ -252,6 +244,7 @@ const startGameLogic = (obj, immediate = false) => {
         compModel.scale.x = compModel.scale.y = compModel.scale.z = 9;
         compModel.rotation.y = -Math.PI;
         compModel.rotation.x = -0.25;
+        gltf.scene.name = '3DComp';
 
         items['3DComp'].file = gltf.scene;
         compModel.position.y -= 30;
@@ -303,7 +296,7 @@ const animate = () => {
     }
 
     // Figure out how to pass delta time bro
-    // scene.rotation.x += 0.005;
+    scene.rotation.x = Math.sin(playerWalkAnimCounter / 12) + Math.PI;
 
     renderer.render(scene, camera);
 };
@@ -424,9 +417,14 @@ const drawLevel = () => {
     //An optimization would be making an array of functions tied to each special object, rather than doing this if then statement.
     level.specialObjects.forEach((o) => {
         if (o.name.substring(0, 2) === '3D') {
-            utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
+            // utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", true);
             if (fireIsOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
+                // console.log(`current model: ${currentlyDrawnModel}, o.name: ${o.name}`);
+                if (currentlyDrawnModel !== o.name) {
+                    scene.remove(currentlyDrawnModel);
+                    currentlyDrawnModel = false;
+                }
                 if (!currentlyDrawnModel) {
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
@@ -558,7 +556,7 @@ const fireIsOnScreen = (p, f) => {
 const CollisionsWithSpecialObjects = (p) => {
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            if (o.name.substring(0, 2) !== '3D') {
+            if (o.name.substring(0, 2) !== '3D' || o.name === '3DArrow') {
                 items[o.name].collide(o);
             }
         }
@@ -612,9 +610,11 @@ function rotateRight() {
     player.halfHeight = 4;
     player.halfWidth = 7;
     player.flip = true;
+    player.scale = Math.abs(player.scale);
+
+    scene.remove(currentlyDrawnModel);
 
     const sound = sfxr.generate("powerUp");
-
     sfxr.play(sound);
 };
 
@@ -652,7 +652,7 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
-    player.x = player.spawn[0]; player.y = player.spawn[1]; 
+    player.x = player.spawn[0]; player.y = player.spawn[1];
     player.flip = false; player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;
     camXOffset = 300 - player.x; camYOffset = 300 - player.y;
