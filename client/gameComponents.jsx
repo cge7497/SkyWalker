@@ -88,6 +88,7 @@ const GameInfo = (props) => {
                 alt="Grey Switch" />
             <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
                 alt="Arrow Right" />
+            <img id="uni" src='assets/img/uni.jpg' className='noDisplay'/>
             {/* Update this inner html when you get an item. */}
             <div className="center" id="instructions">
                 <div id="moveInstructions" className="inline">Use '<strong>A</strong>' and

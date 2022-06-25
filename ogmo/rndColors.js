@@ -95,7 +95,6 @@ function hook() {
     "MediumTurquoise",
     "MediumVioletRed",
     "MidnightBlue",
-    "MintCream",
     "MistyRose",
     "Moccasin",
     "Navy",

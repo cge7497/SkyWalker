@@ -79,6 +79,8 @@ const drawRectangle = (x, y, width, height, ctx, color, fill = true) => {
 
 const drawPlayerCloud = (p, ctx, camX) => {
   ctx.save();
+  ctx.clearRect(0, 0, 640, 480);
+  
   ctx.translate(p.x + camX, p.y);
   ctx.rotate(p.dirRad);
 

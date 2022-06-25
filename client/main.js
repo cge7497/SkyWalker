@@ -68,7 +68,7 @@ const collideFire = () => {
 };
 
 const collideYellowSwitch = (o) => {
-    if (p.g === 0 && p.flip === false) {
+    if (player.g === 0 && player.flip === false) {
         level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
         items["yellowswitch"].collected();
     };
@@ -571,6 +571,7 @@ const initItems = (savedItems) => {
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
     imgs['hflip'] = document.getElementById('hflip');
+    imgs['uni'] = document.getElementById('uni');
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);
@@ -705,7 +706,7 @@ function cloudState() {
 
     // console.log(player.color);
 
-    utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, false, 0);
+    utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, true, 0);
 
     bgRects.forEach((r) => {
         r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.1)`;
@@ -716,6 +717,8 @@ function cloudState() {
     level.rects.forEach((r) => {
         r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.5)`;
     });
+
+    p_ctx.drawImage(imgs['uni'], 0, 0);
 }
 
 /*
