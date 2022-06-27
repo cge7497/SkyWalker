@@ -11,7 +11,7 @@ const sq_walkers = [], arc_walkers = [];
 const bgRects = [];
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
-let cloudsShouldLoop = true;
+let cloudsShouldLoop = true, activeCheckpoint = {};
 
 var test = "hello";
 
@@ -77,7 +77,13 @@ const collideYellowSwitch = (o) => {
 const collideCheckpoint = (o) => {
     if (!o.active) {
         o.color = "yellow";
+
+        //Set previously active checkpoint to false/grey color.
+        activeCheckpoint.active = false;
+        activeCheckpoint.color = "";
+
         player.spawn = [o.x + o.width / 2, o.y - 8];
+        activeCheckpoint = o;
         const sound = sfxr.generate("explosion");
         sfxr.play(sound);
     }
@@ -102,7 +108,6 @@ const draw3D = (o) => {
 };
 
 const drawCheckpoint = (o) => {
-    collideCheckpoint(o);
     let color = "gray";
     if (o.color) { color = o.color; }
     utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false);
@@ -114,14 +119,14 @@ const drawImage = (o) => {
 
 
 
-const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [825, 200] };
+const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [838, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
 
 let xSpeed = 3, ySpeed = 5;
 let canFlip = true; let infiniteFlip = false, inClouds = false, shouldUpdateGame = true;;
-let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0;
+let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0, drawGTimer = false, GTimer = 5000;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
 let btn_audio, item_audio, bg_audio, whistle_audio, sky_audio, explode_audio;
@@ -142,7 +147,7 @@ const startGameLogic = (obj, immediate = false) => {
         if (obj.items) initItems(obj.items);
 
         what_is_my_name = "uh... " + obj.username;
-        //setupSocket();
+        // setupSocket();
     }
     else {
     }
@@ -184,7 +189,7 @@ const startGameLogic = (obj, immediate = false) => {
     let w_canvas = document.querySelector("#canvas_walkers");
     let bg_canvas = document.querySelector("#canvas_bg");
     let js3_canvas = document.querySelector("#canvas_js3");
-    document.getElementById('resetBtn').onmousedown = (e) => {e.preventDefault(); movePlayerBackToStart(); }
+    document.getElementById('resetBtn').onmousedown = (e) => { e.preventDefault(); movePlayerBackToStart(); }
 
 
     w_ctx = w_canvas.getContext('2d');
@@ -310,12 +315,30 @@ const update = () => {
         // So the player is always drawn with a black stroke.
         utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, undefined, playerWalkAnimCounter);
 
+        if (drawGTimer) {
+            GTimer -= 17;
+            if (GTimer > 0) {
+                if (player.flip) {
+                    utilities.drawRectangle(player.x - 16 + camXOffset, player.y - 12 + camYOffset, 8, GTimer / 200, p_ctx, "orange", true);
+                }
+                else utilities.drawRectangle(player.x + 10 + camXOffset, player.y - 12 + camYOffset, 8, GTimer / 200, p_ctx, "orange", true);
+            }
+            else rotateDown();
+        }
+
         //utilities.drawDebugPlayer(player, p_ctx, camXOffset, camYOffset);
     }
     else if (inClouds) {
         cloudState();
         if (shouldUpdateGame) {
             updateCloud();
+            p_ctx.clearRect(0, 0, 640, 480);
+
+            p_ctx.save();
+            p_ctx.scale(2, 2);
+            p_ctx.drawImage(imgs['uni'], -GAME_WIDTH / 2 + camXOffset, -GAME_HEIGHT / 2 + camYOffset);
+            p_ctx.restore();
+
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset);
         }
     }
@@ -344,7 +367,8 @@ const updateCloud = () => {
     if (playerCloud.y > canvasHeight + 20) { playerCloud.y = -20 }
     else if (playerCloud.y < -20) { playerCloud.y = canvasHeight + 20 }
 
-    camXOffset -= playerCloud.hSpeed / 2.5;
+    camXOffset -= playerCloud.hSpeed / 5;
+    camYOffset -= playerCloud.vSpeed / 5;
 };
 
 // Updates player movement based on input and collision.
@@ -446,7 +470,7 @@ const drawBG = () => {
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     fireAnimColor += 1;
-    if (fireAnimColor >= 5) fireAnimColor = 0;
+    if (fireAnimColor > 15) fireAnimColor = 0;
 
     if (should_change_bg_color) {
         bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
@@ -479,7 +503,7 @@ const drawBG = () => {
 // Sends the player's movement in the last second.
 const sendAndReceiveMovement = async () => {
     if (movementThisSecond && !inClouds) {
-        //socket.emit("sendMovement", movementThisSecond);
+        socket.emit("sendMovement", movementThisSecond);
         otherPlayerMovementFrame = 0;
         movementThisSecond.movement = [];
     }
@@ -606,6 +630,7 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
     }
 };
 
+let shouldPlayRotateSound = true;
 function rotateRight() {
     player.g = 1;
     player.halfHeight = 4;
@@ -613,10 +638,24 @@ function rotateRight() {
     player.flip = true;
     player.scale = Math.abs(player.scale) * -1;
 
-    const sound = sfxr.generate("powerUp");
-    sfxr.play(sound);
+    drawGTimer = true;
+    GTimer = 5000;
+
+    if (shouldPlayRotateSound) {
+        const sound = sfxr.generate("powerUp");
+        sfxr.play(sound);
+
+        shouldPlayRotateSound = false;
+
+        setTimeout(() => { shouldPlayRotateSound = true }, 100);
+    }
 };
 
+function rotateDown() {
+    player.g = 0; player.halfWidth = 4; player.halfHeight = 7;
+    player.flip = false; player.scale = Math.abs(player.scale);
+    drawGTimer = false;
+}
 
 
 // I made these 'functions' so they can be accessed in the items object declaration (as they are referenced before defined).
@@ -717,18 +756,16 @@ function cloudState() {
     level.rects.forEach((r) => {
         r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.5)`;
     });
-
-    p_ctx.drawImage(imgs['uni'], 0, 0);
 }
 
-/*
+
 const setupSocket = () => {
     socket = io();
     socket.on('receiveMovement', (movement) => {
         otherPlayerMovement = movement;
     });
 };
-*/
+
 const keyDown = (e) => {
     // If the target is not the body for a keyClick- meaning the target is an input form- return and don't move player based on this input.
     if (e.target != document.body) return;

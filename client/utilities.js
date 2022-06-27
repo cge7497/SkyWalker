@@ -1,5 +1,7 @@
 // Thank you to https://www.schemecolor.com/sky-on-fire.php for this color palette.
-const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
+// const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
+const fireColors = ["#000000", "#111111", "#22222", "#333333", "#444444", "#555555", "#666666", "#777777", "#888888", "#999999",
+"#AAAAAA", "#BBBBBB", "#CCCCCC", "#DDDDDD", "#EEEEEE", "#FFFFFF"];
 const PI3DIV2 = 3 * Math.PI / 2;
 const NPIDIV2 = -Math.PI/2;
 
@@ -78,9 +80,7 @@ const drawRectangle = (x, y, width, height, ctx, color, fill = true) => {
 }
 
 const drawPlayerCloud = (p, ctx, camX) => {
-  ctx.save();
-  ctx.clearRect(0, 0, 640, 480);
-  
+  ctx.save();  
   ctx.translate(p.x + camX, p.y);
   ctx.rotate(p.dirRad);
 
@@ -109,13 +109,13 @@ const drawFire = (x, y, width, height, ctx, startColor = 0) => {
   ctx.fillStyle = fireColors[clr];
   ctx.fillRect(x, y, width, height);
 
-  let inc = 3;
+  let inc = 2;
 
-  for (let i = 9; i > 2; i -= inc) {
+  for (let i = 10; i >= 1; i -= 2) {
     clr += 1;
-    if (clr >= 5) clr = 0;
+    if (clr > 15) clr = 0;
 
-    inc -= 0.4;
+    // inc -= .4;
 
     ctx.fillStyle = fireColors[clr];
     const factor = 1 - (2 / i);
