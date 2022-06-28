@@ -462,7 +462,7 @@ const drawLevel = () => {
                     scene.remove(currentlyDrawnModel);
                     currentlyDrawnModel = false;
                 }
-                if (!currentlyDrawnModel) {
+                if (!currentlyDrawnModel && items[o.name].file) {
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
                     vpOffset = [o.x - 320, -o.y + 240];
@@ -484,8 +484,8 @@ const drawBG = () => {
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     fireAnimColor += fireAnimInc;
-    if (fireAnimColor > 14.5) fireAnimInc = -0.4;
-    else if (fireAnimColor < 0.5) fireAnimInc = 0.4;
+    if (fireAnimColor > 14.5) fireAnimInc = -2;
+    else if (fireAnimColor < 0.5) fireAnimInc = 2;
 
     if (should_change_bg_color) {
         bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
