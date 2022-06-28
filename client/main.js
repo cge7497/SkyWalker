@@ -110,7 +110,20 @@ const draw3D = (o) => {
 const drawCheckpoint = (o) => {
     let color = "gray";
     if (o.color) { color = o.color; }
-    utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false);
+    utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+
+    if (o.active) {
+
+        const lineY = o.y + camYOffset + 25 + (o.height / 2);
+        p_ctx.beginPath();
+        p_ctx.setLineDash([3]);
+        p_ctx.moveTo(o.x + camXOffset, lineY);
+        p_ctx.lineTo(o.x + camXOffset + o.width, lineY);
+        p_ctx.strokeStyle = "black";
+        p_ctx.closePath();
+        p_ctx.stroke();
+        p_ctx.setLineDash([]);
+    }
 };
 
 const drawImage = (o) => {
@@ -319,9 +332,9 @@ const update = () => {
             GTimer -= 17;
             if (GTimer > 0) {
                 if (player.flip) {
-                    utilities.drawRectangle(player.x - 16 + camXOffset, player.y - 12 + camYOffset, 8, GTimer / 200, p_ctx, "orange", true);
+                    utilities.drawRectangle(player.x - 16 + camXOffset, player.y - 12 + camYOffset, 8, GTimer / 200, p_ctx, "orange", false, true);
                 }
-                else utilities.drawRectangle(player.x + 10 + camXOffset, player.y - 12 + camYOffset, 8, GTimer / 200, p_ctx, "orange", true);
+                else utilities.drawRectangle(player.x + 10 + camXOffset, player.y - 12 + camYOffset, 8, GTimer / 200, p_ctx, "orange", false, true);
             }
             else rotateDown();
         }
@@ -434,7 +447,7 @@ const updatePlayer = () => {
 //Draws the level (composed of rectangles and special objects) onto the player canvas.
 const drawLevel = () => {
     level.rects.forEach((r) => {
-        utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true);
+        utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true, false); //can add drawLevelStroked property as last option
     });
     let shouldDraw3DObjs = false;
 
@@ -469,7 +482,7 @@ const drawLevel = () => {
 const drawBG = () => {
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    fireAnimColor += 1;
+    fireAnimColor += 0.2;
     if (fireAnimColor > 15) fireAnimColor = 0;
 
     if (should_change_bg_color) {
@@ -652,6 +665,10 @@ function rotateRight() {
 };
 
 function rotateDown() {
+    const sound = sfxr.generate("jump");
+    sound.sound_vol = 0.1;
+    sfxr.play(sound);
+
     player.g = 0; player.halfWidth = 4; player.halfHeight = 7;
     player.flip = false; player.scale = Math.abs(player.scale);
     drawGTimer = false;

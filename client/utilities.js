@@ -64,7 +64,7 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
   ctx.restore();
 }
 
-const drawRectangle = (x, y, width, height, ctx, color, fill = true) => {
+const drawRectangle = (x, y, width, height, ctx, color, fill = true, fillAndStroke = false, strokeColor = "black") => {
   ctx.save();
 
   ctx.beginPath();
@@ -74,7 +74,8 @@ const drawRectangle = (x, y, width, height, ctx, color, fill = true) => {
   ctx.lineTo(x, y + height);
   ctx.closePath();
 
-  if (fill) { ctx.fillStyle = color; ctx.fill() }
+  if (fillAndStroke) { ctx.fillStyle = color; ctx.strokeStyle = strokeColor; ctx.fill(); ctx.stroke();}
+  else if (fill) { ctx.fillStyle = color; ctx.fill() }
   else { ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke(); }
   ctx.restore();
 }
@@ -111,7 +112,7 @@ const drawFire = (x, y, width, height, ctx, startColor = 0) => {
 
   let inc = 2;
 
-  for (let i = 10; i >= 1; i -= 2) {
+  for (let i = 6; i >= 3; i -= 1) {
     clr += 1;
     if (clr > 15) clr = 0;
 
