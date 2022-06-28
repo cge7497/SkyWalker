@@ -478,12 +478,14 @@ const drawLevel = () => {
     }
 };
 
+let fireAnimInc = 0.4;
 //Draws background clouds onto the background canvas.
 const drawBG = () => {
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    fireAnimColor += 0.2;
-    if (fireAnimColor > 15) fireAnimColor = 0;
+    fireAnimColor += fireAnimInc;
+    if (fireAnimColor > 14.5) fireAnimInc = -0.4;
+    else if (fireAnimColor < 0.5) fireAnimInc = 0.4;
 
     if (should_change_bg_color) {
         bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);

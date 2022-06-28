@@ -1,9 +1,16 @@
 // Thank you to https://www.schemecolor.com/sky-on-fire.php for this color palette.
 // const fireColors = ["#C11B1B", "#F04931", "#FE9F41", "#FBD687", "#FDEAA7"];
-const fireColors = ["#000000", "#111111", "#22222", "#333333", "#444444", "#555555", "#666666", "#777777", "#888888", "#999999",
-"#AAAAAA", "#BBBBBB", "#CCCCCC", "#DDDDDD", "#EEEEEE", "#FFFFFF"];
+const fireColors = [["#000000", "#111111", "#222222", "#333333", "#444444", "#555555", "#666666", "#777777", "#888888", "#999999",
+  "#aaaaaa", "#bbbbbb", "#cccccc", "#dddddd", "#eeeeee", "#ffffff"].reverse(), ["rgb(247,100,29)", "rgb(235,110,29)", "rgb(223,120,39)", "rgb(211,130,49)", "rgb(199,140,59)", "rgb(187,150,69)",
+  "rgb(175,160,79)", "rgb(163,170,89)", "rgb(151,180,99)", "rgb(139,190,109)",
+  "rgb(127,200,119)", "rgb(115,210,129)", "rgb(102,220,139)", "rgb(90,230,149)", "rgb(78,240,159)", "rgb(66, 250, 169)"],
+["rgb(160,80,0)", "rgb(150,75,10)", "rgb(140,70,20)", "rgb(130,65,30)", "rgb(120,60,40)", "rgb(110,55,50)",
+  "rgb(100,50,60)", "rgb(90,45,70)", "rgb(80,40,80)", "rgb(70,35,90)",
+  "rgb(60,30,100)", "rgb(50,25,110)", "rgb(40,20,120)", "rgb(30,15,130)", "rgb(20,10,140)", "rgb(10, 5, 150)"]];
+
+
 const PI3DIV2 = 3 * Math.PI / 2;
-const NPIDIV2 = -Math.PI/2;
+const NPIDIV2 = -Math.PI / 2;
 
 
 // draws the player shape, which is a combination of canvas lines and arcs.
@@ -47,7 +54,7 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
   const legOffset = (2 + frame) * p.scale;
 
   ctx.moveTo(0, -p.scale);
-  
+
   //draws line body from head
   ctx.lineTo(0, (5 * p.scale));
   ctx.lineTo(-legOffset, (8 * p.scale)); //draws left leg
@@ -74,14 +81,14 @@ const drawRectangle = (x, y, width, height, ctx, color, fill = true, fillAndStro
   ctx.lineTo(x, y + height);
   ctx.closePath();
 
-  if (fillAndStroke) { ctx.fillStyle = color; ctx.strokeStyle = strokeColor; ctx.fill(); ctx.stroke();}
+  if (fillAndStroke) { ctx.fillStyle = color; ctx.strokeStyle = strokeColor; ctx.fill(); ctx.stroke(); }
   else if (fill) { ctx.fillStyle = color; ctx.fill() }
   else { ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke(); }
   ctx.restore();
 }
 
 const drawPlayerCloud = (p, ctx, camX) => {
-  ctx.save();  
+  ctx.save();
   ctx.translate(p.x + camX, p.y);
   ctx.rotate(p.dirRad);
 
@@ -105,20 +112,24 @@ const drawPlayerCloud = (p, ctx, camX) => {
 //Maybe include a less graphically internsive fire option: just a sprite.
 const drawFire = (x, y, width, height, ctx, startColor = 0) => {
   ctx.save();
-  let clr = startColor;
+  let clr = Math.floor(startColor);
+  let clrInc = 1;
 
-  ctx.fillStyle = fireColors[clr];
+  const f = 2;
+
+  ctx.fillStyle = fireColors[f][clr];
   ctx.fillRect(x, y, width, height);
 
   let inc = 2;
 
   for (let i = 6; i >= 3; i -= 1) {
-    clr += 1;
-    if (clr > 15) clr = 0;
+    clr += clrInc;
+    if (clr > 14) clrInc = -1;
+    else if (clr < 1) clrInc = 1;
 
     // inc -= .4;
 
-    ctx.fillStyle = fireColors[clr];
+    ctx.fillStyle = fireColors[f][Math.floor(clr)];
     const factor = 1 - (2 / i);
     ctx.fillRect(x + width / i, y + height / i, width * factor, height * factor);
   }
