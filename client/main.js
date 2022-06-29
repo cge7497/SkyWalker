@@ -110,11 +110,29 @@ const draw3D = (o) => {
 const drawCheckpoint = (o) => {
     let color = "gray";
     if (o.color) { color = o.color; }
-    utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+    let f = 1;
+
+    switch (o.values.dir) {
+        case 0:
+            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            break;
+        case 1:
+            utilities.drawRectangle(o.x + camXOffset + 25, o.y + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            break;
+        case 2:
+            utilities.drawRectangle(o.x + camXOffset, o.y - 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            f = -1;
+            break;
+        case 3:
+            utilities.drawRectangle(o.x + camXOffset - 25, o.y + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            break;
+        default:
+            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            break;
+    }
 
     if (o.active) {
-
-        const lineY = o.y + camYOffset + 25 + (o.height / 2);
+        const lineY = o.y + camYOffset + (25 * f) + (o.height / 2);
         p_ctx.beginPath();
         p_ctx.setLineDash([3]);
         p_ctx.moveTo(o.x + camXOffset, lineY);
