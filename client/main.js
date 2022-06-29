@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false;
 const sq_walkers = [], arc_walkers = [];
-const bgRects = [];
+const bgRects = []; let collisionRects, playerInBG = false;
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 let cloudsShouldLoop = true, activeCheckpoint = {};
@@ -58,12 +58,20 @@ const items = {
 };
 
 const drawFire = (o) => {
-    if (fireIsOnScreen(player, o)) {
+    if (isOnScreen(player, o)) {
         utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
     }
 };
 
 const collideFire = () => {
+    if (true) {
+        collisionRects = bgRects;
+        playerInBG = !playerInBG;
+        xSpeed = 1;
+        ySpeed = 2;
+        return;
+    }
+
     shouldUpdateGame = false;
     explode_audio.play();
     const color = player.color;
@@ -101,7 +109,7 @@ const collideItem = (o) => {
 
 const draw3D = (o) => {
     utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
-    if (fireIsOnScreen(player, o)) {
+    if (isOnScreen(player, o)) {
         shouldDraw3DObjs = true;
         if (!currentlyDrawnModel) {
             scene.add(items[o.name].file);
@@ -311,6 +319,8 @@ const startGameLogic = (obj, immediate = false) => {
     for (let i = 0; i < 10; i++) {
         bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 3, "rgba(0,0,0,0.3)"));
     }
+    collisionRects = level.rects;
+
     drawBG();
 
     w_ctx.fillStyle = "black";
@@ -410,7 +420,7 @@ const updateCloud = () => {
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
     let walked = false;
-    if (hasMouse) {
+    if (hasMouse && keysPressed[16]) {
         if (keysPressed[16]) {
             if (keysPressed[65]) { camXOffset += 2; }
             if (keysPressed[68]) { camXOffset -= 2; }
@@ -457,15 +467,19 @@ const updatePlayer = () => {
     player.newX = player.x + xDif;
     player.newY = player.y + yDif;
 
-    let colliding = CollisionsWithLevel(player, xDif, yDif); //returns a bool if not colliding, otherwise returns an array of collisions.
+    let colliding = CollisionsWithLevel(player, xDif, yDif); //returns two bools: if colliding and if player walked.
     if (!colliding[0]) {
         player.x += xDif; player.y += yDif;
-        camXOffset -= xDif;
-        camYOffset -= yDif;
+        if (!playerInBG) {
+            camXOffset -= xDif;
+            camYOffset -= yDif;
+        }
     }
     else {
-        camXOffset += player.x - player.newX;
-        camYOffset += player.y - player.newY;
+        if (!playerInBG) {
+            camXOffset += player.x - player.newX;
+            camYOffset += player.y - player.newY;
+        }
         player.x = player.newX;
         player.y = player.newY;
     }
@@ -482,11 +496,10 @@ const drawLevel = () => {
     });
     let shouldDraw3DObjs = false;
 
-    //An optimization would be making an array of functions tied to each special object, rather than doing this if then statement.
     level.specialObjects.forEach((o) => {
         if (o.name.substring(0, 2) === '3D') {
             utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
-            if (fireIsOnScreen(player, o)) {
+            if (isOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
                 // console.log(`current model: ${currentlyDrawnModel}, o.name: ${o.name}`);
                 if (currentlyDrawnModel !== o.name) {
@@ -524,6 +537,7 @@ const drawBG = () => {
     }
     utilities.drawRectangle(0, 0, canvasWidth, canvasHeight, bg_ctx, bg_color, true);
     bg_dir_rad += bg_dir_rad_Inc;
+    console.log(bgRects);
     bgRects.forEach(function (rect) {
         //bg_dir_rad is 0 at the start and changes value when the green diamond is collected.
         //When that happens, the rectangles's speeds will change slightly every time they are drawn.
@@ -583,24 +597,26 @@ const drawOtherPlayerMovement = () => {
 };
 
 //Returns true if there are collisions. It also fixes these collisions.
-const CollisionsWithLevel = (p, xDif, yDif) => {
-    //
+const CollisionsWithLevel = (_p, xDif, yDif) => {
+    let p = _p;
     let colliding = [false, false]; // 0 shows whether any collisions occured. 1 shows whether a collision with the ground (based on g) occurred.
-    level.rects.forEach((r) => {
+    if (playerInBG){p = {..._p}; p.x += camXOffset; p.y +=camYOffset;};
+    console.log(collisionRects);
+    collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
             // The order of which directions are checked matters! It affects whether player gets stuck if they move from one rect to another on the same y coord.
             // It may be worth it to do an if then for player.g== 1 (since we should check horizontal collisions first, so the player doesn't get stuck when moving
             // across two same x-coord walls). As of now, no walls that do this exist so I do not do this check.
             if (utilities.collidedFromBottom(p, r) || utilities.collidedFromTop(p, r)) {
-                p.newY -= yDif;
+                _p.newY -= yDif;
                 if (p.g === 0) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
                     colliding[1] = true;
                 }
             }
             else if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
-                p.newX -= xDif;
+                _p.newX -= xDif;
                 if (p.g === 1) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
                     colliding[1] = true;
@@ -616,7 +632,7 @@ const areColliding = (p, r) => {
         && p.newY - p.halfHeight < r.y + r.height && p.newY + p.halfHeight > r.y);
 };
 
-const fireIsOnScreen = (p, f) => {
+const isOnScreen = (p, f) => {
     return (p.newX - p.halfWidth < f.x + 550 && p.newX + p.halfWidth > f.x - 550
         && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
