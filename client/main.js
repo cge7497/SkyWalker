@@ -47,6 +47,10 @@ const items = {
         collected: rotateRight, draw: (o) => { drawImage(o) },
         collide: (o) => { collideItem(o) }
     },
+    'mouse': {
+        collected: collectMouse, draw: (o) => { drawImage(o) },
+        collide: (o) => { collideItem(o) }
+    },
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
     '3DPerson': { draw: (o) => { draw3D(o) } },
     '3DComp': { draw: (o) => { draw3D(o) } },
@@ -156,7 +160,7 @@ let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
 
 let xSpeed = 3, ySpeed = 5;
-let canFlip = true; let infiniteFlip = false, inClouds = false, shouldUpdateGame = true;;
+let canFlip = true; let infiniteFlip = false, hasMouse = false, inClouds = false, shouldUpdateGame = true;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0, drawGTimer = false, GTimer = 5000;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
@@ -406,7 +410,16 @@ const updateCloud = () => {
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
     let walked = false;
-    if (player.g === 0) {
+    if (hasMouse) {
+        if (keysPressed[16]) {
+            if (keysPressed[65]) { camXOffset += 2; }
+            if (keysPressed[68]) { camXOffset -= 2; }
+            if (keysPressed[87]) { camYOffset += 2; }
+            if (keysPressed[83]) { camYOffset -= 2; }
+        }
+        if (keysPressed[82]) { camXOffset = 300 - player.x; camYOffset = 300 - player.y; }
+    }
+    else if (player.g === 0) {
         if (keysPressed[65]) { xDif = -xSpeed; walked = true; }
         if (keysPressed[68]) { xDif = xSpeed; walked = true; }
         //else if (crawlInc<crawlIncMax) 
@@ -629,6 +642,7 @@ const initItems = (savedItems) => {
     imgs['redswitch'] = document.getElementById('redswitch');
     imgs['hflip'] = document.getElementById('hflip');
     imgs['uni'] = document.getElementById('uni');
+    imgs['mouse'] = document.getElementById('mouse');
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);
@@ -715,6 +729,17 @@ function collectScrewAttack(shouldSendPost = true) {
     infiniteFlip = true;
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'screwattack');
+        item_audio.play();
+    }
+}
+function collectMouse(shouldSendPost = true) {
+    document.getElementById('mouse').classList.remove("noDisplay");
+    document.getElementById('mouse').classList.add("inline");
+    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>),`;
+    hasMouse = true;
+
+    if (shouldSendPost === true) {
+        requests.updatePlayer(player.name, 'mouse');
         item_audio.play();
     }
 }
@@ -807,6 +832,10 @@ const keyDown = (e) => {
     // If the target is not the body for a keyClick- meaning the target is an input form- return and don't move player based on this input.
     if (e.target != document.body) return;
     switch (e.keyCode) {
+        //Shift press
+        case 16:
+            keysPressed[e.keyCode] = true;
+            break;
         //'A' press
         case 65:
             keysPressed[e.keyCode] = true;
@@ -814,6 +843,10 @@ const keyDown = (e) => {
 
         //'D' press
         case 68:
+            keysPressed[e.keyCode] = true;
+            break;
+        // 'R' press
+        case 82:
             keysPressed[e.keyCode] = true;
             break;
 
@@ -850,6 +883,9 @@ const keyDown = (e) => {
 const keyUp = (e) => {
     if (e.target != document.body) return;
     switch (e.keyCode) {
+        case 16:
+            keysPressed[e.keyCode] = false;
+            break;
         case 65:
             keysPressed[e.keyCode] = false;
             break;
@@ -857,7 +893,9 @@ const keyUp = (e) => {
         case 68:
             keysPressed[e.keyCode] = false;
             break;
-
+        case 82:
+            keysPressed[e.keyCode] = false;
+            break;
         case 83:
             keysPressed[e.keyCode] = false;
             break;

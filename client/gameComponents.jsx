@@ -80,6 +80,8 @@ const GameInfo = (props) => {
                 alt="Infinite Flip Powerup" />
             <img id="morphball" src='assets/img/morphball.png' className='noDisplay' width="16" height="16"
                 alt="Shrinking Powerup" />
+            <img id="mouse" src='assets/img/mouse.png' className='noDisplay' width="16" height="16"
+                alt="Camera Shift Powerup" />
             <img id="yellowswitch" src='assets/img/yellowswitch.png' className='noDisplay' width="25" height="25"
                 alt="Yellow Switch" />
             <img id="redswitch" src='assets/img/redswitch.png' className='noDisplay' width="32" height="32"
@@ -88,7 +90,7 @@ const GameInfo = (props) => {
                 alt="Grey Switch" />
             <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
                 alt="Arrow Right" />
-            <img id="uni" src='assets/img/uni.jpg' className='noDisplay'/>
+            <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
             {/* Update this inner html when you get an item. */}
             <div className="center" id="instructions">
                 <div id="moveInstructions" className="inline">Use '<strong>A</strong>' and
