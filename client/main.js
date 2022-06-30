@@ -15,7 +15,6 @@ let cloudsShouldLoop = true, activeCheckpoint = {};
 
 var test = "hello";
 
-import { io } from "socket.io-client";
 let socket;
 
 
@@ -49,6 +48,10 @@ const items = {
     },
     'mouse': {
         collected: collectMouse, draw: (o) => { drawImage(o) },
+        collide: (o) => { collideItem(o) }
+    },
+    'eyes': {
+        collected: collectEyes, draw: (o) => { drawImage(o) },
         collide: (o) => { collideItem(o) }
     },
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
@@ -157,7 +160,7 @@ const drawCheckpoint = (o) => {
 };
 
 const drawImage = (o) => {
-    p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset); //I should make these const references.
+    p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset);
 };
 
 
@@ -168,7 +171,7 @@ let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
 
 let xSpeed = 3, ySpeed = 5;
-let canFlip = true; let infiniteFlip = false, hasMouse = false, inClouds = false, shouldUpdateGame = true;
+let canFlip = true; let infiniteFlip = false, hasMouse = false, hasEyes = false, inClouds = false, shouldUpdateGame = true;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0, drawGTimer = false, GTimer = 5000;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
@@ -317,7 +320,7 @@ const startGameLogic = (obj, immediate = false) => {
     }
 
     for (let i = 0; i < 10; i++) {
-        bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 3, "rgba(0,0,0,0.3)"));
+        bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 10, "rgba(0,0,0,0.3)"));
     }
     collisionRects = level.rects;
 
@@ -417,17 +420,15 @@ const updateCloud = () => {
 };
 
 // Updates player movement based on input and collision.
+let prevOnGround = false;
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
     let walked = false;
-    if (hasMouse && keysPressed[16]) {
-        if (keysPressed[16]) {
-            if (keysPressed[65]) { camXOffset += 2; }
-            if (keysPressed[68]) { camXOffset -= 2; }
-            if (keysPressed[87]) { camYOffset += 2; }
-            if (keysPressed[83]) { camYOffset -= 2; }
-        }
-        if (keysPressed[82]) { camXOffset = 300 - player.x; camYOffset = 300 - player.y; }
+    if (hasEyes && keysPressed[16]) {
+        if (keysPressed[65]) { camXOffset += 2; }
+        if (keysPressed[68]) { camXOffset -= 2; }
+        if (keysPressed[87]) { camYOffset += 2; }
+        if (keysPressed[83]) { camYOffset -= 2; }
     }
     else if (player.g === 0) {
         if (keysPressed[65]) { xDif = -xSpeed; walked = true; }
@@ -445,6 +446,8 @@ const updatePlayer = () => {
         if (player.flip) xDif = ySpeed;
         else xDif = -ySpeed;
     }
+    //Reset cam offset if 'R' was pressed.
+    if (hasEyes && keysPressed[82]) { camXOffset = 300 - player.x; camYOffset = 300 - player.y; }
 
     /* If the player hasn't crawled recently (so we don't get a duplicate input)
     if (canCrawl) {
@@ -484,6 +487,19 @@ const updatePlayer = () => {
         player.y = player.newY;
     }
 
+    if (playerInBG) {
+        if (player.x + camXOffset > canvasWidth + 20) { player.x -= canvasWidth + 20; }
+        else if (player.x + camXOffset < -20) { player.x += canvasWidth + 20; }
+        if (player.y + camYOffset > canvasHeight + 20) { player.y -= canvasHeight + 20; }
+        else if (player.y + camYOffset < -20) { player.y += canvasHeight + 20; }
+    }
+
+    if (prevOnGround === false && colliding[1]===true){
+        const sound = sfxr.generate("click");
+        sfxr.play(sound);
+    }
+
+    prevOnGround = colliding[1];
     updatePlayerWalkAnim(walked, colliding[1]);
 
     CollisionsWithSpecialObjects(player);
@@ -537,7 +553,6 @@ const drawBG = () => {
     }
     utilities.drawRectangle(0, 0, canvasWidth, canvasHeight, bg_ctx, bg_color, true);
     bg_dir_rad += bg_dir_rad_Inc;
-    console.log(bgRects);
     bgRects.forEach(function (rect) {
         //bg_dir_rad is 0 at the start and changes value when the green diamond is collected.
         //When that happens, the rectangles's speeds will change slightly every time they are drawn.
@@ -600,8 +615,15 @@ const drawOtherPlayerMovement = () => {
 const CollisionsWithLevel = (_p, xDif, yDif) => {
     let p = _p;
     let colliding = [false, false]; // 0 shows whether any collisions occured. 1 shows whether a collision with the ground (based on g) occurred.
-    if (playerInBG){p = {..._p}; p.x += camXOffset; p.y +=camYOffset;};
-    console.log(collisionRects);
+
+    // If player is in the bg, make sure to convert their coordinates to screen space so that 
+    // they can collide with the bgRects which are never affected by camOffsets.
+    if (playerInBG) { 
+        p = { ..._p }; 
+        p.x += camXOffset; p.y -= camYOffset;
+        p.newX += camXOffset; p.newY -= camYOffset;
+     };
+
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
@@ -659,12 +681,19 @@ const initItems = (savedItems) => {
     imgs['hflip'] = document.getElementById('hflip');
     imgs['uni'] = document.getElementById('uni');
     imgs['mouse'] = document.getElementById('mouse');
+    imgs['eyes'] = document.getElementById('eyes');
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);
     }
     if (savedItems['screwattack'] === true) {
         collectScrewAttack(false);
+    }
+    if (savedItems['mouse'] === true) {
+        collectMouse(false);
+    }
+    if (savedItems['eyes'] === true) {
+        collectEyes(false);
     }
 };
 
@@ -748,10 +777,23 @@ function collectScrewAttack(shouldSendPost = true) {
         item_audio.play();
     }
 }
+
+function collectEyes(shouldSendPost = true) {
+    document.getElementById('eyes').classList.remove("noDisplay");
+    document.getElementById('eyes').classList.add("inline");
+    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>),`;
+    hasEyes = true;
+
+    if (shouldSendPost === true) {
+        requests.updatePlayer(player.name, 'eyes');
+        item_audio.play();
+    }
+}
+
 function collectMouse(shouldSendPost = true) {
     document.getElementById('mouse').classList.remove("noDisplay");
     document.getElementById('mouse').classList.add("inline");
-    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>),`;
+    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>), click mouse`;
     hasMouse = true;
 
     if (shouldSendPost === true) {
