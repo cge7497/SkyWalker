@@ -115,7 +115,7 @@
       "exportID": "89538969",
       "name": "transparent_rectangle",
       "limit": -1,
-      "size": {"x": 25, "y": 16},
+      "size": {"x": 25, "y": 8},
       "origin": {"x": 0, "y": 0},
       "originAnchored": true,
       "shape": {
@@ -146,7 +146,7 @@
       "nodeGhost": true,
       "tags": [],
       "values": [
-        {"name": "white", "definition": "Color", "display": 0, "defaults": "#000000ff", "includeAlpha": false}
+        {"name": "color", "definition": "Color", "display": 0, "defaults": "#000000ff", "includeAlpha": false}
       ]
     },
     {

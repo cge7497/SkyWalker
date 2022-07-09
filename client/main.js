@@ -66,20 +66,72 @@ const drawFire = (o) => {
     }
 };
 
+let prevCollidingWithFire = false;
 const collideFire = () => {
-    if (true) {
-        collisionRects = bgRects;
+    console.log(`mouse: ${hasMouse} and prevCollWithFire: ${prevCollidingWithFire}`);
+
+    if (hasMouse === true && prevCollidingWithFire === false) {
+        prevCollidingWithFire = true;
+
+        let p = Params.prototype.fromJSON({
+            "oldParams": true,
+            "wave_type": 0,
+            "p_env_attack": -0.00003653593375929631,
+            "p_env_sustain": 0.5159887075424194,
+            "p_env_punch": 0.43771442770957947,
+            "p_env_decay": -0.5177679657936096,
+            "p_base_freq": 0.4211834669113159,
+            "p_freq_limit": 0,
+            "p_freq_ramp": 0.09771327674388885,
+            "p_freq_dramp": 0.18222975730895996,
+            "p_vib_strength": 0.29777976870536804,
+            "p_vib_speed": 0.8540940284729004,
+            "p_arp_mod": 0.3622890114784241,
+            "p_arp_speed": -0.032950595021247864,
+            "p_duty": -0.44415274262428284,
+            "p_duty_ramp": -0.6385311484336853,
+            "p_repeat_speed": 0.07904504984617233,
+            "p_pha_offset": 0.050250060856342316,
+            "p_pha_ramp": 0.3983093798160553,
+            "p_lpf_freq": 0.5602583885192871,
+            "p_lpf_ramp": -0.0018845867598429322,
+            "p_lpf_resonance": -0.17684580385684967,
+            "p_hpf_freq": 2.0634999486901506e-8,
+            "p_hpf_ramp": 0.11631236225366592,
+            "sound_vol": 0.25,
+            "sample_rate": 44100,
+            "sample_size": 8
+        });
+        p.mutate();
+        const sound = sfxr.toAudio(p);
+        sound.play();
+
+        setTimeout((e) => {
+            prevCollidingWithFire = false;
+        }, 1000);
         playerInBG = !playerInBG;
-        xSpeed = 1;
-        ySpeed = 2;
+        if (playerInBG === true) {
+            collisionRects = bgRects;
+            xSpeed = 1;
+            ySpeed = 2;
+        }
+        else {
+            collisionRects = level.rects;
+            xSpeed = 3;
+            ySpeed = 5;
+        }
         return;
     }
+
+    if (prevCollidingWithFire === true) return;
 
     shouldUpdateGame = false;
     explode_audio.play();
     const color = player.color;
     player.color = "red";
-    setTimeout((e) => { shouldUpdateGame = true; movePlayerBackToStart(); player.color = color; }, 500);
+    setTimeout((e) => {
+        shouldUpdateGame = true; movePlayerBackToStart(); player.color = color;
+    }, 500);
 };
 
 const collideYellowSwitch = (o) => {
@@ -494,8 +546,9 @@ const updatePlayer = () => {
         else if (player.y + camYOffset < -20) { player.y += canvasHeight + 20; }
     }
 
-    if (prevOnGround === false && colliding[1]===true){
+    if (prevOnGround === false && colliding[1] === true) {
         const sound = sfxr.generate("click");
+        sound.sound_vol = 0.1;
         sfxr.play(sound);
     }
 
@@ -618,11 +671,11 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
 
     // If player is in the bg, make sure to convert their coordinates to screen space so that 
     // they can collide with the bgRects which are never affected by camOffsets.
-    if (playerInBG) { 
-        p = { ..._p }; 
+    if (playerInBG) {
+        p = { ..._p };
         p.x += camXOffset; p.y -= camYOffset;
         p.newX += camXOffset; p.newY -= camYOffset;
-     };
+    };
 
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
