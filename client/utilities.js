@@ -150,6 +150,21 @@ const handlePlayerCrawl = (p, flip) => {
   return totalDif;
 }
 
+const handleMouseClick = (e) => {
+  let x, y, type;
+
+  //If the click is not in the canvas, then return.
+  if (e.target.localName != "canvas") { console.log("not on canvas (utilities 160)"); return null; }
+  type = Math.floor(Math.random() * 2);
+
+
+  //gets where the mouse is clicked on the canvas. If it is clicked in a valid position, then it creates a platform at that spot.
+  x = e.layerX - 25;
+  y = e.layerY - 10;
+
+  return [x, y];
+};
+
 //not used.
 const fadeBGColorToDarkBlue = (color_rgb) => {
   if (color_rgb[0] > 15) color_rgb[0] -= 0.1;
@@ -192,5 +207,5 @@ const RandomNum = (min, max) => {
 export {
   drawPlayer, drawRectangle, fadeBGColorToDarkBlue, drawDebugPlayer, handlePlayerCrawl,
   collidedFromBottom, collidedFromLeft, collidedFromTop, collidedFromRight,
-  drawFire, drawPlayerCloud
+  drawFire, drawPlayerCloud, handleMouseClick
 }

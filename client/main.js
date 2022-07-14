@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false;
 const sq_walkers = [], arc_walkers = [];
-const bgRects = []; let collisionRects, playerInBG = false;
+const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null;
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 let cloudsShouldLoop = true, activeCheckpoint = {};
@@ -65,11 +65,12 @@ const drawFire = (o) => {
         utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
     }
 };
-
-let prevCollidingWithFire = false;
+let prevCollidingWithFire;
+let collidingWithFire = prevCollidingWithFire = false;
 const collideFire = () => {
-    console.log(`mouse: ${hasMouse} and prevCollWithFire: ${prevCollidingWithFire}`);
+    // console.log(`mouse: ${hasMouse} and prevCollWithFire: ${prevCollidingWithFire}`);
 
+    collidingWithFire = true;
     if (hasMouse === true && prevCollidingWithFire === false) {
         prevCollidingWithFire = true;
 
@@ -106,24 +107,10 @@ const collideFire = () => {
         const sound = sfxr.toAudio(p);
         sound.play();
 
-        setTimeout((e) => {
-            prevCollidingWithFire = false;
-        }, 1000);
-        playerInBG = !playerInBG;
-        if (playerInBG === true) {
-            collisionRects = bgRects;
-            xSpeed = 1;
-            ySpeed = 2;
-        }
-        else {
-            collisionRects = level.rects;
-            xSpeed = 3;
-            ySpeed = 5;
-        }
         return;
     }
 
-    if (prevCollidingWithFire === true) return;
+    if (prevCollidingWithFire === true || hasMouse === true) return;
 
     shouldUpdateGame = false;
     explode_audio.play();
@@ -222,7 +209,7 @@ let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
 
-let xSpeed = 3, ySpeed = 5;
+let xSpeed = 3, ySpeed = 5; // 1, 2 in sky
 let canFlip = true; let infiniteFlip = false, hasMouse = false, hasEyes = false, inClouds = false, shouldUpdateGame = true;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0, drawGTimer = false, GTimer = 5000;
 let keysPressed = [];
@@ -242,7 +229,6 @@ const startGameLogic = (obj, immediate = false) => {
         player.name = obj.username;
         trueColor = obj.color;
         player.shape = obj.shape;
-        if (obj.items) initItems(obj.items);
 
         what_is_my_name = "uh... " + obj.username;
         // setupSocket();
@@ -253,6 +239,11 @@ const startGameLogic = (obj, immediate = false) => {
     movementThisSecond.name = player.name;
     movementThisSecond.color = trueColor;
     movementThisSecond.movement = [];
+
+    collisionRects = level.rects;
+    // collisionRects = bgRects;
+
+    if (obj.items) initItems(obj.items);
 
     //I created these sounds with SFXR (http://sfxr.me/)
     btn_audio = new Audio("assets/sound/buttonClick.wav");
@@ -372,14 +363,12 @@ const startGameLogic = (obj, immediate = false) => {
     }
 
     for (let i = 0; i < 10; i++) {
-        bgRects.push(new level.bgRect(Math.random() * GAME_WIDTH, Math.random() * GAME_HEIGHT, Math.random() * 10 + 30, Math.random() * 4 + 10, "rgba(0,0,0,0.3)"));
+        bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(0,0,0,0.3)"));
     }
-    collisionRects = level.rects;
 
     drawBG();
 
     w_ctx.fillStyle = "black";
-
 
     setInterval(update, 1000 / 60);
     setInterval(drawBG, 1000 / 15);
@@ -544,12 +533,12 @@ const updatePlayer = () => {
         else if (player.x + camXOffset < -20) { player.x += canvasWidth + 20; }
         if (player.y + camYOffset > canvasHeight + 20) { player.y -= canvasHeight + 20; }
         else if (player.y + camYOffset < -20) { player.y += canvasHeight + 20; }
-    }
 
-    if (prevOnGround === false && colliding[1] === true) {
-        const sound = sfxr.generate("click");
-        sound.sound_vol = 0.1;
-        sfxr.play(sound);
+        if (prevOnGround === false && colliding[1] === true) {
+            const sound = sfxr.generate("click");
+            sound.sound_vol = 0.1;
+            sfxr.play(sound);
+        }
     }
 
     prevOnGround = colliding[1];
@@ -589,6 +578,10 @@ const drawLevel = () => {
         scene.remove(currentlyDrawnModel);
         currentlyDrawnModel = false;
     }
+
+    if (playerRect !== null) {
+        utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, true);
+    }
 };
 
 let fireAnimInc = 0.4;
@@ -624,7 +617,7 @@ const drawBG = () => {
             else if (rect.y < -20) { rect.y = canvasHeight + 20 }
         }
 
-        utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.color, true)
+        utilities.drawRectangle(rect.x, rect.y, rect.width, rect.height, bg_ctx, rect.values.color, true);
     });
 };
 
@@ -671,10 +664,10 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
 
     // If player is in the bg, make sure to convert their coordinates to screen space so that 
     // they can collide with the bgRects which are never affected by camOffsets.
-    if (playerInBG) {
+    if (playerInBG === true) {
         p = { ..._p };
-        p.x += camXOffset; p.y -= camYOffset;
-        p.newX += camXOffset; p.newY -= camYOffset;
+        p.x += camXOffset; p.y += camYOffset;
+        p.newX += camXOffset; p.newY += camYOffset;
     };
 
     collisionRects.forEach((r) => {
@@ -699,6 +692,7 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
             }
         }
     });
+
     return colliding;
 };
 //Checks if two objects are colliding. (Only used by the player and rectangles/special objects currently.)
@@ -715,6 +709,7 @@ const isOnScreen = (p, f) => {
 
 //make array of collision and collected functions to avoid this if then statement
 const CollisionsWithSpecialObjects = (p) => {
+    collidingWithFire = false;
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
             if (o.name.substring(0, 2) !== '3D' || o.name === '3DArrow') {
@@ -722,6 +717,31 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
     });
+
+    //If the player just exited the fire/void, meaning they should swap between BG and foreground.
+    if (prevCollidingWithFire === true && collidingWithFire === false) swapBG();
+};
+
+const swapBG = () => {
+    prevCollidingWithFire = false;
+
+    // Trying to fix rect coll offset: thought process:
+    // Is it changing the camOffsets to increment the player's coords while the player is colliding with void?
+    // It should only offset the first collision, or the last? (This means the bgRects are drawn relative to the final coll offset rather than the first...)
+    // It may keep swapping around... do a console.log here to see if it runs over and over
+    // TODO: See if this runs over and over again.
+    playerInBG = !playerInBG;
+
+    if (playerInBG === true) {
+        collisionRects = bgRects;
+        xSpeed = 1;
+        ySpeed = 2;
+    }
+    else {
+        collisionRects = level.rects;
+        xSpeed = 3;
+        ySpeed = 5;
+    }
 };
 
 //If the player's data on the server shows they already have items, give them those items.
@@ -820,6 +840,7 @@ function collectMorphBall(shouldSendPost = true) {
         item_audio.play();
     }
 }
+
 function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('screwattack').classList.remove("noDisplay");
     document.getElementById('screwattack').classList.add("inline");
@@ -848,6 +869,22 @@ function collectMouse(shouldSendPost = true) {
     document.getElementById('mouse').classList.add("inline");
     document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>), click mouse`;
     hasMouse = true;
+
+    document.body.addEventListener("mousedown", (e) => {
+        const coords = utilities.handleMouseClick(e);
+
+        if (coords !== null) {
+            if (playerRect == null) {
+                playerRect = new level.bgRect(coords[0] - camXOffset, coords[1] - camYOffset, 50, 20, trueColor);
+                playerRect.values = {color: trueColor}; //this isn't working... bc it's a bgRect object? Hmmm
+                collisionRects.push(playerRect);
+            }
+            else {
+                playerRect.x = coords[0] - camXOffset;
+                playerRect.y = coords[1] - camYOffset;
+            }
+        }
+    });
 
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'mouse');
