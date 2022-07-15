@@ -19,6 +19,7 @@ const getData = async () => {
   if (storedLevel && storedLevel.length > 0 && storedObjects && storedObjects.length > 0) {
     rects = JSON.parse(storedLevel);
     specialObjects = JSON.parse(storedObjects);
+    // If I want to update clouds each time, just add clouds to the main player data request.
     return;
   }
 

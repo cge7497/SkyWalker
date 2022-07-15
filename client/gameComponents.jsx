@@ -75,34 +75,36 @@ const GameInfo = (props) => {
     The right arrow is from Kenney Assets by Kenney.nl
     These are also used as game icons.
     {*/}
-            <h3 className='inline'>Items</h3>
-            <img id="screwattack" src='assets/img/screwattack.png' className='noDisplay' width="16" height="16"
-                alt="Infinite Flip Powerup" title="Space" />
-            <img id="morphball" src='assets/img/morphball.png' className='noDisplay' width="16" height="16"
-                alt="Shrinking Powerup" title="W" />
-            <img id="mouse" src='assets/img/mouse.png' className='noDisplay' width="16" height="16"
-                alt="Mouse Platform" title="Click on game screen" />
-            <img id="eyes" src='assets/img/eyes.png' className='noDisplay' width="16" height="32"
-                alt="Camera Shift Powerup" title="Hold Shift. R to reset." />
-            <img id="yellowswitch" src='assets/img/yellowswitch.png' className='noDisplay' width="25" height="25"
-                alt="Yellow Switch" />
-            <img id="redswitch" src='assets/img/redswitch.png' className='noDisplay' width="32" height="32"
-                alt="Red Switch" />
-            <img id="greyswitch" src='assets/img/greyswitch.png' className='noDisplay' width="25" height="25"
-                alt="Grey Switch" />
-            <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
-                alt="Arrow Right" />
-            <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
+            <div className="left">
+                <h3 className='inline'>Items</h3>
+                <img id="screwattack" src='assets/img/screwattack.png' className='noDisplay' width="16" height="16"
+                    alt="Infinite Flip Powerup" title="Space" />
+                <img id="morphball" src='assets/img/morphball.png' className='noDisplay' width="16" height="16"
+                    alt="Shrinking Powerup" title="W" />
+                <img id="mouse" src='assets/img/mouse.png' className='noDisplay' width="16" height="16"
+                    alt="Mouse Platform" title="Click on game screen" />
+                <img id="eyes" src='assets/img/eyes.png' className='noDisplay' width="16" height="32"
+                    alt="Camera Shift Powerup" title="Hold Shift. R to reset." />
+                <img id="yellowswitch" src='assets/img/yellowswitch.png' className='noDisplay' width="25" height="25"
+                    alt="Yellow Switch" />
+                <img id="redswitch" src='assets/img/redswitch.png' className='noDisplay' width="32" height="32"
+                    alt="Red Switch" />
+                <img id="greyswitch" src='assets/img/greyswitch.png' className='noDisplay' width="25" height="25"
+                    alt="Grey Switch" />
+                <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
+                    alt="Arrow Right" />
+                <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
+            </div>
+            <button id="resetBtn" disabled={true} >Back to Save</button>
+
             {/* Update this inner html when you get an item. */}
-            <div className="center" id="instructions">
+            <span className="center" id="instructions">
                 <div id="moveInstructions" className="inline">Use '<strong>A</strong>' and
                     '<strong>D</strong>'
                     to move, </div>
                 <div id="spaceInstructions" className="inline"> <strong>&nbsp;SPACE</strong> to flip.
                 </div>
-            </div>
-
-            <button id="resetBtn" disabled={true} >Back to Save</button>
+            </span>
         </div>
     )
 };

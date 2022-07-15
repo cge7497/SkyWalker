@@ -320,12 +320,25 @@ canvas {
     height: 18px;
 }
 
+#gameInfo{
+    margin: 0 auto;
+    width: 640px;
+}
+
 #gameInfo img {
     margin: 0 10px;
 }
 
 #moveInstructions{
     margin-top: 20px;
+}
+
+.left {float:left;}
+
+#resetBtn{
+    display: inline;
+    float: right;
+    margin-top: 10px;
 }
 
 button {
