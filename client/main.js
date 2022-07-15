@@ -204,7 +204,7 @@ const drawImage = (o) => {
 
 
 
-const player = { x: 838, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [838, 200] };
+const player = { x: 1038, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [1038, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
@@ -220,7 +220,7 @@ let bg_dir_rad = 0, bg_dir_rad_Inc = 0;
 let bg_color = "white", bg_color_rgb = [255, 255, 255], should_change_bg_color = false;
 const GAME_WIDTH = 640, GAME_HEIGHT = 480;
 const BG_DIR_MULTIPLIER = 1;
-let camXOffset = -538, camYOffset = 100, prevCamXOffset = 0, prevCamYOffset = 0;
+let camXOffset = -738, camYOffset = 100, prevCamXOffset = 0, prevCamYOffset = 0;
 
 // Initializes the game mainly based on data gotten in level.js getData. 
 // Runs after the player has logged in (called in playerLogin.js)
@@ -240,8 +240,8 @@ const startGameLogic = (obj, immediate = false) => {
     movementThisSecond.color = trueColor;
     movementThisSecond.movement = [];
 
+    // This seems unoptimal... should I just await the data.
     collisionRects = level.rects;
-    // collisionRects = bgRects;
 
     if (obj.items) initItems(obj.items);
 
@@ -704,7 +704,7 @@ const areColliding = (p, r) => {
 };
 
 const isOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x  + f.width + 300 && p.newX + p.halfWidth > f.x - 550
+    return (p.newX - p.halfWidth < f.x + f.width + 300 && p.newX + p.halfWidth > f.x - 550
         && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
