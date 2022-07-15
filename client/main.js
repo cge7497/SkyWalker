@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false;
 const sq_walkers = [], arc_walkers = [];
-const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null;
+const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false;
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 let cloudsShouldLoop = true, activeCheckpoint = {};
@@ -541,6 +541,8 @@ const updatePlayer = () => {
         }
     }
 
+    if (colliding[1] === true && playerCanPlaceRect === false) playerCanPlaceRect = true;
+
     prevOnGround = colliding[1];
     updatePlayerWalkAnim(walked, colliding[1]);
 
@@ -680,14 +682,14 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                 _p.newY -= yDif;
                 if (p.g === 0) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
-                    colliding[1] = true;
+                    if (!r.isPlayerRect) { colliding[1] = true; }
                 }
             }
             else if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
                 _p.newX -= xDif;
                 if (p.g === 1) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
-                    colliding[1] = true;
+                    if (!r.isPlayerRect) { colliding[1] = true; }
                 }
             }
         }
@@ -702,7 +704,7 @@ const areColliding = (p, r) => {
 };
 
 const isOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x + 550 && p.newX + p.halfWidth > f.x - 550
+    return (p.newX - p.halfWidth < f.x  + f.width + 300 && p.newX + p.halfWidth > f.x - 550
         && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
@@ -868,15 +870,20 @@ function collectMouse(shouldSendPost = true) {
     document.getElementById('mouse').classList.remove("noDisplay");
     document.getElementById('mouse').classList.add("inline");
     document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>), click mouse`;
-    hasMouse = true;
+    hasMouse = true; playerCanPlaceRect = true;
 
     document.body.addEventListener("mousedown", (e) => {
+        if (!playerCanPlaceRect) return;
+
         const coords = utilities.handleMouseClick(e);
 
         if (coords !== null) {
+            playerCanPlaceRect = false;
             if (playerRect == null) {
                 playerRect = new level.bgRect(coords[0] - camXOffset, coords[1] - camYOffset, 50, 20, trueColor);
-                playerRect.values = {color: trueColor}; //this isn't working... bc it's a bgRect object? Hmmm
+                playerRect.values = { color: trueColor };
+                playerRect.isPlayerRect = true;
+
                 collisionRects.push(playerRect);
             }
             else {
