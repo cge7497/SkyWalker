@@ -835,7 +835,7 @@ function rotateDown() {
 function collectMorphBall(shouldSendPost = true) {
     document.getElementById('morphball').classList.remove("noDisplay");
     document.getElementById('morphball').classList.add("inline");
-    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move, `;
+    // document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move, `;
     canCrawl = true; hasMorphBall = true;
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'morphball');
@@ -843,10 +843,16 @@ function collectMorphBall(shouldSendPost = true) {
     }
 }
 
+const displayInstructions = () => {
+    let s1, s2;
+    if (hasEyes === true) s1 = "Use A, D, (Shift, (R))";
+    // document.getElementById("instructions").textContent = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move` 
+};
+
 function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('screwattack').classList.remove("noDisplay");
     document.getElementById('screwattack').classList.add("inline");
-    document.getElementById('spaceInstructions').innerHTML = `<strong>&nbsp;SPACE</strong> to ultra flip`
+    // document.getElementById('spaceInstructions').innerHTML = `<strong>&nbsp;SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'screwattack');
@@ -857,7 +863,7 @@ function collectScrewAttack(shouldSendPost = true) {
 function collectEyes(shouldSendPost = true) {
     document.getElementById('eyes').classList.remove("noDisplay");
     document.getElementById('eyes').classList.add("inline");
-    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>),`;
+    // document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>),`;
     hasEyes = true;
 
     if (shouldSendPost === true) {
@@ -869,7 +875,7 @@ function collectEyes(shouldSendPost = true) {
 function collectMouse(shouldSendPost = true) {
     document.getElementById('mouse').classList.remove("noDisplay");
     document.getElementById('mouse').classList.add("inline");
-    document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>), click mouse`;
+    // document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>), click mouse`;
     hasMouse = true; playerCanPlaceRect = true;
 
     document.body.addEventListener("mousedown", (e) => {

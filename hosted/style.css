@@ -1,7 +1,7 @@
 html,
 body {
     overflow-x: initial;
-    padding-top: 30px;
+    padding-top: 15px;
 }
 
 .inline {
@@ -311,7 +311,6 @@ canvas {
 
 .center {
     text-align: center;
-    margin: 0 auto;
 }
 
 #createResponse {
@@ -347,7 +346,6 @@ button {
     font-weight: 700;
     display: block;
     margin: auto;
-    margin-top: 20px;
 }
 
 button:enabled {

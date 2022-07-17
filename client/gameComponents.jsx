@@ -97,14 +97,13 @@ const GameInfo = (props) => {
             </div>
             <button id="resetBtn" disabled={true} >Back to Save</button>
 
+            <br /><br /> <br />
             {/* Update this inner html when you get an item. */}
-            <span className="center" id="instructions">
-                <div id="moveInstructions" className="inline">Use '<strong>A</strong>' and
-                    '<strong>D</strong>'
-                    to move, </div>
-                <div id="spaceInstructions" className="inline"> <strong>&nbsp;SPACE</strong> to flip.
-                </div>
-            </span>
+            <p className="center" id="instructions">
+                Use '<strong>A</strong>' and
+                '<strong>D</strong>'
+                to move, <strong>&nbsp;SPACE</strong> to flip.
+            </p>
         </div>
     )
 };
