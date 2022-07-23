@@ -13,9 +13,9 @@ class bgRect {
 let rects = [], specialObjects = [], clouds = [];
 
 const getData = async () => {
-  const storedLevel = localStorage.getItem("level");
-  const storedObjects = localStorage.getItem("specialObjects");
-  const storedClouds = localStorage.getItem("clouds");
+  const storedLevel = sessionStorage.getItem("level");
+  const storedObjects = sessionStorage.getItem("specialObjects");
+  const storedClouds = sessionStorage.getItem("clouds");
   if (storedLevel && storedLevel.length > 0 && storedObjects && storedObjects.length > 0) {
     rects = JSON.parse(storedLevel);
     specialObjects = JSON.parse(storedObjects);
@@ -36,13 +36,13 @@ const getData = async () => {
     rects = obj.level.layers[0].entities;
     specialObjects = obj.level.layers[1].entities;
 
-    localStorage.setItem("level", JSON.stringify(rects));
-    localStorage.setItem("specialObjects", JSON.stringify(specialObjects));
+    // sessionStorage.setItem("level", JSON.stringify(rects));
+    // sessionStorage.setItem("specialObjects", JSON.stringify(specialObjects));
   }
 
   if (obj.level.clouds && obj.level.clouds.length > 0) {
     clouds = [...obj.level.clouds];
-    localStorage.setItem("clouds", JSON.stringify(clouds));
+    sessionStorage.setItem("clouds", JSON.stringify(clouds));
   }
 
 }

@@ -6,6 +6,12 @@ Observable universe (cloud background) image by Pablo Carlos Budassi:
 Link to wikipedia user page: https://commons.wikimedia.org/wiki/User:Unmismoobjetivo
 Link to license: https://creativecommons.org/licenses/by-sa/3.0/
 
+
+Astral observatory: crawl in enclosed space for 1 min, move into foreground on front canvas, meet 3D characters like in 'The Egg'short story.
+    -they tell you how to reach the other universe, turn into a cloud. Crazy button combo.
+Hookshot a shooting star in background? Add shooting stars to bg, they are obj that can make you return to beginning?
+    -make sure they don't hit behind void.
+
 Make player be drawn with dash offset when using eye powerup.
 Make mouse powerup darker when it can't be used.
 Lerp camera.

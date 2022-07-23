@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false;
 const sq_walkers = [], arc_walkers = [];
-const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false;
+const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false, drawLevelFilled = true;
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 let cloudsShouldLoop = true, activeCheckpoint = {};
@@ -142,6 +142,7 @@ const collideCheckpoint = (o) => {
         sfxr.play(sound);
     }
     o.active = true;
+    playerCanPlaceRect = true;
 };
 
 const collideItem = (o) => {
@@ -168,25 +169,25 @@ const drawCheckpoint = (o) => {
 
     switch (o.values.dir) {
         case 0:
-            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height - 25, p_ctx, color, false, true);
             break;
         case 1:
-            utilities.drawRectangle(o.x + camXOffset + 25, o.y + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            utilities.drawRectangle(o.x + camXOffset + 25, o.y + camYOffset, o.width, o.height - 25, p_ctx, color, false, true);
             break;
         case 2:
-            utilities.drawRectangle(o.x + camXOffset, o.y - 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            utilities.drawRectangle(o.x + camXOffset, o.y - 25 + camYOffset, o.width, o.height - 25, p_ctx, color, false, true);
             f = -1;
             break;
         case 3:
-            utilities.drawRectangle(o.x + camXOffset - 25, o.y + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            utilities.drawRectangle(o.x + camXOffset - 25, o.y + camYOffset, o.width, o.height - 25, p_ctx, color, false, true);
             break;
         default:
-            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height, p_ctx, color, false, true);
+            utilities.drawRectangle(o.x + camXOffset, o.y + 25 + camYOffset, o.width, o.height - 25, p_ctx, color, false, true);
             break;
     }
 
     if (o.active) {
-        const lineY = o.y + camYOffset + (25 * f) + (o.height / 2);
+        const lineY = o.y + camYOffset + (25 * f) + ((o.height - 25) / 2);
         p_ctx.beginPath();
         p_ctx.setLineDash([3]);
         p_ctx.moveTo(o.x + camXOffset, lineY);
@@ -400,10 +401,14 @@ const update = () => {
     if (!inClouds && shouldUpdateGame) {
         updatePlayer();
 
+        p_ctx.clearRect(0, 0, 640, 480);
+        drawLevel();
+
         // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
         // So the player is always drawn with a black stroke.
-        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, undefined, playerWalkAnimCounter);
+        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, false, playerWalkAnimCounter);
 
+        // draws the orange arrow rectangle above player's head.
         if (drawGTimer) {
             GTimer -= 17;
             if (GTimer > 0) {
@@ -431,8 +436,6 @@ const update = () => {
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset);
         }
     }
-
-    drawLevel();
 };
 
 const updateCloud = () => {
@@ -552,7 +555,7 @@ const updatePlayer = () => {
 //Draws the level (composed of rectangles and special objects) onto the player canvas.
 const drawLevel = () => {
     level.rects.forEach((r) => {
-        utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, true, false); //can add drawLevelStroked property as last option
+        utilities.drawRectangle(r.x + camXOffset, r.y + camYOffset, r.width, r.height, p_ctx, r.values.color, drawLevelFilled, false); //can add drawLevelStroked property as last option
     });
     let shouldDraw3DObjs = false;
 
@@ -704,8 +707,8 @@ const areColliding = (p, r) => {
 };
 
 const isOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x + f.width + 300 && p.newX + p.halfWidth > f.x - 550
-        && p.newY - p.halfHeight < f.y + 500 && p.newY + p.halfHeight > f.y - 500);
+    return (p.newX - p.halfWidth < f.x + f.width + 400 && p.newX + p.halfWidth > f.x - 400
+        && p.newY - p.halfHeight < f.y + f.height + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
 
@@ -736,11 +739,13 @@ const swapBG = () => {
 
     if (playerInBG === true) {
         collisionRects = bgRects;
+        drawLevelFilled = false;
         xSpeed = 1;
         ySpeed = 2;
     }
     else {
         collisionRects = level.rects;
+        drawLevelFilled = true;
         xSpeed = 3;
         ySpeed = 5;
     }
@@ -885,6 +890,10 @@ function collectMouse(shouldSendPost = true) {
 
         if (coords !== null) {
             playerCanPlaceRect = false;
+            const sound = sfxr.generate("click");
+            sound.sound_vol = 0.1;
+            sfxr.play(sound);
+            
             if (playerRect == null) {
                 playerRect = new level.bgRect(coords[0] - camXOffset, coords[1] - camYOffset, 50, 20, trueColor);
                 playerRect.values = { color: trueColor };

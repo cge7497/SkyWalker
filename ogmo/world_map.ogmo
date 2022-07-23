@@ -371,7 +371,7 @@
       "exportID": "87615520",
       "name": "checkpoint",
       "limit": -1,
-      "size": {"x": 50, "y": 25},
+      "size": {"x": 50, "y": 50},
       "origin": {"x": 0, "y": 0},
       "originAnchored": true,
       "shape": {
