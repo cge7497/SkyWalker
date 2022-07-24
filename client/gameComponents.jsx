@@ -83,6 +83,8 @@ const GameInfo = (props) => {
                     alt="Shrinking Powerup" title="W" />
                 <img id="mouse" src='assets/img/mouse.png' className='noDisplay' width="16" height="16"
                     alt="Mouse Platform" title="Click on game screen" />
+                <img id="mouse_inv" src='assets/img/mouse_inv.png' className='noDisplay' width="16" height="16"
+                    alt="Mouse Platform" title="Cannot use- must reload platform material." />
                 <img id="eyes" src='assets/img/eyes.png' className='noDisplay' width="16" height="32"
                     alt="Camera Shift Powerup" title="Hold Shift. R to reset." />
                 <img id="yellowswitch" src='assets/img/yellowswitch.png' className='noDisplay' width="25" height="25"

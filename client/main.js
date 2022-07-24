@@ -142,7 +142,8 @@ const collideCheckpoint = (o) => {
         sfxr.play(sound);
     }
     o.active = true;
-    playerCanPlaceRect = true;
+
+    if (playerCanPlaceRect === false) changeAbleToPlaceRect(true);
 };
 
 const collideItem = (o) => {
@@ -544,7 +545,7 @@ const updatePlayer = () => {
         }
     }
 
-    if (colliding[1] === true && playerCanPlaceRect === false) playerCanPlaceRect = true;
+    if (colliding[1] === true && playerCanPlaceRect === false) changeAbleToPlaceRect(true);
 
     prevOnGround = colliding[1];
     updatePlayerWalkAnim(walked, colliding[1]);
@@ -585,7 +586,7 @@ const drawLevel = () => {
     }
 
     if (playerRect !== null) {
-        utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, true);
+        utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, false, true);
     }
 };
 
@@ -889,11 +890,12 @@ function collectMouse(shouldSendPost = true) {
         const coords = utilities.handleMouseClick(e);
 
         if (coords !== null) {
-            playerCanPlaceRect = false;
+            changeAbleToPlaceRect(false);
+
             const sound = sfxr.generate("click");
             sound.sound_vol = 0.1;
             sfxr.play(sound);
-            
+
             if (playerRect == null) {
                 playerRect = new level.bgRect(coords[0] - camXOffset, coords[1] - camYOffset, 50, 20, trueColor);
                 playerRect.values = { color: trueColor };
@@ -990,6 +992,23 @@ function cloudState() {
     });
 }
 
+
+const changeAbleToPlaceRect = (able) => {
+    if (able === true) {
+        document.getElementById('mouse').classList.remove("noDisplay");
+        document.getElementById('mouse').classList.add("inline");
+        document.getElementById('mouse_inv').classList.remove("inline");
+        document.getElementById('mouse_inv').classList.add("noDisplay");
+        playerCanPlaceRect = true;
+    }
+    else {
+        document.getElementById('mouse_inv').classList.remove("noDisplay");
+        document.getElementById('mouse_inv').classList.add("inline");
+        document.getElementById('mouse').classList.remove("inline");
+        document.getElementById('mouse').classList.add("noDisplay");
+        playerCanPlaceRect = false;
+    }
+}
 
 const setupSocket = () => {
     socket = io();

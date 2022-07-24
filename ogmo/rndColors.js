@@ -2,7 +2,6 @@ function hook() {
 
   // Huge thanks to https://gist.github.com/bobspace/2712980 for this list of colors
   const CSS_COLOR_NAMES = [
-    "AliceBlue",
     "Aqua",
     "Aquamarine",
     "Azure",
@@ -79,7 +78,6 @@ function hook() {
     "LightSlateGray",
     "LightSlateGrey",
     "LightSteelBlue",
-    "LightYellow",
     "Lime",
     "LimeGreen",
     "Linen",
