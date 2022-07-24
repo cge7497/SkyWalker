@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
-let vpOffset = [0, 0], shouldRotateComp = false;
+let vpOffset = [0, 0], shouldRotateComp = false, playerShouldEnterVoid = false;
 const sq_walkers = [], arc_walkers = [];
 const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false, drawLevelFilled = true;
 let movementThisSecond = {}; let otherPlayerMovement = {};
@@ -57,7 +57,7 @@ const items = {
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
     '3DPerson': { draw: (o) => { draw3D(o) } },
     '3DComp': { draw: (o) => { draw3D(o) } },
-    '3DArrow': { draw: (o) => { draw3D(o) }, collected: rotateRight, collide: (o) => { rotateRight() } }
+    '3DArrow': { draw: (o) => { draw3D(o) }, collected: (o) => rotateRight(o), collide: (o) => { rotateRight(o) } }
 };
 
 const drawFire = (o) => {
@@ -211,7 +211,7 @@ let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
 
-let xSpeed = 3, ySpeed = 5; // 1, 2 in sky
+let xSpeed = 3, ySpeed = 6; // 1, 2 in sky
 let canFlip = true; let infiniteFlip = false, hasMouse = false, hasEyes = false, inClouds = false, shouldUpdateGame = true;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0, drawGTimer = false, GTimer = 5000;
 let keysPressed = [];
@@ -236,7 +236,11 @@ const startGameLogic = (obj, immediate = false) => {
         // setupSocket();
     }
     else {
+        console.error("Did not receive player data.");
     }
+
+    const sleep = ms => new Promise(r => setTimeout(r, 200));
+
 
     movementThisSecond.name = player.name;
     movementThisSecond.color = trueColor;
@@ -281,6 +285,20 @@ const startGameLogic = (obj, immediate = false) => {
     let bg_canvas = document.querySelector("#canvas_bg");
     let js3_canvas = document.querySelector("#canvas_js3");
     document.getElementById('resetBtn').onmousedown = (e) => { e.preventDefault(); movePlayerBackToStart(); }
+    document.getElementById('screwattack_active').onmousedown = (e) => {changeScrewAttackActive(true);}
+    document.getElementById('screwattack_inactive').onmousedown = (e) => { changeScrewAttackActive(false);}
+
+    const alterScrewAttack = (shouldActivate) => {
+        playerShouldEnterVoid = !playerShouldEnterVoid;
+        if (shouldActivate === true){
+            document.getElementById("screwattack_active"); //look at other one to determin code to show correct sprite.
+            document.getElementById("screwattack_inactive");
+        }
+        else {
+            document.getElementById("screwattack_active");
+            document.getElementById("screwattack_inactive");
+        }
+    }
 
 
     w_ctx = w_canvas.getContext('2d');
@@ -571,6 +589,10 @@ const drawLevel = () => {
                     currentlyDrawnModel = false;
                 }
                 if (!currentlyDrawnModel && items[o.name].file) {
+                    if (o.values) {
+                        if (o.values.dir === 0) items[o.name].file.rotation.y = 0;
+                        else if (o.values.dir === 1) items[o.name].file.rotation.y = -Math.PI;
+                    }
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
                     vpOffset = [o.x - 320, -o.y + 240];
@@ -738,6 +760,8 @@ const swapBG = () => {
     // TODO: See if this runs over and over again.
     playerInBG = !playerInBG;
 
+    if (playerShouldEnterVoid === false) return;
+
     if (playerInBG === true) {
         collisionRects = bgRects;
         drawLevelFilled = false;
@@ -748,13 +772,13 @@ const swapBG = () => {
         collisionRects = level.rects;
         drawLevelFilled = true;
         xSpeed = 3;
-        ySpeed = 5;
+        ySpeed = 6;
     }
 };
 
 //If the player's data on the server shows they already have items, give them those items.
 const initItems = (savedItems) => {
-    imgs['screwattack'] = document.getElementById('screwattack');
+    imgs['screwattack'] = document.getElementById('screwattack_inactive');
     imgs['morphball'] = document.getElementById('morphball');
     imgs['greyswitch'] = document.getElementById('greyswitch');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
@@ -804,12 +828,20 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
 };
 
 let shouldPlayRotateSound = true;
-function rotateRight() {
-    player.g = 1;
+function rotateRight(o) {
+    if (o.values && o.values.dir === 1) {
+        player.g = 1;
+        player.flip = false;
+        player.scale = Math.abs(player.scale);
+    }
+    else {
+        player.g = 1;
+        player.flip = true;
+        player.scale = Math.abs(player.scale) * -1; 
+    }
+
     player.halfHeight = 4;
     player.halfWidth = 7;
-    player.flip = true;
-    player.scale = Math.abs(player.scale) * -1;
 
     drawGTimer = true;
     GTimer = 5000;
@@ -856,8 +888,10 @@ const displayInstructions = () => {
 };
 
 function collectScrewAttack(shouldSendPost = true) {
-    document.getElementById('screwattack').classList.remove("noDisplay");
-    document.getElementById('screwattack').classList.add("inline");
+    document.getElementById('screwattack_active').classList.remove("noDisplay");
+    document.getElementById('screwattack_active').classList.add("inline");
+
+    playerShouldEnterVoid = true;
     // document.getElementById('spaceInstructions').innerHTML = `<strong>&nbsp;SPACE</strong> to ultra flip`
     infiniteFlip = true;
     if (shouldSendPost === true) {
