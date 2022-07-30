@@ -20,7 +20,7 @@ const getData = async () => {
     rects = JSON.parse(storedLevel);
     specialObjects = JSON.parse(storedObjects);
     // If I want to update clouds each time, just add clouds to the main player data request.
-    return;
+    // return;
   }
 
   let response = await fetch('/getLevel', {
@@ -36,8 +36,8 @@ const getData = async () => {
     rects = obj.level.layers[0].entities;
     specialObjects = obj.level.layers[1].entities;
 
-    // sessionStorage.setItem("level", JSON.stringify(rects));
-    // sessionStorage.setItem("specialObjects", JSON.stringify(specialObjects));
+    sessionStorage.setItem("level", JSON.stringify(rects));
+    sessionStorage.setItem("specialObjects", JSON.stringify(specialObjects));
   }
 
   if (obj.level.clouds && obj.level.clouds.length > 0) {

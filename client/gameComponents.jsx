@@ -79,7 +79,7 @@ const GameInfo = (props) => {
                 <h3 className='inline'>Items</h3>
                 <img id="screwattack_active" src='assets/img/screwattack.gif' className='noDisplay' width="16" height="16"
                     alt="Infinite Flip Powerup" title="Space" />
-                <img id="screwattack_inactive" src='assets/img/screwattack.gif' className='noDisplay' width="16" height="16"
+                <img id="screwattack_inactive" src='assets/img/screwattack.png' className='noDisplay' width="16" height="16"
                     alt="Infinite Flip Powerup" title="Space" />
                 <img id="morphball" src='assets/img/morphball.png' className='noDisplay' width="16" height="16"
                     alt="Shrinking Powerup" title="W" />

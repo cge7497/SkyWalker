@@ -285,18 +285,22 @@ const startGameLogic = (obj, immediate = false) => {
     let bg_canvas = document.querySelector("#canvas_bg");
     let js3_canvas = document.querySelector("#canvas_js3");
     document.getElementById('resetBtn').onmousedown = (e) => { e.preventDefault(); movePlayerBackToStart(); }
-    document.getElementById('screwattack_active').onmousedown = (e) => {changeScrewAttackActive(true);}
-    document.getElementById('screwattack_inactive').onmousedown = (e) => { changeScrewAttackActive(false);}
+    document.getElementById('screwattack_active').onmousedown = (e) => {alterScrewAttack(true);}
+    document.getElementById('screwattack_inactive').onmousedown = (e) => { alterScrewAttack(false);}
 
     const alterScrewAttack = (shouldActivate) => {
         playerShouldEnterVoid = !playerShouldEnterVoid;
-        if (shouldActivate === true){
-            document.getElementById("screwattack_active"); //look at other one to determin code to show correct sprite.
-            document.getElementById("screwattack_inactive");
+        if (playerShouldEnterVoid === true){
+            document.getElementById('screwattack_active').classList.remove("noDisplay");
+            document.getElementById('screwattack_active').classList.add("inline");
+            document.getElementById('screwattack_inactive').classList.remove("inline");
+            document.getElementById('screwattack_inactive').classList.add("noDisplay");
         }
         else {
-            document.getElementById("screwattack_active");
-            document.getElementById("screwattack_inactive");
+            document.getElementById('screwattack_inactive').classList.remove("noDisplay");
+            document.getElementById('screwattack_inactive').classList.add("inline");
+            document.getElementById('screwattack_active').classList.remove("inline");
+            document.getElementById('screwattack_active').classList.add("noDisplay");
         }
     }
 
@@ -356,8 +360,8 @@ const startGameLogic = (obj, immediate = false) => {
     loader.load('assets/img/SavePc.glb', function (gltf) {
         compModel = gltf.scene;
         compModel.scale.x = compModel.scale.y = compModel.scale.z = 9;
-        compModel.rotation.y = -Math.PI;
-        compModel.rotation.x = -0.25;
+        compModel.rotation.y = Math.PI;
+        // compModel.rotation.x = -0.25;
         gltf.scene.name = '3DComp';
 
         items['3DComp'].file = gltf.scene;
@@ -405,12 +409,12 @@ const animate = () => {
     renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
 
     if (shouldRotateComp) {
-        if (compModel.rotation.y <= 0) compModel.rotation.y += 0.01;
+        if (compModel.rotation.y >= 0) compModel.rotation.y -= 0.01;
         else shouldRotateComp = false;
     }
 
     // Figure out how to pass delta time bro
-    scene.rotation.x = Math.sin(playerWalkAnimCounter / 12) + Math.PI;
+    // scene.rotation.x = Math.sin(playerWalkAnimCounter / 12) + Math.PI;
 
     renderer.render(scene, camera);
 };
@@ -488,10 +492,10 @@ const updatePlayer = () => {
     let xDif = 0, yDif = 0;
     let walked = false;
     if (hasEyes && keysPressed[16]) {
-        if (keysPressed[65]) { camXOffset += 2; }
-        if (keysPressed[68]) { camXOffset -= 2; }
-        if (keysPressed[87]) { camYOffset += 2; }
-        if (keysPressed[83]) { camYOffset -= 2; }
+        if (keysPressed[65]) { camXOffset += 3; }
+        if (keysPressed[68]) { camXOffset -= 3; }
+        if (keysPressed[87]) { camYOffset += 3; }
+        if (keysPressed[83]) { camYOffset -= 3; }
     }
     else if (player.g === 0) {
         if (keysPressed[65]) { xDif = -xSpeed; walked = true; }
@@ -580,7 +584,7 @@ const drawLevel = () => {
 
     level.specialObjects.forEach((o) => {
         if (o.name.substring(0, 2) === '3D') {
-            utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
+            //utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
             if (isOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
                 // console.log(`current model: ${currentlyDrawnModel}, o.name: ${o.name}`);
