@@ -348,7 +348,7 @@ const startGameLogic = (obj, immediate = false) => {
     loader.load('assets/img/arrowright.glb', function (gltf) {
         gltf.scene.scale.set(0.25, 0.25, 1);
         gltf.scene.position.x += 2;
-        gltf.scene.position.y += 2;
+        gltf.scene.position.y -= 2;
         gltf.scene.name = '3DArrow';
 
         items['3DArrow'].file = gltf.scene;
@@ -490,6 +490,15 @@ const updateCloud = () => {
 let prevOnGround = false;
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
+    p_ctx.canvas.width = 1000;
+    p_ctx.canvas.height = 2000;
+    const sound = sfxr.generate("click");
+    sound.sound_vol = 0.1;
+    sfxr.play(sound);
+    
+    const els = document.querySelectorAll("canvas");
+    els.forEach(e=>e.classList.add("noBorder"));
+
     let walked = false;
     if (hasEyes && keysPressed[16]) {
         if (keysPressed[65]) { camXOffset += 3; }
@@ -584,7 +593,7 @@ const drawLevel = () => {
 
     level.specialObjects.forEach((o) => {
         if (o.name.substring(0, 2) === '3D') {
-            //utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
+            utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
             if (isOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
                 // console.log(`current model: ${currentlyDrawnModel}, o.name: ${o.name}`);
