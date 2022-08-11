@@ -42,7 +42,7 @@ const AccountSchema = new mongoose.Schema({
     type: Object,
     required: false,
     default: {
-      morphball: false, screwattack: false, blaster: false, cloud: false,
+      morphball: false, screwattack: false, mouse: false, eyes: false, cloud: false,
     },
   },
   shape: {

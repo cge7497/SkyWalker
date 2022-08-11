@@ -490,14 +490,14 @@ const updateCloud = () => {
 let prevOnGround = false;
 const updatePlayer = () => {
     let xDif = 0, yDif = 0;
-    p_ctx.canvas.width = 1000;
-    p_ctx.canvas.height = 2000;
+    // p_ctx.canvas.width = 1000;
+    // p_ctx.canvas.height = 2000;
     const sound = sfxr.generate("click");
     sound.sound_vol = 0.1;
     sfxr.play(sound);
     
-    const els = document.querySelectorAll("canvas");
-    els.forEach(e=>e.classList.add("noBorder"));
+    // const els = document.querySelectorAll("canvas");
+    // els.forEach(e=>e.classList.add("noBorder"));
 
     let walked = false;
     if (hasEyes && keysPressed[16]) {
@@ -932,6 +932,7 @@ function collectMouse(shouldSendPost = true) {
     hasMouse = true; playerCanPlaceRect = true;
 
     document.body.addEventListener("mousedown", (e) => {
+
         if (!playerCanPlaceRect) return;
 
         const coords = utilities.handleMouseClick(e);
@@ -1041,6 +1042,7 @@ function cloudState() {
 
 
 const changeAbleToPlaceRect = (able) => {
+    if (hasMouse !== true) return;
     if (able === true) {
         document.getElementById('mouse').classList.remove("noDisplay");
         document.getElementById('mouse').classList.add("inline");
