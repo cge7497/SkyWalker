@@ -492,9 +492,9 @@ const updatePlayer = () => {
     let xDif = 0, yDif = 0;
     // p_ctx.canvas.width = 1000;
     // p_ctx.canvas.height = 2000;
-    const sound = sfxr.generate("click");
-    sound.sound_vol = 0.1;
-    sfxr.play(sound);
+    // const sound = sfxr.generate("click");
+    // sound.sound_vol = 0.1;
+    // sfxr.play(sound);
     
     // const els = document.querySelectorAll("canvas");
     // els.forEach(e=>e.classList.add("noBorder"));
