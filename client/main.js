@@ -210,7 +210,7 @@ const drawImage = (o) => {
 const player = { x: 1038, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [1038, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
-let fireAnimColor = 0, playerWalkAnimCounter = 0, playerWalkAnimOut = true;
+let fireAnimColor = 0, playerWalkAnimCounter = 0, playerFallAnimCounter = 0;
 
 let xSpeed = 3, ySpeed = 6; // 1, 2 in sky
 let canFlip = true; let infiniteFlip = false, hasMouse = false, hasEyes = false, inClouds = false, shouldUpdateGame = true;
@@ -430,7 +430,7 @@ const update = () => {
 
         // Player.color is actually not set based on data from the server- it is only set by the "explode"/collide with fire function.
         // So the player is always drawn with a black stroke.
-        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, false, playerWalkAnimCounter);
+        utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, false, playerWalkAnimCounter, playerFallAnimCounter);
 
         // draws the orange arrow rectangle above player's head.
         if (drawGTimer) {
@@ -824,6 +824,7 @@ const setShape = (shape = 0) => {
     else player.scale = 1;
 }
 
+let playerWalkAnimOut = true, playerFallAnimOut = true
 const updatePlayerWalkAnim = (walked = false, onGround = false) => {
     if (walked && onGround) {
         if (playerWalkAnimOut) {
@@ -837,7 +838,22 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
     }
     //Revert back to 2
     else if (playerWalkAnimCounter !== 0) {
-        playerWalkAnimCounter += 0 - playerWalkAnimCounter;
+        playerWalkAnimCounter = 0;
+    }
+
+    //If the player is falling, then animate their arm positioning.
+    if (!onGround){
+        if (playerFallAnimOut) {
+            playerFallAnimCounter += 0.4;
+            if (playerFallAnimCounter >= 2) playerFallAnimOut = false;
+        }
+        else {
+            playerFallAnimCounter -= 0.4;
+            if (playerFallAnimCounter <= -2) playerFallAnimOut = true;
+        }
+    }
+    else if (playerFallAnimCounter !== 0){
+        playerFallAnimCounter = 0;
     }
 };
 
@@ -872,7 +888,7 @@ function rotateRight(o) {
 
 function rotateDown() {
     const sound = sfxr.generate("jump");
-    sound.sound_vol = 0.1;
+    sound.sound_vol = 0.05;
     sfxr.play(sound);
 
     player.g = 0; player.halfWidth = 4; player.halfHeight = 7;

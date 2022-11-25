@@ -14,7 +14,7 @@ const NPIDIV2 = -Math.PI / 2;
 
 
 // draws the player shape, which is a combination of canvas lines and arcs.
-const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
+const drawPlayer = (p, camX, camY, ctx, shouldClear = true, walkFrame = 0, fallFrame = 0) => {
 
   const x = p.x + camX;
   const y = p.y + camY;
@@ -51,7 +51,9 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
       ctx.arc(0, -(3 * p.scale), 3, NPIDIV2, PI3DIV2);
       break;
   }
-  const legOffset = (2 + frame) * p.scale;
+  const legOffset = (2 + walkFrame) * p.scale;
+  const armOffset = (3 - fallFrame) * p.scale;
+
 
   ctx.moveTo(0, -p.scale);
 
@@ -60,8 +62,12 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, frame = 0) => {
   ctx.lineTo(-legOffset, (8 * p.scale)); //draws left leg
   ctx.moveTo(0, (5 * p.scale)); //moving to leg beginning
   ctx.lineTo(legOffset, (8 * p.scale)); //right leg
-  ctx.moveTo(-(3 * p.scale), (3 * p.scale)); //move to beginning of arms
-  ctx.lineTo((3 * p.scale), (3 * p.scale)); //arms
+
+  ctx.moveTo(-(3 * p.scale), armOffset); //move to beginning of arms
+  ctx.lineTo(0, (3 * p.scale)); //left arm to center
+  ctx.lineTo((3 * p.scale), armOffset); //center to right arm
+  ctx.moveTo(0, (3 * p.scale)); //left arm to center
+
 
   ctx.closePath();
 
