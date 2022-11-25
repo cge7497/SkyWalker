@@ -85,14 +85,14 @@ const LoginWindow = (props) => {
             className="inputForm"
         >
             <div className="floatLeft">
-                <label htmlFor="username">Username: </label>
+                <label htmlFor="username">Username:  </label>
                 <input id="user" type="text" name="username" placeholder="username" />
             </div>
             <div className="floatRight">
                 <label htmlFor="pass">Password: </label>
                 <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
-            <input className="formSubmit" type="submit" value="Log in" />
+            <button className="formSubmit btn btn-outline-primary btn-lg" type="submit">Log In</button>
         </form>
     );
 };
@@ -107,7 +107,7 @@ const SignupWindow = (props) => {
             className="inputForm"
         >
             <div className="floatLeft">
-                <label htmlFor="username">Username: </label>
+                <label htmlFor="username">Username:  </label>
                 <input id="user" type="text" name="username" placeholder="username" />
             </div>
             <div className="floatRight">
@@ -122,7 +122,7 @@ const SignupWindow = (props) => {
                 <label htmlFor="pass2">Password: </label>
                 <input id="pass2" type="password" name="pass2" placeholder="password" />
             </div>
-            <input className="formSubmit" type="submit" value="Create Account" />
+            <button className="btn btn-outline-primary btn-lg formSubmit" type="submit">Create Account</button>
         </form>
     );
 };
@@ -156,7 +156,7 @@ const ChangePasswordWindow = (props) => {
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
             <button type='button' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
-            <input className="formSubmit" id="changePasswordSubmit" type="submit" value="Set Password" />
+            <button className="btn btn-outline-primary btn-lg formSubmit" id="changePasswordSubmit" type="submit">Set Password</button>
         </form>
     );
 };

@@ -9,7 +9,8 @@
      <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
    -->
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <script src="https://sfxr.me/riffwave.js"></script>
   <script src="https://sfxr.me/sfxr.js"></script>
 
@@ -31,14 +32,16 @@
 </head>
 
 <body>
-  <section class="center">
-    <button id="signupButton" class="inline" disabled=true>Sign up </button></div>
-    <button id="loginButton" class="inline">Login </button></div>
-    <button id="changePasswordButton" class="inline hidden">Change Password</button></div>
-    <a id="logoutLink" class="inline hidden" href='/logout'>Save and Quit</a></div>
-    <input id="_csrf" type="hidden" name="_csrf" />
-  </section>
-  <section id="formContent">
+  <section class="border border-light border-4" id="topBorder">
+    <section class="center mt-3">
+      <button id="signupButton" type="button" class="btn inline btn-secondary" disabled=true>Sign up</button>
+      <button id="loginButton" type="button" class="btn inline btn-secondary">Login</button>
+      <button id="changePasswordButton" type="button" class="inline hidden btn btn-secondary">Change Password</button>
+      <a id="logoutLink" role="button" class="inline hidden btn btn-secondary" href='/logout'>Save and Quit</a>
+      <input id="_csrf" type="hidden" name="_csrf" />
+    </section>
+    <section id="formContent" class="">
+    </section>
   </section>
   <div id="game">
     <p id="createResponse">Please log in or create an account.</p>

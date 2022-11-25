@@ -5,6 +5,7 @@ import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
+
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false, playerShouldEnterVoid = false;
 const sq_walkers = [], arc_walkers = [];

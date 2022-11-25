@@ -31,14 +31,21 @@ body {
     padding-top: 20px;
 }
 
+#topBorder{
+    width: 700px;
+    margin: 0 auto;
+}
+
 #signupButton {
     margin-right: 50px;
     width: 90px;
+    font-size: 1.1em;
 }
 
 #loginButton {
     margin-left: 50px;
     width: 90px;
+    font-size: 1.1em;
 }
 
 #changePasswordForm {
@@ -89,17 +96,12 @@ body {
     /* amount across the X-axis to the left */
     transform: translateX(-50%);
 
-    margin-top: 25px;
+    margin-top: 20px;
+    margin-bottom: 15px;
     font-size: 1.2em;
-    border-radius: 2px;
-    border-color: #6f8a9a;
-    padding: 3px 10px;
-    color: black;
     text-decoration: none;
     overflow: auto;
     font-weight: bolder;
-
-    cursor: pointer;
 }
 
 #payModelBtn {
@@ -108,6 +110,7 @@ body {
     right: -44px;
     top: 6px;
     word-wrap: break-word;
+    width:42px;
 }
 
 #payModelDisplay {
@@ -157,13 +160,15 @@ body {
     left: -44px;
     top: 6px;
     word-wrap: break-word;
+    width: 42px;
 }
 
 #playerDisplayList {
     margin-top: 20px;
     max-height: 640px;
     position: absolute;
-    left: -207px;
+    width:245px;
+    left: -250px;
     top: 6px;
     border: 1px solid;
     border-collapse: collapse;
@@ -176,6 +181,9 @@ body {
     width: 200px;
     border: 1px solid;
     border-collapse: collapse;
+    margin-left:10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 #playerDisplayList table td {
@@ -209,12 +217,7 @@ body {
     */
 }
 
-#payModel button,
-#playerDisplay button {
-    height: 75px;
-    width: 40px;
-}
-
+/*
 #logoutLink {
     text-decoration: none;
     color: black;
@@ -237,22 +240,10 @@ body {
     background-color: #cbcee7;
     border: 2px solid;
 }
+*/
 
 #formContent{
-    min-height: 130px;
-}
-
-.formSubmit:link,
-.formSubmit:visited,
-.formSubmit:hover,
-.formSubmit:active {
-    background-color: #338acc;
-}
-
-.formSubmit:hover {
-    transition: background-color 0.4s ease;
-    background-color: #cbcee7;
-    border: 2px solid;
+    min-height: 20px;
 }
 
 #user,
@@ -306,6 +297,7 @@ canvas {
     padding: 0;
     position: relative;
     margin: 0 auto;
+    margin-top:20px;
     width: 640px;
     height: 540px;
     font-family: 'Raleway', sans-serif;
@@ -350,7 +342,7 @@ button {
     display: block;
     margin: auto;
 }
-
+/*
 button:enabled {
     color: black;
     background-color: #e7e7e7;
@@ -361,7 +353,7 @@ button:enabled:hover {
     background-color: #cbcee7;
     border: 2px solid;
 }
-
+*/
 footer {
     margin-top: 40px;
 }

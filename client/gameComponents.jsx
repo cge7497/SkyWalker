@@ -24,13 +24,13 @@ const PlayerDisplay = (props) => {
     if (!displayMode || displayMode === 0) {
         // render the objects with the className
         return (
-            <button id="playerDisplayBtn" onClick={(e) => { changeDisplay() }}> O -|- /\</button>
+            <button id="playerDisplayBtn" className = " widgetBtn btn btn-light" onClick={(e) => { changeDisplay() }}> O -|- /\</button>
         )
     }
     if (!players || players.length === 0) {
         return (
             <div id="playerDisplayList">
-                <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
+                <button type="button" className="btn-close position-absolute end-0" aria-label='Close' onClick={changeDisplay}></button>
                 <h2>No Players Yet...</h2>
             </div>
         )
@@ -47,9 +47,9 @@ const PlayerDisplay = (props) => {
 
     return (
         <div id="playerDisplayList">
-            <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
+            <button type="button" className="btn-close position-absolute end-0" aria-label='Close' onClick={changeDisplay}></button>
             <table>
-                <caption><h3><u>Current Players</u></h3></caption>
+                <caption className='caption-top'><h3><u>Current Players</u></h3></caption>
                 <thead>
                     <tr>
                         <th>Username</th>
@@ -99,7 +99,7 @@ const GameInfo = (props) => {
                     alt="Arrow Right" />
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
             </div>
-            <button id="resetBtn" disabled={true} >Back to Save</button>
+            <button id="resetBtn" className = "btn btn-info" disabled={true} >Back to Save</button>
 
             <br /><br /> <br />
             {/* Update this inner html when you get an item. */}
@@ -179,14 +179,14 @@ const PayModelDisplay = (props) => {
 
     if (!displayMode || displayMode === 0) {
         return (
-            <button disabled={disabled} id="payModelBtn" onClick={changeDisplay}>&nabla; &#9634; &#9671;</button>
+            <button disabled={disabled} id="payModelBtn" className = "btn btn-light" onClick={changeDisplay}>&nabla; &#9634; &#9671;</button>
         )
     }
 
     const ShapeList = () => {
         return (
             <table id="payModelTable">
-                <caption><h3><u>Shape Shop</u></h3></caption>
+                <caption className='caption-top'><h3><u>Shape Shop</u></h3></caption>
                 <thead>
                     <tr>
                         <th>Shape</th>
@@ -221,7 +221,7 @@ const PayModelDisplay = (props) => {
 
     return (
         <div id="payModelDisplay">
-            <button id="closeWidgetBtn" onClick={changeDisplay}>X</button>
+            <button type="button" className="btn-close position-absolute end-0" aria-label='Close' onClick={changeDisplay}></button>
             <ShapeList />
         </div>
     );
