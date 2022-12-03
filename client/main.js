@@ -5,9 +5,9 @@ import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false, playerShouldEnterVoid = false;
+let playerTracking = [], playerTrack = [];
 const sq_walkers = [], arc_walkers = [];
 const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false, drawLevelFilled = true;
 let movementThisSecond = {}; let otherPlayerMovement = {};
@@ -250,6 +250,25 @@ const startGameLogic = (obj, immediate = false) => {
     // This seems unoptimal... should I just await the data.
     collisionRects = level.rects;
 
+    let findingColor = true, rnd, color;
+
+    rnd = Math.floor(Math.random() * level.rects.length);
+    color = level.rects[rnd].values.color;
+    playerTrack.push(color);
+
+    for (let i = 0; i < 10; i++){
+        findingColor = true;
+        while (findingColor){
+            rnd = Math.floor(Math.random() * level.rects.length);
+            color = level.rects[rnd].values.color;
+            if (color !== playerTrack[i]){
+                findingColor = false;
+            }
+        }
+        playerTrack.push(color);
+    }
+
+    console.log(playerTrack);
     if (obj.items) initItems(obj.items);
 
     //I created these sounds with SFXR (http://sfxr.me/)
@@ -379,6 +398,11 @@ const startGameLogic = (obj, immediate = false) => {
 
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
+    
+    p_canvas.addEventListener("contextmenu", (e)=> {e.preventDefault()});
+    p_canvas.addEventListener("wheel", (e)=> {e.preventDefault()});
+
+    // Prevent scrolling and right-click, use to change speed of bg/playerRect and delete playerRect.
 
     //If getLevel (in level.js) got back a set of clouds, add them to the bgRects/clouds that will be displayed by the client.
     if (level.clouds && level.clouds.length > 0) {
@@ -423,6 +447,7 @@ const animate = () => {
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
     if (!inClouds && shouldUpdateGame) {
+        //(0.5 + Math.random(), 0.5 + Math.random());
         updatePlayer();
 
         p_ctx.clearRect(0, 0, 640, 480);
@@ -502,6 +527,7 @@ const updatePlayer = () => {
 
     let walked = false;
     if (hasEyes && keysPressed[16]) {
+        // p_ctx.scale(0.999,0.999);
         if (keysPressed[65]) { camXOffset += 3; }
         if (keysPressed[68]) { camXOffset -= 3; }
         if (keysPressed[87]) { camYOffset += 3; }
@@ -622,7 +648,10 @@ const drawLevel = () => {
     }
 
     if (playerRect !== null) {
+        playerRect.x += playerRect.hSpeed;
+        p_ctx.save();
         utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, false, true);
+        if (playerRect.x + camXOffset > canvasWidth + 20) { playerRect.x -= canvasWidth + 80 }
     }
 };
 
@@ -715,6 +744,12 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
+            if (r.values && r.values.color 
+                && r.values.color !== playerTracking[playerTracking.length - 1]){
+                playerTracking.push(r.values.color);
+                console.log(r.values.color + "new color");
+            }
+            // console.log(r.values.color);
             // The order of which directions are checked matters! It affects whether player gets stuck if they move from one rect to another on the same y coord.
             // It may be worth it to do an if then for player.g== 1 (since we should check horizontal collisions first, so the player doesn't get stuck when moving
             // across two same x-coord walls). As of now, no walls that do this exist so I do not do this check.
@@ -964,6 +999,7 @@ function collectMouse(shouldSendPost = true) {
             if (playerRect == null) {
                 playerRect = new level.bgRect(coords[0] - camXOffset, coords[1] - camYOffset, 50, 20, trueColor);
                 playerRect.values = { color: trueColor };
+                playerRect.hSpeed = 2;
                 playerRect.isPlayerRect = true;
 
                 collisionRects.push(playerRect);
@@ -1082,6 +1118,10 @@ const setupSocket = () => {
         otherPlayerMovement = movement;
     });
 };
+
+const rightClick = (e) => {
+    
+}
 
 const keyDown = (e) => {
     // If the target is not the body for a keyClick- meaning the target is an input form- return and don't move player based on this input.

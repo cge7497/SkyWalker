@@ -555,8 +555,8 @@
       "exportID": "47420146",
       "name": "mouse",
       "limit": -1,
-      "size": {"x": 25, "y": 25},
-      "origin": {"x": 0, "y": 0},
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": -4, "y": -11},
       "originAnchored": true,
       "shape": {
         "label": "Rectangle",
