@@ -5,7 +5,8 @@ import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, currentlyDrawnModel = false;
+let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, 
+treeModel=THREE.Object3D, houseModel=THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false, playerShouldEnterVoid = false;
 let playerTracking = [], playerTrack = [];
 const sq_walkers = [], arc_walkers = [];
@@ -206,8 +207,8 @@ const drawImage = (o) => {
 };
 
 
-
-const player = { x: 1038, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 200, scale: 1, name: '', flip: false, g: 0, spawn: [1038, 200] };
+//usual player y is 200
+const player = { x: 1038, y: 0, halfWidth: 4, halfHeight: 7, newX: 825, newY: 0, scale: 1, name: '', flip: false, g: 0, spawn: [1038, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerFallAnimCounter = 0;
@@ -392,6 +393,38 @@ const startGameLogic = (obj, immediate = false) => {
         console.error(error);
     });
 
+    
+    loader.load('assets/img/Tree.gltf', function (gltf) {
+        treeModel = gltf.scene;
+        treeModel.scale.x = treeModel.scale.y = treeModel.scale.z = 9;
+        treeModel.rotation.y = Math.PI;
+        // treeModel.rotation.x = -0.25;
+        gltf.scene.name = '3DCTree';
+
+        items['3DTree'].file = gltf.scene;
+        treeModel.position.y -= 30;
+        // treeModel.position.x -= 20;
+
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    
+    loader.load('assets/img/House.gltf', function (gltf) {
+        houseModel = gltf.scene;
+        houseModel.scale.x = houseModel.scale.y = houseModel.scale.z = 9;
+        houseModel.rotation.y = Math.PI;
+        // houseModel.rotation.x = -0.25;
+        gltf.scene.name = '3DHouse';
+
+        items['3DHouse'].file = gltf.scene;
+        houseModel.position.y -= 30;
+        // compModel.position.x -= 20;
+
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
 
     canvasWidth = w_canvas.width;
     canvasHeight = w_canvas.height;
@@ -475,6 +508,7 @@ const update = () => {
         cloudState();
         if (shouldUpdateGame) {
             updateCloud();
+            p_ctx.fillStyle="black";
             p_ctx.clearRect(0, 0, 640, 480);
 
             p_ctx.save();
@@ -482,7 +516,8 @@ const update = () => {
             p_ctx.drawImage(imgs['uni'], -GAME_WIDTH / 2 + camXOffset, -GAME_HEIGHT / 2 + camYOffset);
             p_ctx.restore();
 
-            utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset);
+            updatePlayerWalkAnim(false, true);
+            utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset, playerFallAnimCounter, playerWalkAnimCounter);
         }
     }
 };
@@ -497,19 +532,26 @@ const updateCloud = () => {
         playerCloud.dirRad -= 0.01;
     }
 
-    playerCloud.hSpeed = Math.cos(playerCloud.dirRad);
-    playerCloud.vSpeed = Math.sin(playerCloud.dirRad);
+    playerCloud.hSpeed = Math.cos(playerCloud.dirRad) * 3;
+    playerCloud.vSpeed = Math.sin(playerCloud.dirRad) * 3;
 
     playerCloud.x += playerCloud.hSpeed / 2; playerCloud.y += playerCloud.vSpeed / 2;
 
     // makes the rectangle wrap around the screen.
-    // if (playerCloud.x > canvasWidth + 20) { playerCloud.x = -20 }
-    // else if (playerCloud.x < -20) { playerCloud.x = canvasWidth + 20 }
+    if (playerCloud.x > canvasWidth + 20) { playerCloud.x = -20 }
+    else if (playerCloud.x < -20) { playerCloud.x = canvasWidth + 20 }
     if (playerCloud.y > canvasHeight + 20) { playerCloud.y = -20 }
     else if (playerCloud.y < -20) { playerCloud.y = canvasHeight + 20 }
 
     camXOffset -= playerCloud.hSpeed / 5;
     camYOffset -= playerCloud.vSpeed / 5;
+
+    if (camXOffset< -1500 || camXOffset > 250){
+        console.log("where am i");
+    }
+    else if (camYOffset < -1500 || camYOffset > 250){
+        console.log("where am i");
+    }
 };
 
 // Updates player movement based on input and collision.
@@ -1043,6 +1085,9 @@ function cloudState() {
         playerCloud.dirRad = Math.PI / 2;
         playerCloud.halfWidth = playerCloud.width / 2;
         playerCloud.halfHeight = playerCloud.height / 2;
+        playerCloud.scale = 3;
+
+        
 
         //requests.sendCloud(trueColor);
 

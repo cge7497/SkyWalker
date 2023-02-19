@@ -93,24 +93,44 @@ const drawRectangle = (x, y, width, height, ctx, color, fill = true, fillAndStro
   ctx.restore();
 }
 
-const drawPlayerCloud = (p, ctx, camX) => {
+const drawPlayerCloud = (p, ctx, camX, fallFrame, walkFrame) => {
   ctx.save();
-  ctx.translate(p.x + camX, p.y);
+  ctx.translate(p.x, p.y);
   ctx.rotate(p.dirRad);
+
+
 
   //have to fix this
   ctx.beginPath();
+  ctx.arc(0, -(3 * p.scale), Math.abs(3 * p.scale), NPIDIV2, PI3DIV2);
 
-  // it's too big: don't include p.y, just height? or width... 
-  // Top left corner, top right etc.r
-  ctx.moveTo(-p.halfWidth, -p.halfHeight);
-  ctx.lineTo(p.halfWidth, -p.halfHeight);
-  ctx.lineTo(p.halfWidth, p.halfHeight);
-  ctx.lineTo(-p.halfWidth, p.halfHeight);
+
+  const armOffset = (3 - fallFrame) * p.scale;
+  const legOffset = (2 + walkFrame) * p.scale;
+
+  ctx.moveTo(0, -p.scale);
+
+  //draws line body from head
+  ctx.lineTo(0, (5 * p.scale));
+  ctx.lineTo(-legOffset, (8 * p.scale)); //draws left leg
+  ctx.moveTo(0, (5 * p.scale)); //moving to leg beginning
+  ctx.lineTo(legOffset, (8 * p.scale)); //right leg
+
+  ctx.moveTo(-(3 * p.scale), armOffset); //move to beginning of arms
+  ctx.lineTo(0, (3 * p.scale)); //left arm to center
+  ctx.lineTo((3 * p.scale), armOffset); //center to right arm
+  ctx.moveTo(0, (3 * p.scale)); //left arm to center
+
+
   ctx.closePath();
 
-  ctx.fillStyle = p.color; ctx.fill();
+  if (p.color) ctx.strokeStyle = p.color;
+  ctx.lineWidth=5;
+
+  ctx.setLineDash([1, 5]);
+  ctx.lineDashOffset = Math.random() * 10;
   ctx.stroke();
+  ctx.fillStyle = "white"; ctx.fill();
 
   ctx.restore();
 }
