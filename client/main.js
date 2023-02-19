@@ -59,7 +59,8 @@ const items = {
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
     '3DPerson': { draw: (o) => { draw3D(o) } },
     '3DComp': { draw: (o) => { draw3D(o) } },
-    '3DArrow': { draw: (o) => { draw3D(o) }, collected: (o) => rotateRight(o), collide: (o) => { rotateRight(o) } }
+    '3DArrow': { draw: (o) => { draw3D(o) }, collected: (o) => rotateRight(o), collide: (o) => { rotateRight(o) } },
+    '3DTree': {}, '3DHouse': {}
 };
 
 const drawFire = (o) => {
@@ -398,8 +399,9 @@ const startGameLogic = (obj, immediate = false) => {
         treeModel = gltf.scene;
         treeModel.scale.x = treeModel.scale.y = treeModel.scale.z = 9;
         treeModel.rotation.y = Math.PI;
+        console.log(treeModel.mesh);
         // treeModel.rotation.x = -0.25;
-        gltf.scene.name = '3DCTree';
+        gltf.scene.name = '3DTree';
 
         items['3DTree'].file = gltf.scene;
         treeModel.position.y -= 30;
@@ -545,12 +547,25 @@ const updateCloud = () => {
 
     camXOffset -= playerCloud.hSpeed / 5;
     camYOffset -= playerCloud.vSpeed / 5;
+    let diff = 0;
 
-    if (camXOffset< -1500 || camXOffset > 250){
-        console.log("where am i");
+    if (camXOffset< -1500){
+        diff = camXOffset + 1500;
     }
-    else if (camYOffset < -1500 || camYOffset > 250){
-        console.log("where am i");
+    else if (camXOffset > 250){
+        diff = camXOffset - 250;
+    }
+    else if (camYOffset < -1500){
+        diff = camYOffset + 1500;
+    }
+    else if (camYOffset > 250){
+        diff = camYOffset - 250;
+    }
+    diff = Math.abs(diff);
+
+    if (diff > 0){
+        console.log(scene);
+        scene.add(items['3DTree'].file);
     }
 };
 
