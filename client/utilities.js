@@ -125,7 +125,7 @@ const drawPlayerCloud = (p, ctx, camX, fallFrame, walkFrame) => {
   ctx.closePath();
 
   if (p.color) ctx.strokeStyle = p.color;
-  ctx.lineWidth=5;
+  ctx.lineWidth=2;
 
   ctx.setLineDash([1, 5]);
   ctx.lineDashOffset = Math.random() * 10;

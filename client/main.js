@@ -5,8 +5,8 @@ import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D, 
-treeModel=THREE.Object3D, houseModel=THREE.Object3D, currentlyDrawnModel = false;
+let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D,
+    treeModel = THREE.Object3D, houseModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false, playerShouldEnterVoid = false;
 let playerTracking = [], playerTrack = [];
 const sq_walkers = [], arc_walkers = [];
@@ -258,12 +258,12 @@ const startGameLogic = (obj, immediate = false) => {
     color = level.rects[rnd].values.color;
     playerTrack.push(color);
 
-    for (let i = 0; i < 10; i++){
+    for (let i = 0; i < 10; i++) {
         findingColor = true;
-        while (findingColor){
+        while (findingColor) {
             rnd = Math.floor(Math.random() * level.rects.length);
             color = level.rects[rnd].values.color;
-            if (color !== playerTrack[i]){
+            if (color !== playerTrack[i]) {
                 findingColor = false;
             }
         }
@@ -307,12 +307,12 @@ const startGameLogic = (obj, immediate = false) => {
     let bg_canvas = document.querySelector("#canvas_bg");
     let js3_canvas = document.querySelector("#canvas_js3");
     document.getElementById('resetBtn').onmousedown = (e) => { e.preventDefault(); movePlayerBackToStart(); }
-    document.getElementById('screwattack_active').onmousedown = (e) => {alterScrewAttack(true);}
-    document.getElementById('screwattack_inactive').onmousedown = (e) => { alterScrewAttack(false);}
+    document.getElementById('screwattack_active').onmousedown = (e) => { alterScrewAttack(true); }
+    document.getElementById('screwattack_inactive').onmousedown = (e) => { alterScrewAttack(false); }
 
     const alterScrewAttack = (shouldActivate) => {
         playerShouldEnterVoid = !playerShouldEnterVoid;
-        if (playerShouldEnterVoid === true){
+        if (playerShouldEnterVoid === true) {
             document.getElementById('screwattack_active').classList.remove("noDisplay");
             document.getElementById('screwattack_active').classList.add("inline");
             document.getElementById('screwattack_inactive').classList.remove("inline");
@@ -394,12 +394,12 @@ const startGameLogic = (obj, immediate = false) => {
         console.error(error);
     });
 
-    
+
     loader.load('assets/img/Tree.gltf', function (gltf) {
         treeModel = gltf.scene;
-        treeModel.scale.x = treeModel.scale.y = treeModel.scale.z = 9;
+        treeModel.scale.x = treeModel.scale.y = treeModel.scale.z = 5;
         treeModel.rotation.y = Math.PI;
-        console.log(treeModel.mesh);
+        console.log(treeModel);
         // treeModel.rotation.x = -0.25;
         gltf.scene.name = '3DTree';
 
@@ -411,7 +411,7 @@ const startGameLogic = (obj, immediate = false) => {
         console.error(error);
     });
 
-    
+
     loader.load('assets/img/House.gltf', function (gltf) {
         houseModel = gltf.scene;
         houseModel.scale.x = houseModel.scale.y = houseModel.scale.z = 9;
@@ -433,9 +433,9 @@ const startGameLogic = (obj, immediate = false) => {
 
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
-    
-    p_canvas.addEventListener("contextmenu", (e)=> {e.preventDefault()});
-    p_canvas.addEventListener("wheel", (e)=> {e.preventDefault()});
+
+    p_canvas.addEventListener("contextmenu", (e) => { e.preventDefault() });
+    p_canvas.addEventListener("wheel", (e) => { e.preventDefault() });
 
     // Prevent scrolling and right-click, use to change speed of bg/playerRect and delete playerRect.
 
@@ -462,11 +462,59 @@ const startGameLogic = (obj, immediate = false) => {
     // setInterval(drawOtherPlayerMovement, 1000 / 30);
 }
 
-const animate = () => {
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const geometry = new THREE.SphereGeometry( 8, 8, 16 );
+const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+const sphere = new THREE.Mesh( geometry, material );
+
+const animate = (followingPlayer = true) => {
     // if (camXOffset === prevCamXOffset && camYOffset === prevCamYOffset) return;
 
     //js3_ctx.translate(camXOffset + 1000, GAME_HEIGHT - camYOffset - 1850);
-    renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
+    if (followingPlayer) {
+        renderer.setViewport(vpOffset[0] + camXOffset, vpOffset[1] - camYOffset, GAME_WIDTH, GAME_HEIGHT);
+    }
+    else {
+        renderer.setViewport(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        // pointer.x = (playerCloud.x / GAME_WIDTH) * 2 - 1;
+        // pointer.y = -(playerCloud.y / GAME_HEIGHT) * 2 - 1;
+
+        pointer.x = playerCloud.x * 4 - GAME_WIDTH * 2;
+        pointer.y = -playerCloud.y * 4 + GAME_HEIGHT * 2;
+
+        const newPos = new THREE.Vector3(pointer.x, pointer.y, -1).unproject(camera)
+
+        newPos.z = 1;
+        sphere.position.set(newPos.x, newPos.y, newPos.z);
+
+        // console.log(`${sphere.position.x}, ${sphere.position.y}, ${sphere.position.z}`);
+
+        scene.add(sphere);
+
+        const treeBB = new THREE.Box3().setFromObject(treeModel);
+
+        const charBB = new THREE.Box3().setFromObject(characterModel);
+
+        const sphereBB = new THREE.Box3().setFromObject(sphere);
+
+        const treeColl = sphereBB.intersectsBox(treeBB);
+        const charColl = sphereBB.intersectsBox(charBB);
+
+        //Transition to tree
+        if (treeColl){
+            treeModel.scale.x *= 1.01;
+            treeModel.scale.y *= 1.01;
+            treeModel.scale.z *= 1.01;
+        }
+        //Transition to character
+        else if (charColl){
+            characterModel.scale.x *= 1.01;
+            characterModel.scale.y *= 1.01;
+            characterModel.scale.z *= 1.01;
+        }
+    }
 
     if (shouldRotateComp) {
         if (compModel.rotation.y >= 0) compModel.rotation.y -= 0.01;
@@ -510,13 +558,15 @@ const update = () => {
         cloudState();
         if (shouldUpdateGame) {
             updateCloud();
-            p_ctx.fillStyle="black";
+            p_ctx.fillStyle = "black";
             p_ctx.clearRect(0, 0, 640, 480);
 
             p_ctx.save();
             p_ctx.scale(2, 2);
             p_ctx.drawImage(imgs['uni'], -GAME_WIDTH / 2 + camXOffset, -GAME_HEIGHT / 2 + camYOffset);
             p_ctx.restore();
+
+            animate(false);
 
             updatePlayerWalkAnim(false, true);
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset, playerFallAnimCounter, playerWalkAnimCounter);
@@ -549,24 +599,26 @@ const updateCloud = () => {
     camYOffset -= playerCloud.vSpeed / 5;
     let diff = 0;
 
-    if (camXOffset< -1500){
+    /*
+    if (camXOffset < -1500) {
         diff = camXOffset + 1500;
     }
-    else if (camXOffset > 250){
+    else if (camXOffset > 250) {
         diff = camXOffset - 250;
     }
-    else if (camYOffset < -1500){
+    else if (camYOffset < -1500) {
         diff = camYOffset + 1500;
     }
-    else if (camYOffset > 250){
+    else if (camYOffset > 250) {
         diff = camYOffset - 250;
     }
     diff = Math.abs(diff);
 
-    if (diff > 0){
+    if (diff > 0) {
         console.log(scene);
         scene.add(items['3DTree'].file);
     }
+    */
 };
 
 // Updates player movement based on input and collision.
@@ -578,7 +630,7 @@ const updatePlayer = () => {
     // const sound = sfxr.generate("click");
     // sound.sound_vol = 0.1;
     // sfxr.play(sound);
-    
+
     // const els = document.querySelectorAll("canvas");
     // els.forEach(e=>e.classList.add("noBorder"));
 
@@ -801,8 +853,8 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
-            if (r.values && r.values.color 
-                && r.values.color !== playerTracking[playerTracking.length - 1]){
+            if (r.values && r.values.color
+                && r.values.color !== playerTracking[playerTracking.length - 1]) {
                 playerTracking.push(r.values.color);
                 console.log(r.values.color + "new color");
             }
@@ -934,7 +986,7 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
     }
 
     //If the player is falling, then animate their arm positioning.
-    if (!onGround){
+    if (!onGround) {
         if (playerFallAnimOut) {
             playerFallAnimCounter += 0.4;
             if (playerFallAnimCounter >= 2) playerFallAnimOut = false;
@@ -944,7 +996,7 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
             if (playerFallAnimCounter <= -2) playerFallAnimOut = true;
         }
     }
-    else if (playerFallAnimCounter !== 0){
+    else if (playerFallAnimCounter !== 0) {
         playerFallAnimCounter = 0;
     }
 };
@@ -959,7 +1011,7 @@ function rotateRight(o) {
     else {
         player.g = 1;
         player.flip = true;
-        player.scale = Math.abs(player.scale) * -1; 
+        player.scale = Math.abs(player.scale) * -1;
     }
 
     player.halfHeight = 4;
@@ -1097,12 +1149,13 @@ function cloudState() {
 
         //create a background rectangle of the player's selected color.
         playerCloud = new level.bgRect(player.x, -20, Math.random() * 10 + 30, Math.random() * 4 + 3, trueColor);
-        playerCloud.dirRad = Math.PI / 2;
+        playerCloud.dirRad = -Math.PI / 2;
         playerCloud.halfWidth = playerCloud.width / 2;
         playerCloud.halfHeight = playerCloud.height / 2;
         playerCloud.scale = 3;
 
-        
+
+        scene.add(items['3DTree'].file);
 
         //requests.sendCloud(trueColor);
 
@@ -1135,6 +1188,9 @@ function cloudState() {
         player.y += 0.85;
     }
 
+    //find true player.x, where drawn
+
+    
     //Makes the player's alpha decrease.
     player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
 
@@ -1180,7 +1236,7 @@ const setupSocket = () => {
 };
 
 const rightClick = (e) => {
-    
+
 }
 
 const keyDown = (e) => {
