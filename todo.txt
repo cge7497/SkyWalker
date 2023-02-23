@@ -1,3 +1,21 @@
+TODO: Send the image to player.
+Set up tracking system to trigger SMW door? 
+    Move door closer to level. Inside door is a static image from the man behind the tree?
+How do I do door -> universe?
+    Maybe door gives secret for how to teleport. Rather than hit switch, __start levitating__.
+Open door -> static image with dialogue bubble. Then teleport back to main screen.
+    -Go over door, background becomes the image instead of the clouds.
+Computer -> There lies a hidden switch. Hidden switch unlocks door.
+    Door shows image. Image shows pattern to teleport.
+
+What good is going into background? The door makes the most sense for it.
+    Clouds in bg change color when you move to bg.
+
+How to give player tracking pattern.
+
+Under the character: say When it is time, come to the gateway.
+
+
 AVOIDED Make it so you don't collide with yellow floor on bottom when coming from right.
 Don't get stuck on right side of platforms: don't move down, yet can't move left is an error.
 This is easily testable on the top right, where you can get stuck trying to crawl into the little crevace.
