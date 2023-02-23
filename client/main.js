@@ -464,9 +464,11 @@ const startGameLogic = (obj, immediate = false) => {
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-const geometry = new THREE.SphereGeometry( 8, 8, 16 );
-const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-const sphere = new THREE.Mesh( geometry, material );
+const geometry = new THREE.SphereGeometry(8, 8, 16);
+const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sphere = new THREE.Mesh(geometry, material);
+
+let goingToTree = false, goingToBody = false;
 
 const animate = (followingPlayer = true) => {
     // if (camXOffset === prevCamXOffset && camYOffset === prevCamYOffset) return;
@@ -493,26 +495,32 @@ const animate = (followingPlayer = true) => {
 
         scene.add(sphere);
 
-        const treeBB = new THREE.Box3().setFromObject(treeModel);
-
-        const charBB = new THREE.Box3().setFromObject(characterModel);
-
-        const sphereBB = new THREE.Box3().setFromObject(sphere);
-
-        const treeColl = sphereBB.intersectsBox(treeBB);
-        const charColl = sphereBB.intersectsBox(charBB);
-
-        //Transition to tree
-        if (treeColl){
-            treeModel.scale.x *= 1.01;
-            treeModel.scale.y *= 1.01;
-            treeModel.scale.z *= 1.01;
+        if (goingToTree) {
+            moveToTree();
         }
-        //Transition to character
-        else if (charColl){
-            characterModel.scale.x *= 1.01;
-            characterModel.scale.y *= 1.01;
-            characterModel.scale.z *= 1.01;
+        else if (goingToBody) {
+            moveToChar();
+        }
+        else {
+
+            const treeBB = new THREE.Box3().setFromObject(treeModel);
+
+            const charBB = new THREE.Box3().setFromObject(characterModel);
+
+            const sphereBB = new THREE.Box3().setFromObject(sphere);
+
+            const treeColl = sphereBB.intersectsBox(treeBB);
+            const charColl = sphereBB.intersectsBox(charBB);
+
+            //Transition to tree
+            if (treeColl) {
+                goingToTree = true;
+
+            }
+            //Transition to character
+            else if (charColl) {
+                goingToBody = true;
+            }
         }
     }
 
@@ -526,6 +534,41 @@ const animate = (followingPlayer = true) => {
 
     renderer.render(scene, camera);
 };
+
+let trippedTree = false;
+const moveToTree = () => {
+    if (treeModel.scale.x >= 15 && !trippedTree) {
+        trippedTree = true;
+        _ = false;
+        var _ = "what";
+    }
+    if (trippedTree) {
+        updateTripped(treeModel);
+        return;
+    }
+    treeModel.scale.x *= 1.01;
+    treeModel.scale.y *= 1.01;
+    treeModel.position.y -= 0.1;
+    treeModel.scale.z *= 1.01;
+}
+
+let trippedChar = false;
+const moveToChar = () => {
+    if (characterModel.scale.x >= 15 && !trippedChar) {
+        trippedChar = true;
+        _ = false;
+        var _ = "what";
+    }
+    if (trippedChar) {
+        updateTripped(characterModel);
+        return;
+    }
+
+    characterModel.scale.x *= 1.01;
+    characterModel.scale.y *= 1.01;
+    characterModel.position.y -= 0.1;
+    characterModel.scale.z *= 1.01;
+}
 
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
@@ -574,6 +617,36 @@ const update = () => {
     }
 };
 
+const updateTripped = (model = THREE.Object3D) => {
+    if (keysPressed[65]) {
+        model.rotation.y += 0.01;
+    }
+
+    if (keysPressed[68]) {
+        model.rotation.y -= 0.01;
+    }
+    if (keysPressed[87]) {
+        model.rotation.x -= 0.01;
+    }
+    if (keysPressed[83]) {
+        model.rotation.x += 0.01;
+    }
+
+    if (keysPressed[32]) {
+        model.scale.x /= 1.01;
+        model.scale.y /= 1.01;
+        model.position.y += 0.1;
+        model.scale.z /= 1.01;
+    }
+
+    if (keysPressed[16]) {
+        model.scale.x *= 1.01;
+        model.scale.y *= 1.01;
+        model.position.y -= 0.1;
+        model.scale.z *= 1.01;
+    }
+}
+
 const updateCloud = () => {
 
     if (keysPressed[65]) {
@@ -599,26 +672,11 @@ const updateCloud = () => {
     camYOffset -= playerCloud.vSpeed / 5;
     let diff = 0;
 
-    /*
-    if (camXOffset < -1500) {
-        diff = camXOffset + 1500;
-    }
-    else if (camXOffset > 250) {
-        diff = camXOffset - 250;
-    }
-    else if (camYOffset < -1500) {
-        diff = camYOffset + 1500;
-    }
-    else if (camYOffset > 250) {
-        diff = camYOffset - 250;
-    }
-    diff = Math.abs(diff);
 
-    if (diff > 0) {
-        console.log(scene);
-        scene.add(items['3DTree'].file);
+    if ((trippedChar || trippedTree) && (camXOffset > -1500 && camXOffset < 250) || (camYOffset > -1500 && camYOffset <250)) {
+        trippedChar = false;
+        trippedTree = false;
     }
-    */
 };
 
 // Updates player movement based on input and collision.
@@ -1190,7 +1248,7 @@ function cloudState() {
 
     //find true player.x, where drawn
 
-    
+
     //Makes the player's alpha decrease.
     player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
 
