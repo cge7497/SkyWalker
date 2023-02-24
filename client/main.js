@@ -1192,6 +1192,7 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
+    document.getElementById("theGood").hidden = false;
     player.x = player.spawn[0]; player.y = player.spawn[1];
     player.flip = false; player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;

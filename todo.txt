@@ -15,6 +15,13 @@ How to give player tracking pattern.
 
 Under the character: say When it is time, come to the gateway.
 
+The gateway: send arrow outside of the webpage, get a response.
+360 circle, adjust which angle it sets at. Enter password in hidden textbox activated by color sequence.
+Password is for computer: it unlocks certain info? Ability to send otherworldly requests.
+
+Picture with color code? Eh
+
+GOAL- to leave the universe. Discover what is beyond.
 
 AVOIDED Make it so you don't collide with yellow floor on bottom when coming from right.
 Don't get stuck on right side of platforms: don't move down, yet can't move left is an error.
