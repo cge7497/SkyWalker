@@ -98,6 +98,8 @@ const GameInfo = (props) => {
                 <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
                     alt="Arrow Right" />
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
+                <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"
+                    alt="The Door" />
             </div>
             <input hidden id="theGood" placeholder="The Key" class="d-inline center" />
             <button id="resetBtn" className = "btn btn-info" disabled={true} >Back to Save</button>

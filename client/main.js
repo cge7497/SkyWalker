@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D,
     treeModel = THREE.Object3D, houseModel = THREE.Object3D, currentlyDrawnModel = false;
-let vpOffset = [0, 0], shouldRotateComp = false, playerShouldEnterVoid = false;
+let vpOffset = [0, 0], shouldRotateComp = false;
 let playerTracking = [], playerTrack = [];
 const sq_walkers = [], arc_walkers = [];
 const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false, drawLevelFilled = true;
@@ -34,12 +34,13 @@ const items = {
         obtained: false, collected: collectMorphBall,
         draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
     },
-    'yellowswitch': { collected: cloudState, draw: (o) => { drawImage(o) }, collide: (o) => { collideYellowSwitch(o) } },
+    'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideYellowSwitch(o) } },
     'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) } },
     'greyswitch': {
         collected: () => { shouldRotateComp = true; console.log('Hello') },
         draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
     },
+    'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
     'fire': {
         collected: collectMorphBall, draw: (o) => { drawFire(o) },
         collide: (o) => { collideFire(o) }
@@ -68,8 +69,8 @@ const drawFire = (o) => {
         utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
     }
 };
-let prevCollidingWithFire;
-let collidingWithFire = prevCollidingWithFire = false;
+let prevCollidingWithFire, prevCollidingWithDoor;
+let collidingWithFire = prevCollidingWithFire = prevCollidingWithDoor = false;
 const collideFire = () => {
     // console.log(`mouse: ${hasMouse} and prevCollWithFire: ${prevCollidingWithFire}`);
 
@@ -311,7 +312,6 @@ const startGameLogic = (obj, immediate = false) => {
     document.getElementById('screwattack_inactive').onmousedown = (e) => { alterScrewAttack(false); }
 
     const alterScrewAttack = (shouldActivate) => {
-        playerShouldEnterVoid = !playerShouldEnterVoid;
         if (playerShouldEnterVoid === true) {
             document.getElementById('screwattack_active').classList.remove("noDisplay");
             document.getElementById('screwattack_active').classList.add("inline");
@@ -449,6 +449,7 @@ const startGameLogic = (obj, immediate = false) => {
     for (let i = 0; i < 10; i++) {
         bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(0,0,0,0.3)"));
     }
+    // bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(0,0,0,1)"));
 
     drawBG();
 
@@ -502,25 +503,24 @@ const animate = (followingPlayer = true) => {
             moveToChar();
         }
         else {
-
             const treeBB = new THREE.Box3().setFromObject(treeModel);
 
-            const charBB = new THREE.Box3().setFromObject(characterModel);
+            //const charBB = new THREE.Box3().setFromObject(characterModel);
 
             const sphereBB = new THREE.Box3().setFromObject(sphere);
 
             const treeColl = sphereBB.intersectsBox(treeBB);
-            const charColl = sphereBB.intersectsBox(charBB);
+            // const charColl = sphereBB.intersectsBox(charBB);
 
             //Transition to tree
             if (treeColl) {
                 goingToTree = true;
-
             }
-            //Transition to character
+            /* Transition to character
             else if (charColl) {
                 goingToBody = true;
             }
+            */
         }
     }
 
@@ -552,6 +552,7 @@ const moveToTree = () => {
     treeModel.scale.z *= 1.01;
 }
 
+/*
 let trippedChar = false;
 const moveToChar = () => {
     if (characterModel.scale.x >= 15 && !trippedChar) {
@@ -569,6 +570,7 @@ const moveToChar = () => {
     characterModel.position.y -= 0.1;
     characterModel.scale.z *= 1.01;
 }
+*/
 
 //Runs 60 frames per second. Serves to update game state and draw.
 const update = () => {
@@ -673,8 +675,7 @@ const updateCloud = () => {
     let diff = 0;
 
 
-    if ((trippedChar || trippedTree) && (camXOffset > -1500 && camXOffset < 250) || (camYOffset > -1500 && camYOffset <250)) {
-        trippedChar = false;
+    if (trippedTree && (camXOffset > -1500 && camXOffset < 250) || (camYOffset > -1500 && camYOffset < 250)) {
         trippedTree = false;
     }
 };
@@ -950,10 +951,11 @@ const isOnScreen = (p, f) => {
         && p.newY - p.halfHeight < f.y + f.height + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
-
+let collidingWithDoor = false;
 //make array of collision and collected functions to avoid this if then statement
 const CollisionsWithSpecialObjects = (p) => {
     collidingWithFire = false;
+    collidingWithDoor = false;
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
             if (o.name.substring(0, 2) !== '3D' || o.name === '3DArrow') {
@@ -961,13 +963,60 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
     });
-
-    //If the player just exited the fire/void, meaning they should swap between BG and foreground.
-    if (prevCollidingWithFire === true && collidingWithFire === false) swapBG();
 };
 
-const swapBG = () => {
-    prevCollidingWithFire = false;
+let justEnteredDoor = false;
+async function hitDoor() {
+    collidingWithDoor = true;
+
+    if (keysPressed[87] && !justEnteredDoor && prevOnGround) {
+        console.log("in 65");
+        swapBG();
+        justEnteredDoor = true;
+        shouldUpdateGame = false;
+        await new Promise(r => setTimeout(r, 1000));
+        setTimeout(() => {
+            shouldUpdateGame = true;
+            justEnteredDoor = false;
+        }, 1000);
+    }
+    prevCollidingWithDoor = true;
+}
+
+function swapBG() {
+
+    let p = Params.prototype.fromJSON({
+        "oldParams": true,
+        "wave_type": 0,
+        "p_env_attack": -0.00003653593375929631,
+        "p_env_sustain": 0.5159887075424194,
+        "p_env_punch": 0.43771442770957947,
+        "p_env_decay": -0.5177679657936096,
+        "p_base_freq": 0.4211834669113159,
+        "p_freq_limit": 0,
+        "p_freq_ramp": 0.09771327674388885,
+        "p_freq_dramp": 0.18222975730895996,
+        "p_vib_strength": 0.29777976870536804,
+        "p_vib_speed": 0.8540940284729004,
+        "p_arp_mod": 0.3622890114784241,
+        "p_arp_speed": -0.032950595021247864,
+        "p_duty": -0.44415274262428284,
+        "p_duty_ramp": -0.6385311484336853,
+        "p_repeat_speed": 0.07904504984617233,
+        "p_pha_offset": 0.050250060856342316,
+        "p_pha_ramp": 0.3983093798160553,
+        "p_lpf_freq": 0.5602583885192871,
+        "p_lpf_ramp": -0.0018845867598429322,
+        "p_lpf_resonance": -0.17684580385684967,
+        "p_hpf_freq": 2.0634999486901506e-8,
+        "p_hpf_ramp": 0.11631236225366592,
+        "sound_vol": 0.25,
+        "sample_rate": 44100,
+        "sample_size": 8
+    });
+    p.mutate();
+    const sound = sfxr.toAudio(p);
+    sound.play();
 
     // Trying to fix rect coll offset: thought process:
     // Is it changing the camOffsets to increment the player's coords while the player is colliding with void?
@@ -975,8 +1024,6 @@ const swapBG = () => {
     // It may keep swapping around... do a console.log here to see if it runs over and over
     // TODO: See if this runs over and over again.
     playerInBG = !playerInBG;
-
-    if (playerShouldEnterVoid === false) return;
 
     if (playerInBG === true) {
         collisionRects = bgRects;
@@ -999,6 +1046,7 @@ const initItems = (savedItems) => {
     imgs['greyswitch'] = document.getElementById('greyswitch');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
+    imgs['door'] = document.getElementById('door');
     imgs['hflip'] = document.getElementById('hflip');
     imgs['uni'] = document.getElementById('uni');
     imgs['mouse'] = document.getElementById('mouse');
@@ -1213,6 +1261,7 @@ function cloudState() {
         playerCloud.halfHeight = playerCloud.height / 2;
         playerCloud.scale = 3;
 
+        bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,1)"));
 
         scene.add(items['3DTree'].file);
 
@@ -1268,6 +1317,9 @@ function cloudState() {
     });
 }
 
+function theCloud() {
+    bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,1)"));
+}
 
 const changeAbleToPlaceRect = (able) => {
     if (hasMouse !== true) return;
