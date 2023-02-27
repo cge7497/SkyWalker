@@ -19,7 +19,6 @@ var test = "hello";
 
 let socket;
 
-
 // Stores images that are used as sprites.
 // It is initialized later because this runs before the react component containing the images.
 const imgs = {};
@@ -37,7 +36,7 @@ const items = {
     'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideYellowSwitch(o) } },
     'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) } },
     'greyswitch': {
-        collected: () => { shouldRotateComp = true; console.log('Hello') },
+        collected: () => { shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.') },
         draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
@@ -249,6 +248,8 @@ const startGameLogic = (obj, immediate = false) => {
     movementThisSecond.name = player.name;
     movementThisSecond.color = trueColor;
     movementThisSecond.movement = [];
+
+    goToThePlace = cloudState;
 
     // This seems unoptimal... should I just await the data.
     collisionRects = level.rects;
@@ -1245,6 +1246,7 @@ const movePlayerBackToStart = () => {
     player.flip = false; player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;
     camXOffset = 300 - player.x; camYOffset = 300 - player.y;
+    requests.sendRequestForInfo(player.name);
 }
 
 // Runs every update (60 fps) once the player has clicked the yellow button.

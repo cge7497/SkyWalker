@@ -34,17 +34,12 @@ const updatePlayer = async (name, itemId) => {
 };
 
 // sends the player data to the server as a POST request.
-const sendMovement = async (movement) => {
-    //Build a data string in the FORM-URLENCODED format.
-    const formData = `movement=${JSON.stringify(movement)}`;
-
-    let response = await fetch('/addMovement', {
-        method: 'POST',
+const sendRequestForInfo = async (name) => {
+    let response = await fetch('/...' + name + '...', {
+        method: 'GET',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
+            'Accept': 'image/*',
         },
-        body: formData,
     });
 
     //Once we have a response, handle it.
@@ -78,5 +73,5 @@ const sendCloud = async (color = '#000000') => {
     });
 }
 export {
-    updatePlayer, sendMovement, sendCloud
+    updatePlayer, sendRequestForInfo, sendCloud
 }

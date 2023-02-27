@@ -1,5 +1,9 @@
 const level = require('../models/levelData.js');
 
+const fs = require('fs');
+
+const theImage = fs.readFileSync(`${__dirname}/../models/ICanHelpYou.png`);
+
 const players = [];
 const playerMovementThisSecond = {};
 
@@ -61,6 +65,13 @@ const addMovement = (movement) => {
   };
 
   return true;
+};
+
+const returnImage = (request, response) => {
+  response.writeHead(403, { 'Content-Type': 'image/png' });
+  response.write(theImage);
+
+  return response.end();
 };
 
 // Add a cloud to the level data JSON object.
@@ -134,4 +145,5 @@ module.exports = {
   addCloud,
   notFound,
   players,
+  returnImage
 };

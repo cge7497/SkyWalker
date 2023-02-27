@@ -27,6 +27,7 @@ const router = (app) => {
   app.put('/setShape', mid.requiresSecure, mid.requiresLogin, controllers.Account.setShape);
 
   app.get('/', mid.requiresSecure, controllers.Account.loginPage);
+  app.get('/...*', mid.requiresSecure, controllers.Game.returnImage);
   app.get('/*', mid.requiresSecure, controllers.Account.redirect);
 };
 
