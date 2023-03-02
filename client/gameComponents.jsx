@@ -102,7 +102,7 @@ const GameInfo = (props) => {
                     alt="The Door" />
                 <img id="theImage" src='assets/img/theImage.png' className='noDisplay' />
             </div>
-            <input hidden id="theGood" placeholder="The Key" class="d-inline center" />
+            <input hidden id="theGood" placeholder="The Key" class= "center" />
             <button id="resetBtn" className="btn btn-info" disabled={true} >Back to Save</button>
 
             <br /><br /> <br />

@@ -829,20 +829,72 @@ const drawLevel = () => {
 
         timer = setInterval(() => {
             p_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-            p_ctx.globalAlpha = Math.sin(drawImageOpacCounter);
+
+            const newOpac = Math.sin(drawImageOpacCounter);
+            p_ctx.globalAlpha = newOpac;
             p_ctx.drawImage(imgs['theImage'], 0, 0);
-            drawImageOpacCounter += 0.5;
+
+            if (newOpac > 0.8 ) {
+                shouldAnimateEyes = true;
+            }
+            if (shouldAnimateEyes){
+                animateEyes();
+            }
+            drawImageOpacCounter += piDiv100;
         }, 100);
 
         shouldUpdateGame = false;
         setTimeout(() => {
             shouldUpdateGame = true;
             clearInterval(timer);
-        }, 6000)
+            document.getElementById("theGood").hidden = false;
+            shouldAnimateEyes = false;
+            drawTheImage = false;
+            p_ctx.globalAlpha = 1;
+            console.log("boom");
+        }, 10000)
     }
 
 };
 
+let eyeAnimCounter = 0, shouldAnimateEyes = false;
+const animateEyes = () =>{
+    const newOpac = Math.sin(eyeAnimCounter);
+
+    p_ctx.save();
+    p_ctx.globalAlpha = newOpac;
+    p_ctx.fillStyle = "Aqua";
+    p_ctx.beginPath();
+    p_ctx.arc(110, 100, 10, 0, 2 * Math.PI);
+    p_ctx.closePath();
+    p_ctx.fill();
+
+    p_ctx.beginPath();
+    p_ctx.arc(150, 100, 10, 0, 2 * Math.PI);
+    p_ctx.closePath();
+    p_ctx.fill();
+    p_ctx.restore();
+
+    p_ctx.save();
+    p_ctx.strokeStyle = "rgba(0, 255, 255, " + newOpac - 0.4 + ")";
+    p_ctx.beginPath();
+    p_ctx.strokeWidth = 5;
+    p_ctx.moveTo(150, 100);
+    p_ctx.lineTo(400, 480);
+    p_ctx.closePath();
+    p_ctx.stroke();
+
+    p_ctx.beginPath();
+    p_ctx.moveTo(110, 100);
+    p_ctx.lineTo(400, 480);
+    p_ctx.closePath();
+    p_ctx.stroke();
+
+    p_ctx.restore();
+    eyeAnimCounter += 0.05;
+}
+
+const piDiv100 = Math.PI/100;
 let drawImageOpacCounter = 0;
 let timer = 0;
 let fireAnimInc = 0.4;
@@ -1196,6 +1248,7 @@ const displayInstructions = () => {
     // document.getElementById("instructions").textContent = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move` 
 };
 
+let playerShouldEnterVoid = false;
 function collectScrewAttack(shouldSendPost = true) {
     document.getElementById('screwattack_active').classList.remove("noDisplay");
     document.getElementById('screwattack_active').classList.add("inline");
@@ -1269,7 +1322,7 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
-    document.getElementById("theGood").hidden = false;
+    // document.getElementById("theGood").hidden = false;
     player.x = player.spawn[0]; player.y = player.spawn[1];
     player.flip = false; player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;

@@ -1,4 +1,9 @@
-TODO: Send the image to player.
+TODO 3-1: 
+Send player back after touching cloud?
+Switch sound effect
+Make guy give player the color code? Ehh let's just finish the game.
+
+Send the image to player.
 Set up tracking system to trigger SMW door? 
     Move door closer to level. Inside door is a static image from the man behind the tree?
 How do I do door -> universe?
