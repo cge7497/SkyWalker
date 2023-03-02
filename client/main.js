@@ -822,8 +822,29 @@ const drawLevel = () => {
         utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, false, true);
         if (playerRect.x + camXOffset > canvasWidth + 20) { playerRect.x -= canvasWidth + 80 }
     }
+
+    if (drawTheImage) {
+        p_ctx.globalAlpha = 0;
+        p_ctx.drawImage(imgs['theImage'], 0, 0);
+
+        timer = setInterval(() => {
+            p_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+            p_ctx.globalAlpha = Math.sin(drawImageOpacCounter);
+            p_ctx.drawImage(imgs['theImage'], 0, 0);
+            drawImageOpacCounter += 0.5;
+        }, 100);
+
+        shouldUpdateGame = false;
+        setTimeout(() => {
+            shouldUpdateGame = true;
+            clearInterval(timer);
+        }, 6000)
+    }
+
 };
 
+let drawImageOpacCounter = 0;
+let timer = 0;
 let fireAnimInc = 0.4;
 //Draws background clouds onto the background canvas.
 const drawBG = () => {
@@ -897,10 +918,12 @@ const drawOtherPlayerMovement = () => {
     otherPlayerMovementFrame += 1;
 };
 
+let drawTheImage = false;
 //Returns true if there are collisions. It also fixes these collisions.
 const CollisionsWithLevel = (_p, xDif, yDif) => {
     let p = _p;
     let colliding = [false, false]; // 0 shows whether any collisions occured. 1 shows whether a collision with the ground (based on g) occurred.
+    drawTheImage = false;
 
     // If player is in the bg, make sure to convert their coordinates to screen space so that 
     // they can collide with the bgRects which are never affected by camOffsets.
@@ -917,6 +940,9 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                 && r.values.color !== playerTracking[playerTracking.length - 1]) {
                 playerTracking.push(r.values.color);
                 console.log(r.values.color + "new color");
+            }
+            if (r.values && r.values.color === "rgba(220,221,11,0.95)") {
+                drawTheImage = true;
             }
             // console.log(r.values.color);
             // The order of which directions are checked matters! It affects whether player gets stuck if they move from one rect to another on the same y coord.
@@ -1052,6 +1078,8 @@ const initItems = (savedItems) => {
     imgs['uni'] = document.getElementById('uni');
     imgs['mouse'] = document.getElementById('mouse');
     imgs['eyes'] = document.getElementById('eyes');
+    imgs['theImage'] = document.getElementById('theImage');
+
 
     if (savedItems['morphball'] === true) {
         collectMorphBall(false);
@@ -1263,7 +1291,7 @@ function cloudState() {
         playerCloud.halfHeight = playerCloud.height / 2;
         playerCloud.scale = 3;
 
-        bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,1)"));
+        // bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,0.95)"));
 
         scene.add(items['3DTree'].file);
 
@@ -1320,7 +1348,8 @@ function cloudState() {
 }
 
 function theCloud() {
-    bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,1)"));
+    bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,0.95)"));
+    console.log(bgRects);
 }
 
 const changeAbleToPlaceRect = (able) => {

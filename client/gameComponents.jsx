@@ -24,7 +24,7 @@ const PlayerDisplay = (props) => {
     if (!displayMode || displayMode === 0) {
         // render the objects with the className
         return (
-            <button id="playerDisplayBtn" className = " widgetBtn btn btn-light" onClick={(e) => { changeDisplay() }}> O -|- /\</button>
+            <button id="playerDisplayBtn" className=" widgetBtn btn btn-light" onClick={(e) => { changeDisplay() }}> O -|- /\</button>
         )
     }
     if (!players || players.length === 0) {
@@ -100,9 +100,10 @@ const GameInfo = (props) => {
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
                 <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"
                     alt="The Door" />
+                <img id="theImage" src='assets/img/theImage.png' className='noDisplay' />
             </div>
             <input hidden id="theGood" placeholder="The Key" class="d-inline center" />
-            <button id="resetBtn" className = "btn btn-info" disabled={true} >Back to Save</button>
+            <button id="resetBtn" className="btn btn-info" disabled={true} >Back to Save</button>
 
             <br /><br /> <br />
             {/* Update this inner html when you get an item. */}
@@ -182,7 +183,7 @@ const PayModelDisplay = (props) => {
 
     if (!displayMode || displayMode === 0) {
         return (
-            <button disabled={disabled} id="payModelBtn" className = "btn btn-light" onClick={changeDisplay}>&nabla; &#9634; &#9671;</button>
+            <button disabled={disabled} id="payModelBtn" className="btn btn-light" onClick={changeDisplay}>&nabla; &#9634; &#9671;</button>
         )
     }
 
