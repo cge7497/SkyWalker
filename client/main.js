@@ -1001,15 +1001,30 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
+            // If the player collides with a new color
             if (r.values && r.values.color
                 && r.values.color !== playerTracking[playerTracking.length - 1]) {
-                playerTracking.push(r.values.color);
                 console.log(r.values.color + "new color");
                 // Thanks to https://stackoverflow.com/a/43089827 for this random color idea.
 
-                let color = new THREE.Color(r.values.color.toLowerCase());
+                if (inAirCounter >= 60) {
+                    const index = Math.floor(inAirCounter / 60 - 1) % (playerTrack.length - 1);
+                    console.log(light.color);
+                    let color = new THREE.Color();
+                    color.lerpColors(light.color, playerTrack[index].toLowerCase(), (inAirCounter % 120) / 120);
+                    light.color = color;
+                } else {
+                    let color = new THREE.Color(r.values.color.toLowerCase());
+                    light.color = color;
+                }
+                // If the player touched the correct color on the track
+                if (playerTracking.length > 0 && r.values.color === playerTrack[playerTracking.length - 1]) {
+                    playerTracking.push(r.values.color);
 
-                light.color = color;
+                    if (playerTracking.length === playerTrack.length) {
+                        console.log("COMPLETE");
+                    }
+                }
             }
             // Draws the image if the player collided with the yellow cloud
             if (r.values && r.values.color === "rgba(220,221,11,0.95)") {
