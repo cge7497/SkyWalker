@@ -1174,9 +1174,11 @@ const setShape = (shape = 0) => {
     else player.scale = 1;
 }
 
-let playerWalkAnimOut = true, playerFallAnimOut = true
+let playerWalkAnimOut = true, playerFallAnimOut = true;
+let inAirCounter = 0;
 const updatePlayerWalkAnim = (walked = false, onGround = false) => {
     if (walked && onGround) {
+        inAirCounter = 0;
         if (playerWalkAnimOut) {
             playerWalkAnimCounter += 0.25;
             if (playerWalkAnimCounter >= 2) playerWalkAnimOut = false;
@@ -1193,6 +1195,7 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
 
     //If the player is falling, then animate their arm positioning.
     if (!onGround) {
+        inAirCounter += 1;
         if (playerFallAnimOut) {
             playerFallAnimCounter += 0.4;
             if (playerFallAnimCounter >= 2) playerFallAnimOut = false;
