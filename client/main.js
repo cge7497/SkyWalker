@@ -17,7 +17,7 @@ let cloudsShouldLoop = true, activeCheckpoint = {};
 
 var test = "hello";
 
-let socket;
+let socket, light;
 
 // Stores images that are used as sprites.
 // It is initialized later because this runs before the react component containing the images.
@@ -36,7 +36,11 @@ const items = {
     'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideYellowSwitch(o) } },
     'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) } },
     'greyswitch': {
-        collected: () => { shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.') },
+        collected: () => {
+            shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.');
+            const sound = sfxr.generate("synth");
+            sfxr.play(sound);
+        },
         draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
@@ -249,7 +253,7 @@ const startGameLogic = (obj, immediate = false) => {
     movementThisSecond.color = trueColor;
     movementThisSecond.movement = [];
 
-    goToThePlace = cloudState;
+    emptyMemory = cloudState;
 
     // This seems unoptimal... should I just await the data.
     collisionRects = level.rects;
@@ -344,7 +348,7 @@ const startGameLogic = (obj, immediate = false) => {
     renderer = new THREE.WebGLRenderer({ canvas: js3_canvas, alpha: true });
     renderer.setClearColor(0x000000, 0);
 
-    const light = new THREE.AmbientLight(0xffffff); // soft white light
+    light = new THREE.AmbientLight(0xffffff); // soft white light
     scene.add(light);
 
     // White directional light at half intensity shining from the top.
@@ -834,10 +838,10 @@ const drawLevel = () => {
             p_ctx.globalAlpha = newOpac;
             p_ctx.drawImage(imgs['theImage'], 0, 0);
 
-            if (newOpac > 0.8 ) {
+            if (newOpac > 0.8) {
                 shouldAnimateEyes = true;
             }
-            if (shouldAnimateEyes){
+            if (shouldAnimateEyes) {
                 animateEyes();
             }
             drawImageOpacCounter += piDiv100;
@@ -857,9 +861,17 @@ const drawLevel = () => {
 
 };
 
-let eyeAnimCounter = 0, shouldAnimateEyes = false;
-const animateEyes = () =>{
+let eyeAnimCounter = 0, shouldAnimateEyes = false, keyInputVisible = false;
+const animateEyes = () => {
     const newOpac = Math.sin(eyeAnimCounter);
+    if (eyeAnimCounter >= 1) {
+        document.getElementById("theGood").hidden = false;
+        if (keyInputVisible) {
+            const sound = sfxr.generate("powerUp");
+            sfxr.play(sound);
+        }
+        keyInputVisible = true;
+    }
 
     p_ctx.save();
     p_ctx.globalAlpha = newOpac;
@@ -880,13 +892,13 @@ const animateEyes = () =>{
     p_ctx.beginPath();
     p_ctx.strokeWidth = 5;
     p_ctx.moveTo(150, 100);
-    p_ctx.lineTo(400, 480);
+    p_ctx.lineTo(350, 480);
     p_ctx.closePath();
     p_ctx.stroke();
 
     p_ctx.beginPath();
     p_ctx.moveTo(110, 100);
-    p_ctx.lineTo(400, 480);
+    p_ctx.lineTo(350, 480);
     p_ctx.closePath();
     p_ctx.stroke();
 
@@ -894,7 +906,7 @@ const animateEyes = () =>{
     eyeAnimCounter += 0.05;
 }
 
-const piDiv100 = Math.PI/100;
+const piDiv100 = Math.PI / 100;
 let drawImageOpacCounter = 0;
 let timer = 0;
 let fireAnimInc = 0.4;
@@ -983,6 +995,7 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
         p = { ..._p };
         p.x += camXOffset; p.y += camYOffset;
         p.newX += camXOffset; p.newY += camYOffset;
+        console.log("We need to go deeper...")
     };
 
     collisionRects.forEach((r) => {
@@ -992,7 +1005,13 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                 && r.values.color !== playerTracking[playerTracking.length - 1]) {
                 playerTracking.push(r.values.color);
                 console.log(r.values.color + "new color");
+                // Thanks to https://stackoverflow.com/a/43089827 for this random color idea.
+
+                let color = new THREE.Color(r.values.color.toLowerCase());
+
+                light.color = color;
             }
+            // Draws the image if the player collided with the yellow cloud
             if (r.values && r.values.color === "rgba(220,221,11,0.95)") {
                 drawTheImage = true;
             }
@@ -1401,6 +1420,9 @@ function cloudState() {
 }
 
 function theCloud() {
+    const sound = sfxr.generate("laserShoot");
+    sfxr.play(sound);
+
     bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,0.95)"));
     console.log(bgRects);
 }
