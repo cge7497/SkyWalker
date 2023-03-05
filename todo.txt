@@ -1,7 +1,11 @@
 TODO 3-1: 
-Update guide text: Shift to Pause?
+Update guide text: Shift to Pause? - no just say in console you can mouse over NOT NEEDED
 Change bottom right area to make arrow affect cloud, and then set it all 
 up for secret entrance at bottom. (Secret entrance inspired by Sunshine.)
+
+FINISH GAME
+Implement speedrun timer tho?
+
 
 Send player back after touching cloud? This is fine because of shift
 Switch sound effect DONE

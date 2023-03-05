@@ -1084,6 +1084,20 @@ const CollisionsWithSpecialObjects = (p) => {
                 items[o.name].collide(o);
             }
         }
+        // Handle player rect and arrow colliding
+        if (o.name === "3DArrow" && playerRect) {
+            if (playerRect.x - playerRect.width < o.x + o.width && playerRect.x + playerRect.width > o.x
+                && playerRect.y - playerRect.height < o.y + o.height && playerRect.y + playerRect.height > o.y) {
+                if (o.values && o.values.dir) {
+                    if (o.values.dir === 0) {
+                        playerRect.hSpeed = 2;
+                    }
+                    else if (o.values.dir === 1) {
+                        playerRect.hSpeed = -2;
+                    }
+                }
+            }
+        }
     });
 };
 
@@ -1324,6 +1338,7 @@ function collectEyes(shouldSendPost = true) {
 function collectMouse(shouldSendPost = true) {
     document.getElementById('mouse').classList.remove("noDisplay");
     document.getElementById('mouse').classList.add("inline");
+    console.log("By the way, you can mouse over an item to see a short description.");
     // document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move (hold <strong>SHIFT</strong>), click mouse`;
     hasMouse = true; playerCanPlaceRect = true;
 
@@ -1372,8 +1387,8 @@ const movePlayerBackToStart = () => {
     // document.getElementById("theGood").hidden = false;
     player.x = player.spawn[0]; player.y = player.spawn[1];
 
-    if (player.g === 0) player.flip = false; 
-    
+    if (player.g === 0) player.flip = false;
+
     player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;
     camXOffset = 300 - player.x; camYOffset = 300 - player.y;
