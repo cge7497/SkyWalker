@@ -144,7 +144,8 @@ function hook() {
   return {
     beforeSaveLevel: (project, data) => {
       for (let e of data.layers[0].entities) {
-        if (e.name === 'transparent_rectangle') {e.values.color = '#c18e45ff'; continue;}
+        if (e.name === 'transparent_rectangle' || e.name === 'transparent_rectangle_copy') 
+        {e.values.color = '#c18e45ff'; continue;}
         e.values.color = CSS_COLOR_NAMES[Math.floor(Math.random() * CSS_COLOR_NAMES.length)];
       }
       return data;

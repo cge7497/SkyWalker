@@ -41,9 +41,10 @@ const items = {
             const sound = sfxr.generate("synth");
             sfxr.play(sound);
         },
-        draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
+        draw: (o) => { drawImage(o) }, collide: (o) => { collideGreySwitch(o) }
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
+    'secret_entrance': { draw: (o) => { utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "black", true) }, collide: (o) => { cloudState() } },
     'fire': {
         collected: collectMorphBall, draw: (o) => { drawFire(o) },
         collide: (o) => { collideFire(o) }
@@ -66,7 +67,7 @@ const items = {
     '3DArrow': { draw: (o) => { draw3D(o) }, collected: (o) => rotateRight(o), collide: (o) => { rotateRight(o) } },
     '3DTree': {}, '3DHouse': {}
 };
-
+why_cant_metroid_crawl = collectMorphBall;
 const drawFire = (o) => {
     if (isOnScreen(player, o)) {
         utilities.drawFire(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, fireAnimColor);
@@ -129,9 +130,16 @@ const collideFire = () => {
 };
 
 const collideYellowSwitch = (o) => {
-    if (player.g === 0 && player.flip === false) {
+    if (player.g === 0 && player.flip === false && !prevOnGround) {
         level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
         items["yellowswitch"].collected();
+    };
+};
+
+const collideGreySwitch = (o) => {
+    if (player.g === 0 && player.flip === true && !prevOnGround) {
+        level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
+        items["greyswitch"].collected();
     };
 };
 
@@ -276,7 +284,7 @@ const startGameLogic = (obj, immediate = false) => {
         playerTrack.push(color);
     }
 
-    console.log(playerTrack);
+    // console.log(playerTrack);
     if (obj.items) initItems(obj.items);
 
     //I created these sounds with SFXR (http://sfxr.me/)
@@ -725,7 +733,7 @@ const updatePlayer = () => {
     //Reset cam offset if 'R' was pressed.
     if (hasEyes && keysPressed[82]) { camXOffset = 300 - player.x; camYOffset = 300 - player.y; }
 
-    /* If the player hasn't crawled recently (so we don't get a duplicate input)
+    // If the player hasn't crawled recently (so we don't get a duplicate input)
     if (canCrawl) {
         if (player.g === 0 && keysPressed[87] || player.g === 1 && keysPressed[68]) {
 
@@ -741,7 +749,6 @@ const updatePlayer = () => {
         crawlInputTimer -= 1;
         if (crawlInputTimer <= 0) canCrawl = true;
     }
-    */
 
     player.newX = player.x + xDif;
     player.newY = player.y + yDif;
@@ -861,14 +868,15 @@ const drawLevel = () => {
 
 };
 
-let eyeAnimCounter = 0, shouldAnimateEyes = false, keyInputVisible = false;
+let eyeAnimCounter = 0, shouldAnimateEyes = false, keyInputVisible = false, playedImageSound = false;
 const animateEyes = () => {
     const newOpac = Math.sin(eyeAnimCounter);
     if (eyeAnimCounter >= 1) {
         document.getElementById("theGood").hidden = false;
-        if (keyInputVisible) {
+        if (keyInputVisible && !playedImageSound) {
             const sound = sfxr.generate("powerUp");
             sfxr.play(sound);
+            playedImageSound = true;
         }
         keyInputVisible = true;
     }
@@ -998,24 +1006,23 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
         console.log("We need to go deeper...")
     };
 
+    let lightColor = new THREE.Color();
+    let shouldChangeLightColor = false;
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
             // If the player collides with a new color
             if (r.values && r.values.color
                 && r.values.color !== playerTracking[playerTracking.length - 1]) {
-                console.log(r.values.color + "new color");
+                // console.log(r.values.color + "new color");
                 // Thanks to https://stackoverflow.com/a/43089827 for this random color idea.
 
+                shouldChangeLightColor = true;
                 if (inAirCounter >= 60) {
                     const index = Math.floor(inAirCounter / 60 - 1) % (playerTrack.length - 1);
-                    console.log(light.color);
-                    let color = new THREE.Color();
-                    color.lerpColors(light.color, playerTrack[index].toLowerCase(), (inAirCounter % 120) / 120);
-                    light.color = color;
+                    lightColor.lerpColors(light.color, playerTrack[index].toLowerCase(), (inAirCounter % 120) / 120);
                 } else {
-                    let color = new THREE.Color(r.values.color.toLowerCase());
-                    light.color = color;
+                    lightColor = new THREE.Color(r.values.color.toLowerCase());
                 }
                 // If the player touched the correct color on the track
                 if (playerTracking.length > 0 && r.values.color === playerTrack[playerTracking.length - 1]) {
@@ -1050,7 +1057,9 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
             }
         }
     });
-
+    if (inAirCounter >= 60 || shouldChangeLightColor) {
+        light.color = lightColor;
+    }
     return colliding;
 };
 //Checks if two objects are colliding. (Only used by the player and rectangles/special objects currently.)
@@ -1269,6 +1278,7 @@ function rotateDown() {
 // They handle giving the player the relevant item. They displays the relevant image next to items, updates instruction text,
 // and may send a POST request to the server updating this player's items.
 function collectMorphBall(shouldSendPost = true) {
+    hasMorphBall = "User- you must put parentheses \"()\" after a function's name to execute it.";
     document.getElementById('morphball').classList.remove("noDisplay");
     document.getElementById('morphball').classList.add("inline");
     // document.getElementById('moveInstructions').innerHTML = `Use '<strong>A</strong>', '<strong>D</strong>', and '<strong>W</strong>' to move, `;
@@ -1361,7 +1371,10 @@ function stopFire() {
 const movePlayerBackToStart = () => {
     // document.getElementById("theGood").hidden = false;
     player.x = player.spawn[0]; player.y = player.spawn[1];
-    player.flip = false; player.scale = Math.abs(player.scale);
+
+    if (player.g === 0) player.flip = false; 
+    
+    player.scale = Math.abs(player.scale);
     player.newX = 300; player.newY = 300;
     camXOffset = 300 - player.x; camYOffset = 300 - player.y;
     requests.sendRequestForInfo(player.name);
@@ -1442,7 +1455,6 @@ function theCloud() {
     sfxr.play(sound);
 
     bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(220,221,11,0.95)"));
-    console.log(bgRects);
 }
 
 const changeAbleToPlaceRect = (able) => {

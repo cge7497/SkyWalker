@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        page: './client/login.jsx',
-        page: {
+        sky: './client/login.jsx',
+        sky: {
             import: './client/login.jsx',
             dependOn: 'shared'
         },
@@ -26,7 +26,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'hosted'),
-        filename: '[name]Bundle.js',
+        filename: 'my_[name].js',
     },
     cache:{
         type: 'filesystem'

@@ -1,6 +1,10 @@
 TODO 3-1: 
-Send player back after touching cloud?
-Switch sound effect
+Update guide text: Shift to Pause?
+Change bottom right area to make arrow affect cloud, and then set it all 
+up for secret entrance at bottom. (Secret entrance inspired by Sunshine.)
+
+Send player back after touching cloud? This is fine because of shift
+Switch sound effect DONE
 Make guy give player the color code? Ehh let's just finish the game.
 
 Send the image to player.
