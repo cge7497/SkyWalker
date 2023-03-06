@@ -64,9 +64,18 @@ const items = {
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
     '3DPerson': { draw: (o) => { draw3D(o) } },
     '3DComp': { draw: (o) => { draw3D(o) } },
-    '3DArrow': { draw: (o) => { draw3D(o) }, collected: (o) => rotateRight(o), collide: (o) => { rotateRight(o) } },
+    'arrow': {
+        draw: (o) => {
+            if (o.values && o.values.dir && o.values.dir === 1) {
+                
+            } 
+            else drawImage(o);
+        }, collected: (o) => rotatePlayer(o), collide: (o) => { rotatePlayer(o) }
+    },
     '3DTree': {}, '3DHouse': {}
 };
+//TODO: make arrow image rotate properly
+
 why_cant_metroid_crawl = collectMorphBall;
 const drawFire = (o) => {
     if (isOnScreen(player, o)) {
@@ -375,19 +384,6 @@ const startGameLogic = (obj, immediate = false) => {
         gltf.scene.name = '3DPerson';
 
         items['3DPerson'].file = gltf.scene;
-    }, undefined, function (error) {
-        console.error(error);
-    });
-
-
-    loader.load('assets/img/arrowright.glb', function (gltf) {
-        gltf.scene.scale.set(0.25, 0.25, 1);
-        gltf.scene.position.x += 2;
-        gltf.scene.position.y -= 2;
-        gltf.scene.name = '3DArrow';
-
-        items['3DArrow'].file = gltf.scene;
-
     }, undefined, function (error) {
         console.error(error);
     });
@@ -1080,12 +1076,12 @@ const CollisionsWithSpecialObjects = (p) => {
     collidingWithDoor = false;
     level.specialObjects.forEach((o) => {
         if (areColliding(p, o)) {
-            if (o.name.substring(0, 2) !== '3D' || o.name === '3DArrow') {
+            if (o.name.substring(0, 2) !== '3D') {
                 items[o.name].collide(o);
             }
         }
         // Handle player rect and arrow colliding
-        if (o.name === "3DArrow" && playerRect) {
+        if (o.name === "arrow" && playerRect) {
             if (playerRect.x - playerRect.width < o.x + o.width && playerRect.x + playerRect.width > o.x
                 && playerRect.y - playerRect.height < o.y + o.height && playerRect.y + playerRect.height > o.y) {
                 if (o.values && o.values.dir) {
@@ -1187,6 +1183,7 @@ const initItems = (savedItems) => {
     imgs['uni'] = document.getElementById('uni');
     imgs['mouse'] = document.getElementById('mouse');
     imgs['eyes'] = document.getElementById('eyes');
+    imgs['arrow'] = document.getElementById('arrow');
     imgs['theImage'] = document.getElementById('theImage');
 
 
@@ -1249,7 +1246,7 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
 };
 
 let shouldPlayRotateSound = true;
-function rotateRight(o) {
+function rotatePlayer(o) {
     if (o.values && o.values.dir === 1) {
         player.g = 1;
         player.flip = false;

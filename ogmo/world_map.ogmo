@@ -479,7 +479,7 @@
     },
     {
       "exportID": "87380196",
-      "name": "3DArrow",
+      "name": "arrow",
       "limit": -1,
       "size": {"x": 25, "y": 25},
       "origin": {"x": 0, "y": 0},

@@ -95,14 +95,14 @@ const GameInfo = (props) => {
                     alt="Red Switch" />
                 <img id="greyswitch" src='assets/img/greyswitch.png' className='noDisplay' width="25" height="25"
                     alt="Grey Switch" />
-                <img id="hflip" src='assets/img/hflip.png' className='noDisplay' width="25" height="25"
+                <img id="arrow" src='assets/img/arrow.png' className='noDisplay' width="25" height="25"
                     alt="Arrow Right" />
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
                 <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"
                     alt="The Door" />
                 <img id="theImage" src='assets/img/theImage.png' className='noDisplay' />
             </div>
-            <input hidden id="theGood" placeholder="The Key" class= "center" />
+            <input hidden id="theGood" placeholder="The Key" class="center" />
             <button id="resetBtn" className="btn btn-info" disabled={true} >Back to Save</button>
 
             <br /><br /> <br />

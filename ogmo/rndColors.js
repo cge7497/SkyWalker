@@ -19,7 +19,6 @@ function hook() {
     "Coral",
     "CornflowerBlue",
     "Cornsilk",
-    "Crimson",
     "Cyan",
     "DarkBlue",
     "DarkCyan",
