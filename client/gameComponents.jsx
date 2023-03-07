@@ -95,7 +95,9 @@ const GameInfo = (props) => {
                     alt="Red Switch" />
                 <img id="greyswitch" src='assets/img/greyswitch.png' className='noDisplay' width="25" height="25"
                     alt="Grey Switch" />
-                <img id="arrow" src='assets/img/arrow.png' className='noDisplay' width="25" height="25"
+                <img id="arrow_l" src='assets/img/arrow_l.png' className='noDisplay' width="25" height="25"
+                    alt="Arrow Left" />
+                <img id="arrow_r" src='assets/img/arrow_r.png' className='noDisplay' width="25" height="25"
                     alt="Arrow Right" />
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
                 <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"

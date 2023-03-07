@@ -479,7 +479,7 @@
     },
     {
       "exportID": "87380196",
-      "name": "arrow",
+      "name": "arrow_r",
       "limit": -1,
       "size": {"x": 25, "y": 25},
       "origin": {"x": 0, "y": 0},
@@ -732,6 +732,44 @@
       "nodeGhost": true,
       "tags": [],
       "values": []
+    },
+    {
+      "exportID": "12204912",
+      "name": "arrow_l",
+      "limit": -1,
+      "size": {"x": 25, "y": 25},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "dir", "definition": "Integer", "display": 0, "defaults": 1, "bounded": false, "min": 0, "max": 100}
+      ]
     }
   ],
   "tilesets": [

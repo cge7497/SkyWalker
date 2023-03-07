@@ -49,10 +49,6 @@ const items = {
         collected: collectMorphBall, draw: (o) => { drawFire(o) },
         collide: (o) => { collideFire(o) }
     },
-    'hflip': {
-        collected: rotateRight, draw: (o) => { drawImage(o) },
-        collide: (o) => { collideItem(o) }
-    },
     'mouse': {
         collected: collectMouse, draw: (o) => { drawImage(o) },
         collide: (o) => { collideItem(o) }
@@ -64,13 +60,13 @@ const items = {
     'checkpoint': { draw: (o) => { drawCheckpoint(o) }, collide: (o) => { collideCheckpoint(o) } },
     '3DPerson': { draw: (o) => { draw3D(o) } },
     '3DComp': { draw: (o) => { draw3D(o) } },
-    'arrow': {
+    'arrow_l': {
         draw: (o) => {
-            if (o.values && o.values.dir && o.values.dir === 1) {
-                
-            } 
-            else drawImage(o);
+            drawImage(o);
         }, collected: (o) => rotatePlayer(o), collide: (o) => { rotatePlayer(o) }
+    },
+    'arrow_r': {
+        draw: (o) => { drawImage(o); }, collected: (o) => rotatePlayer(o), collide: (o) => { rotatePlayer(o) }
     },
     '3DTree': {}, '3DHouse': {}
 };
@@ -87,6 +83,7 @@ let collidingWithFire = prevCollidingWithFire = prevCollidingWithDoor = false;
 const collideFire = () => {
     // console.log(`mouse: ${hasMouse} and prevCollWithFire: ${prevCollidingWithFire}`);
 
+    /* 
     collidingWithFire = true;
     if (hasMouse === true && prevCollidingWithFire === false) {
         prevCollidingWithFire = true;
@@ -129,6 +126,7 @@ const collideFire = () => {
 
     if (prevCollidingWithFire === true || hasMouse === true) return;
 
+    */
     shouldUpdateGame = false;
     explode_audio.play();
     const color = player.color;
@@ -224,7 +222,7 @@ const drawCheckpoint = (o) => {
     }
 };
 
-const drawImage = (o) => {
+const drawImage = (o, flipped = false) => {
     p_ctx.drawImage(imgs[o.name], o.x + camXOffset, o.y - o.originY + camYOffset);
 };
 
@@ -1081,14 +1079,24 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
         // Handle player rect and arrow colliding
-        if (o.name === "arrow" && playerRect) {
-            if (playerRect.x - playerRect.width < o.x + o.width && playerRect.x + playerRect.width > o.x
-                && playerRect.y - playerRect.height < o.y + o.height && playerRect.y + playerRect.height > o.y) {
-                if (o.values && o.values.dir) {
+        if (playerRect && (o.name === "arrow_l" || o.name === "arrow_r")) {
+            if (playerRect.x - playerRect.width < o.x + o.width / 2 && playerRect.x + playerRect.width > o.x - o.width / 2
+                && playerRect.y - playerRect.height < o.y + o.height / 2 && playerRect.y + playerRect.height > o.y - o.height / 2) {
+                console.log("colliding" + o.values.dir);
+                if (o.values && o.values.dir !== null) {
+                    console.log("BAM");
                     if (o.values.dir === 0) {
+                        if (playerRect.hSpeed === -2) {
+                            const sound = sfxr.generate("click");
+                            sfxr.play(sound);
+                        }
                         playerRect.hSpeed = 2;
                     }
                     else if (o.values.dir === 1) {
+                        if (playerRect.hSpeed === 2) {
+                            const sound = sfxr.generate("click");
+                            sfxr.play(sound);
+                        }
                         playerRect.hSpeed = -2;
                     }
                 }
@@ -1179,11 +1187,11 @@ const initItems = (savedItems) => {
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
     imgs['door'] = document.getElementById('door');
-    imgs['hflip'] = document.getElementById('hflip');
     imgs['uni'] = document.getElementById('uni');
     imgs['mouse'] = document.getElementById('mouse');
     imgs['eyes'] = document.getElementById('eyes');
-    imgs['arrow'] = document.getElementById('arrow');
+    imgs['arrow_l'] = document.getElementById('arrow_l');
+    imgs['arrow_r'] = document.getElementById('arrow_r');
     imgs['theImage'] = document.getElementById('theImage');
 
 
