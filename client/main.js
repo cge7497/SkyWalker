@@ -13,7 +13,7 @@ const sq_walkers = [], arc_walkers = [];
 const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = null, playerCanPlaceRect = false, drawLevelFilled = true;
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
-let cloudsShouldLoop = true, activeCheckpoint = {};
+let cloudsShouldLoop = true, activeCheckpoint = {}, debugCheckPoints = [];
 
 var test = "hello";
 
@@ -38,13 +38,14 @@ const items = {
     'greyswitch': {
         collected: () => {
             shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.');
+            console.log("Enter questions below...")
             const sound = sfxr.generate("synth");
             sfxr.play(sound);
         },
         draw: (o) => { drawImage(o) }, collide: (o) => { collideGreySwitch(o) }
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
-    'secret_entrance': { draw: (o) => { utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "black", true) }, collide: (o) => { cloudState() } },
+    'pipe': { draw: (o) => { drawImage(o) }, collide: (o) => { collidePipe() } },
     'fire': {
         collected: collectMorphBall, draw: (o) => { drawFire(o) },
         collide: (o) => { collideFire(o) }
@@ -134,6 +135,16 @@ const collideFire = () => {
     setTimeout((e) => {
         shouldUpdateGame = true; movePlayerBackToStart(); player.color = color;
     }, 500);
+};
+
+let enteredPipe = false;
+const collidePipe = (o) => {
+    console.log("colliding with pipe");
+    // If the player pushed down 'S' on the top of the pipe
+    if (!enteredPipe && keysPressed[83]) {
+        cloudState();
+        enteredPipe = true;
+    };
 };
 
 const collideYellowSwitch = (o) => {
@@ -458,7 +469,29 @@ const startGameLogic = (obj, immediate = false) => {
     }
     // bgRects.push(new level.bgRect(Math.floor(Math.random() * GAME_WIDTH), Math.floor(Math.random() * GAME_HEIGHT), Math.floor(Math.random() * 10) + 30, Math.floor(Math.random() * 4) + 10, "rgba(0,0,0,1)"));
 
+    level.specialObjects.forEach((o) => {
+        if (o.name === "checkpoint") {
+            debugCheckPoints.push(o);
+        }
+    });
+    debugCheckPoints.sort((a, b) => a.x - b.x);
+    const checkpointSelect = document.getElementById("checkpoints");
+    checkpointSelect.onchange = (o) => {
+        collideCheckpoint(debugCheckPoints[checkpointSelect.selectedIndex]);
+        movePlayerBackToStart();
+    }
+    debugCheckPoints.forEach((c, i) => {
+        const newOption = document.createElement("option");
+        newOption.textContent = `x: ${c.x}  y: ${c.y}`;
+        newOption.value = i;
+        checkpointSelect.appendChild(newOption);
+    })
     drawBG();
+
+    document.getElementById("keySubmit").onclick = evaluateKey;
+    document.getElementById("theKey").onchange = () => {
+        document.getElementById("keySubmit").disabled = false;
+    }
 
     w_ctx.fillStyle = "black";
 
@@ -823,7 +856,6 @@ const drawLevel = () => {
 
     if (playerRect !== null) {
         playerRect.x += playerRect.hSpeed;
-        p_ctx.save();
         utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, false, true);
         if (playerRect.x + camXOffset > canvasWidth + 20) { playerRect.x -= canvasWidth + 80 }
     }
@@ -852,25 +884,42 @@ const drawLevel = () => {
         setTimeout(() => {
             shouldUpdateGame = true;
             clearInterval(timer);
-            document.getElementById("theGood").hidden = false;
+            document.getElementById("keyDiv").hidden = false;
             shouldAnimateEyes = false;
             drawTheImage = false;
             p_ctx.globalAlpha = 1;
             console.log("boom");
+            setTimeout( () => {
+                collidedOnceWithYellowCloud = true;
+            }, 2000);
         }, 10000)
     }
 
 };
 
+const evaluateKey = async () => {
+    document.getElementById("keySubmit").disabled = true;
+    console.log("evaluate the key");
+    const key = document.getElementById("theKey").value;
+    const keyIsCorrect = requests.sendKey(key);
+    if (keyIsCorrect === true) console.log("correct");
+}
+
 let eyeAnimCounter = 0, shouldAnimateEyes = false, keyInputVisible = false, playedImageSound = false;
 const animateEyes = () => {
     const newOpac = Math.sin(eyeAnimCounter);
     if (eyeAnimCounter >= 1) {
-        document.getElementById("theGood").hidden = false;
+        document.getElementById("keyDiv").hidden = false;
         if (keyInputVisible && !playedImageSound) {
             const sound = sfxr.generate("powerUp");
             sfxr.play(sound);
             playedImageSound = true;
+        }
+        else {
+            document.getElementById("keySubmit").onclick = evaluateKey;
+            document.getElementById("theKey").onchange = () => {
+                document.getElementById("keySubmit").disabled = false;
+            }
         }
         keyInputVisible = true;
     }
@@ -879,12 +928,12 @@ const animateEyes = () => {
     p_ctx.globalAlpha = newOpac;
     p_ctx.fillStyle = "Aqua";
     p_ctx.beginPath();
-    p_ctx.arc(110, 100, 10, 0, 2 * Math.PI);
+    p_ctx.arc(120, 100, 10, 0, 2 * Math.PI);
     p_ctx.closePath();
     p_ctx.fill();
 
     p_ctx.beginPath();
-    p_ctx.arc(150, 100, 10, 0, 2 * Math.PI);
+    p_ctx.arc(160, 100, 10, 0, 2 * Math.PI);
     p_ctx.closePath();
     p_ctx.fill();
     p_ctx.restore();
@@ -893,13 +942,13 @@ const animateEyes = () => {
     p_ctx.strokeStyle = "rgba(0, 255, 255, " + newOpac - 0.4 + ")";
     p_ctx.beginPath();
     p_ctx.strokeWidth = 5;
-    p_ctx.moveTo(150, 100);
+    p_ctx.moveTo(120, 100);
     p_ctx.lineTo(350, 480);
     p_ctx.closePath();
     p_ctx.stroke();
 
     p_ctx.beginPath();
-    p_ctx.moveTo(110, 100);
+    p_ctx.moveTo(160, 100);
     p_ctx.lineTo(350, 480);
     p_ctx.closePath();
     p_ctx.stroke();
@@ -985,6 +1034,7 @@ const drawOtherPlayerMovement = () => {
 };
 
 let drawTheImage = false;
+let collidedOnceWithYellowCloud = false;
 //Returns true if there are collisions. It also fixes these collisions.
 const CollisionsWithLevel = (_p, xDif, yDif) => {
     let p = _p;
@@ -997,7 +1047,6 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
         p = { ..._p };
         p.x += camXOffset; p.y += camYOffset;
         p.newX += camXOffset; p.newY += camYOffset;
-        console.log("We need to go deeper...")
     };
 
     let lightColor = new THREE.Color();
@@ -1029,7 +1078,13 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
             }
             // Draws the image if the player collided with the yellow cloud
             if (r.values && r.values.color === "rgba(220,221,11,0.95)") {
-                drawTheImage = true;
+                console.log(collidedOnceWithYellowCloud);
+                if (collidedOnceWithYellowCloud == true){
+                    collideCheckpoint(debugCheckPoints[8]);
+                    movePlayerBackToStart();
+                    swapBG();
+                }
+                else drawTheImage = true;
             }
             // console.log(r.values.color);
             // The order of which directions are checked matters! It affects whether player gets stuck if they move from one rect to another on the same y coord.
@@ -1192,6 +1247,7 @@ const initItems = (savedItems) => {
     imgs['eyes'] = document.getElementById('eyes');
     imgs['arrow_l'] = document.getElementById('arrow_l');
     imgs['arrow_r'] = document.getElementById('arrow_r');
+    imgs['pipe'] = document.getElementById('pipe');
     imgs['theImage'] = document.getElementById('theImage');
 
 
@@ -1389,7 +1445,7 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
-    // document.getElementById("theGood").hidden = false;
+    // document.getElementById("theKey").hidden = false;
     player.x = player.spawn[0]; player.y = player.spawn[1];
 
     if (player.g === 0) player.flip = false;

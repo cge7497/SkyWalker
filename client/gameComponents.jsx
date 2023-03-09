@@ -102,11 +102,18 @@ const GameInfo = (props) => {
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
                 <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"
                     alt="The Door" />
+                <img id="pipe" src='assets/img/pipe.png' className='noDisplay' width="32" height="32"
+                    alt="The Pipe" />
                 <img id="theImage" src='assets/img/theImage.png' className='noDisplay' />
             </div>
-            <input hidden id="theGood" placeholder="The Key" class="center" />
+            <div id="keyDiv">
+                <input id="theKey" placeholder="The Key" class="center" />
+                <input id="keySubmit" type="submit" value="Enter" class="center" />
+            </div>
             <button id="resetBtn" className="btn btn-info" disabled={true} >Back to Save</button>
+            <select id="checkpoints">
 
+            </select>
             <br /><br /> <br />
             {/* Update this inner html when you get an item. */}
             <p className="center" id="instructions">

@@ -27,7 +27,7 @@ const updatePlayer = async (name, itemId) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            
+
         },
         body: JSON.stringify(formData),
     });
@@ -35,11 +35,13 @@ const updatePlayer = async (name, itemId) => {
 
 // sends the player data to the server as a POST request.
 const sendRequestForInfo = async (name) => {
+    //const _csrf = document.querySelector('#_csrf').value;
+
     let response = await fetch('/...' + name + '...', {
         method: 'GET',
         headers: {
             'Accept': 'image/*',
-        },
+        }
     });
 
     //Once we have a response, handle it.
@@ -55,6 +57,30 @@ const sendRequestForInfo = async (name) => {
             break;
     }
     return obj;
+};
+
+// sends the player data to the server as a POST request.
+const sendKey = async (theKey) => {
+    const _csrf = document.querySelector('#_csrf').value;
+
+    const key = { "key": theKey, _csrf: _csrf };
+    let response = await fetch('/enterKey', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify(key),
+    });
+
+    switch (response.status) {
+        case 200:
+            return true;
+            break;
+        default: //any other status code
+            break;
+    }
+    return false;
 };
 
 const sendCloud = async (color = '#000000') => {
@@ -73,5 +99,5 @@ const sendCloud = async (color = '#000000') => {
     });
 }
 export {
-    updatePlayer, sendRequestForInfo, sendCloud
+    updatePlayer, sendRequestForInfo, sendCloud, sendKey
 }

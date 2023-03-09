@@ -699,10 +699,10 @@
     },
     {
       "exportID": "99636184",
-      "name": "secret_entrance",
+      "name": "pipe",
       "limit": -1,
-      "size": {"x": 25, "y": 25},
-      "origin": {"x": 0, "y": 0},
+      "size": {"x": 32, "y": 32},
+      "origin": {"x": -9, "y": 0},
       "originAnchored": true,
       "shape": {
         "label": "Rectangle",

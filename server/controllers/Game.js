@@ -102,6 +102,25 @@ const getLevel = (request, response) => {
   return respondJSON(request, response, 200, responseJSON);
 };
 
+// Add a cloud to the level data JSON object.
+const enterKey = (request, response) => {
+  const responseJSON = {
+    message: 'Incorrect key.',
+  };
+
+  if (!request.body.key) {
+    responseJSON.id = 'missingParam';
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  if (request.body.key.toLowerCase() !== process.env.KEY){
+    return respondJSON(request, response, 401, responseJSON);
+  }
+
+  // This returns if the cloud was added.
+  return respondJSONMeta(request, response, 200);
+};
+
 const getLevelMeta = (request, response) => respondJSONMeta(request, response, 200);
 
 // Responds with status code 304 (Not Modified)
@@ -139,6 +158,7 @@ module.exports = {
   getPlayerMeta,
   getLevel,
   getLevelMeta,
+  enterKey,
   getMovement,
   getMovementMeta,
   addMovement,
