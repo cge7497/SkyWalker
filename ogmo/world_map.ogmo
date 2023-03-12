@@ -841,7 +841,9 @@
       "nodeDisplay": 0,
       "nodeGhost": true,
       "tags": [],
-      "values": []
+      "values": [
+        {"name": "dir", "definition": "Integer", "display": 2, "defaults": 5, "bounded": false, "min": 0, "max": 100}
+      ]
     },
     {
       "exportID": "12204912",

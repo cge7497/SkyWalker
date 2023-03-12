@@ -192,9 +192,9 @@ const handleMouseClick = (e) => {
 
 //not used.
 const fadeBGColorToDarkBlue = (color_rgb) => {
-  if (color_rgb[0] > 15) color_rgb[0] -= 0.1;
-  if (color_rgb[1] > 31) color_rgb[1] -= 0.1;
-  if (color_rgb[2] > 56) color_rgb[2] -= 0.1;
+  if (color_rgb[0] > 15) color_rgb[0] -= 0.2;
+  if (color_rgb[1] > 31) color_rgb[1] -= 0.2;
+  if (color_rgb[2] > 56) color_rgb[2] -= 0.2;
   return color_rgb;
 }
 

@@ -70,6 +70,9 @@ const items = {
     'arrow_r': {
         draw: (o) => { drawImage(o); }, collected: (o) => rotatePlayer(o), collide: (o) => { rotatePlayer(o) }
     },
+    'stop': {
+        draw: (o) => { drawImage(o); }, collected: (o) => rotateDown(o), collide: (o) => { rotateDown(o) }
+    },
     '3DTree': {}, '3DHouse': {}
 };
 //TODO: make arrow image rotate properly
@@ -670,6 +673,7 @@ const update = (timeStamp) => {
     }
 };
 
+// updates the 3D model when the player activates it
 const updateTripped = (model = THREE.Object3D) => {
     if (keysPressed[65]) {
         model.rotation.y += 0.01;
@@ -1149,41 +1153,48 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
         // Handle player rect and arrow colliding
-        if (playerRect && (o.name.substring(0,5) === "arrow")) {
+        if (playerRect && (o.name.substring(0,5) === "arrow" || o.name === "stop")) {
             if (playerRect.x - playerRect.width < o.x + o.width / 2 && playerRect.x + playerRect.width > o.x - o.width / 2
                 && playerRect.y - playerRect.height < o.y + o.height / 2 && playerRect.y + playerRect.height > o.y - o.height / 2) {
-                console.log("colliding" + o.values.dir);
                 if (o.values && o.values.dir !== null) {
-                    //Up, right, down, left
-                    if (o.values.dir === 0) {
-                        if (playerRect.vSpeed != -2) {
-                            playerRect.vSpeed = -2;
-                            playerRect.hSpeed = 0;
-                            const sound = sfxr.generate("tone");
+                    //left, right. (Dir order is up, right, down, left)
+                    if (o.values.dir === 3) {
+                        if (playerRect.hSpeed !== -2) {
+                            // playerRect.vSpeed = -2;
+                            playerRect.hSpeed = -2;
+                            const sound = sfxr.generate("click");
                             sfxr.play(sound);
                         }
                     }
                     else if (o.values.dir === 1) {
                         if (playerRect.hSpeed !== 2) {
                             playerRect.hSpeed = 2;
-                            playerRect.vSpeed = 0;
-                            const sound = sfxr.generate("tone");
+                            // playerRect.vSpeed = 0;
+                            const sound = sfxr.generate("click");
                             sfxr.play(sound);
                         }
                     }
-                    else if (o.values.dir === 2) {
+                    /* else if (o.values.dir === 2) {
                         if (playerRect.vSpeed !== 2) {
-                            playerRect.vSpeed = 2;
+                            // playerRect.vSpeed = 2;
                             playerRect.hSpeed = 0;
-                            const sound = sfxr.generate("tone");
+                            const sound = sfxr.generate("click");
                             sfxr.play(sound);
                         }
                     }
                     else if (o.values.dir === 3) {
                         if (playerRect.hSpeed !== -2) {
                             playerRect.hSpeed = -2;
-                            playerRect.vSpeed = 0;
-                            const sound = sfxr.generate("tone");
+                            // playerRect.vSpeed = 0;
+                            const sound = sfxr.generate("click");
+                            sfxr.play(sound);
+                        }
+                    } */
+                    else if (o.values.dir === 5){
+                        if (playerRect.hSpeed !== 0) {
+                            playerRect.hSpeed = 0;
+                            // playerRect.vSpeed = 0;
+                            const sound = sfxr.generate("click");
                             sfxr.play(sound);
                         }
                     }
@@ -1280,6 +1291,7 @@ const initItems = (savedItems) => {
     imgs['eyes'] = document.getElementById('eyes');
     imgs['arrow_l'] = document.getElementById('arrow_l');
     imgs['arrow_r'] = document.getElementById('arrow_r');
+    imgs['stop'] = document.getElementById('stop');
     imgs['pipe'] = document.getElementById('pipe');
     imgs['coin'] = document.getElementById('pipe');
     imgs['theImage'] = document.getElementById('theImage');
@@ -1347,13 +1359,13 @@ let shouldPlayRotateSound = true;
 function rotatePlayer(o) {
     if (o.values && o.values.dir === 1) {
         player.g = 1;
-        player.flip = false;
-        player.scale = Math.abs(player.scale);
+        player.flip = true;
+        player.scale = Math.abs(player.scale) * -1;
     }
     else {
         player.g = 1;
-        player.flip = true;
-        player.scale = Math.abs(player.scale) * -1;
+        player.flip = false;
+        player.scale = Math.abs(player.scale);
     }
 
     player.halfHeight = 4;
@@ -1529,35 +1541,36 @@ function cloudState() {
                     sky_audio.play();
                 }
             })
-        }, 4000);
+        }, 6000);
 
+        should_change_bg_color = true;
         inClouds = true;
     }
 
     if (bgRectColor < 254) {
-        bgRectColor += 0.2;
-        player.y += 0.85;
+        bgRectColor += 0.15;
+        player.y += 0.66;
     }
-
+    
     //find true player.x, where drawn
 
 
     //Makes the player's alpha decrease.
     player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
 
-    // console.log(player.color);
+    utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, true, 0, 0);
 
-    utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, true, 0);
-
-    bgRects.forEach((r) => {
-        r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.1)`;
-    });
-
+    // Prob being redrawn in another place at full capacity?
     playerCloud.color = `${trueColor}${bgRectColor.toString(16).substring(0, 2)}`;
+    bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
 
     level.rects.forEach((r) => {
-        r.color = `rgba(${bgRectColor}, ${bgRectColor}, ${bgRectColor}, 0.5)`;
+        r.values.color = "rgb(" + bg_color_rgb[0] + "," + bg_color_rgb[1] + "," + bg_color_rgb[2] + ")";
     });
+
+    console.log("bro")
+
+    drawLevel();
 }
 
 function theCloud() {
