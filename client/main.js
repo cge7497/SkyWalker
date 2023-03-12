@@ -1149,7 +1149,7 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
         // Handle player rect and arrow colliding
-        if (playerRect && (o.name.contains("arrow") === true)) {
+        if (playerRect && (o.name.substring(0,5) === "arrow")) {
             if (playerRect.x - playerRect.width < o.x + o.width / 2 && playerRect.x + playerRect.width > o.x - o.width / 2
                 && playerRect.y - playerRect.height < o.y + o.height / 2 && playerRect.y + playerRect.height > o.y - o.height / 2) {
                 console.log("colliding" + o.values.dir);
