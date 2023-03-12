@@ -1533,6 +1533,7 @@ function cloudState() {
             sky_audio.play();
             shouldUpdateGame = true;
             cloudsShouldLoop = false;
+            p_ctx.filter = "none";
             // I got this code for perfect audio looping (as the loop attribute has delay) from https://stackoverflow.com/a/22446616
             sky_audio.addEventListener('timeupdate', (e) => {
                 const buffer = 0.12;
@@ -1547,29 +1548,27 @@ function cloudState() {
         inClouds = true;
     }
 
+    if (shouldUpdateGame) return;
+
     if (bgRectColor < 254) {
         bgRectColor += 0.15;
-        player.y += 0.66;
+        player.y += 0.3;
     }
     
     //find true player.x, where drawn
 
 
     //Makes the player's alpha decrease.
-    player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
+    // player.color = `#000000${(255 - bgRectColor).toString(16).substring(0, 2)}`;
 
     utilities.drawPlayer(player, camXOffset, camYOffset, p_ctx, true, 0, 0);
 
     // Prob being redrawn in another place at full capacity?
-    playerCloud.color = `${trueColor}${bgRectColor.toString(16).substring(0, 2)}`;
+    // playerCloud.color = `${trueColor}${bgRectColor.toString(16).substring(0, 2)}`;
     bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
 
-    level.rects.forEach((r) => {
-        r.values.color = "rgb(" + bg_color_rgb[0] + "," + bg_color_rgb[1] + "," + bg_color_rgb[2] + ")";
-    });
-
-    console.log("bro")
-
+    // let flrClr = Math.floor(bgRectColor);
+    p_ctx.filter = `grayscale(${bgRectColor * 10}%) blur(${bgRectColor / 2}px)`;
     drawLevel();
 }
 
