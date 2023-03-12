@@ -99,6 +99,10 @@ const GameInfo = (props) => {
                     alt="Arrow Left" />
                 <img id="arrow_r" src='assets/img/arrow_r.png' className='noDisplay' width="25" height="25"
                     alt="Arrow Right" />
+                <img id="arrow_u" src='assets/img/arrow_u.png' className='noDisplay' width="25" height="25"
+                    alt="Arrow Up" />
+                <img id="arrow_d" src='assets/img/arrow_d.png' className='noDisplay' width="25" height="25"
+                    alt="Arrow Down" />
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
                 <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"
                     alt="The Door" />

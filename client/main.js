@@ -46,6 +46,7 @@ const items = {
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
     'pipe': { draw: (o) => { drawImage(o) }, collide: (o) => { collidePipe() } },
+    'coin': { draw: (o) => { drawImage(o) }, collide: (o) => { collidePipe() } },
     'fire': {
         collected: collectMorphBall, draw: (o) => { drawFire(o) },
         collide: (o) => { collideFire(o) }
@@ -495,8 +496,8 @@ const startGameLogic = (obj, immediate = false) => {
 
     w_ctx.fillStyle = "black";
 
-    setInterval(update, 1000 / 60);
-    setInterval(drawBG, 1000 / 15);
+    requestAnimationFrame(update);
+    requestAnimationFrame(drawBG);
     // setInterval(animate, 1000 / 30);
 
     // setInterval(sendAndReceiveMovement, 1000);
@@ -612,8 +613,18 @@ const moveToChar = () => {
 }
 */
 
+const updateInterval = 1000 / 120;
+let prevUpdateTime = -1;
 //Runs 60 frames per second. Serves to update game state and draw.
-const update = () => {
+const update = (timeStamp) => {
+    requestAnimationFrame(update);
+
+    let deltaTime = timeStamp - prevUpdateTime;
+
+    if (deltaTime < updateInterval) return;
+
+    prevUpdateTime = timeStamp;
+
     if (!inClouds && shouldUpdateGame) {
         //(0.5 + Math.random(), 0.5 + Math.random());
         updatePlayer();
@@ -836,10 +847,6 @@ const drawLevel = () => {
                     currentlyDrawnModel = false;
                 }
                 if (!currentlyDrawnModel && items[o.name].file) {
-                    if (o.values) {
-                        if (o.values.dir === 0) items[o.name].file.rotation.y = 0;
-                        else if (o.values.dir === 1) items[o.name].file.rotation.y = -Math.PI;
-                    }
                     scene.add(items[o.name].file);
                     currentlyDrawnModel = items[o.name].file;
                     vpOffset = [o.x - 320, -o.y + 240];
@@ -888,8 +895,7 @@ const drawLevel = () => {
             shouldAnimateEyes = false;
             drawTheImage = false;
             p_ctx.globalAlpha = 1;
-            console.log("boom");
-            setTimeout( () => {
+            setTimeout(() => {
                 collidedOnceWithYellowCloud = true;
             }, 2000);
         }, 10000)
@@ -957,12 +963,21 @@ const animateEyes = () => {
     eyeAnimCounter += 0.05;
 }
 
-const piDiv100 = Math.PI / 100;
+const piDiv100 = Math.PI / 100, BGInterval = 1000 / 15;
 let drawImageOpacCounter = 0;
 let timer = 0;
 let fireAnimInc = 0.4;
+let prevBGTime = -1;
 //Draws background clouds onto the background canvas.
-const drawBG = () => {
+const drawBG = (timeStamp) => {
+    requestAnimationFrame(drawBG);
+
+    let deltaTime = timeStamp - prevBGTime;
+
+    if (deltaTime < BGInterval) return;
+
+    prevBGTime = timeStamp;
+
     bg_ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     fireAnimColor += fireAnimInc;
@@ -1079,7 +1094,7 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
             // Draws the image if the player collided with the yellow cloud
             if (r.values && r.values.color === "rgba(220,221,11,0.95)") {
                 console.log(collidedOnceWithYellowCloud);
-                if (collidedOnceWithYellowCloud == true){
+                if (collidedOnceWithYellowCloud == true) {
                     collideCheckpoint(debugCheckPoints[8]);
                     movePlayerBackToStart();
                     swapBG();
@@ -1134,25 +1149,43 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
         // Handle player rect and arrow colliding
-        if (playerRect && (o.name === "arrow_l" || o.name === "arrow_r")) {
+        if (playerRect && (o.name.contains("arrow") === true)) {
             if (playerRect.x - playerRect.width < o.x + o.width / 2 && playerRect.x + playerRect.width > o.x - o.width / 2
                 && playerRect.y - playerRect.height < o.y + o.height / 2 && playerRect.y + playerRect.height > o.y - o.height / 2) {
                 console.log("colliding" + o.values.dir);
                 if (o.values && o.values.dir !== null) {
-                    console.log("BAM");
+                    //Up, right, down, left
                     if (o.values.dir === 0) {
-                        if (playerRect.hSpeed === -2) {
-                            const sound = sfxr.generate("click");
+                        if (playerRect.vSpeed != -2) {
+                            playerRect.vSpeed = -2;
+                            playerRect.hSpeed = 0;
+                            const sound = sfxr.generate("tone");
                             sfxr.play(sound);
                         }
-                        playerRect.hSpeed = 2;
                     }
                     else if (o.values.dir === 1) {
-                        if (playerRect.hSpeed === 2) {
-                            const sound = sfxr.generate("click");
+                        if (playerRect.hSpeed !== 2) {
+                            playerRect.hSpeed = 2;
+                            playerRect.vSpeed = 0;
+                            const sound = sfxr.generate("tone");
                             sfxr.play(sound);
                         }
-                        playerRect.hSpeed = -2;
+                    }
+                    else if (o.values.dir === 2) {
+                        if (playerRect.vSpeed !== 2) {
+                            playerRect.vSpeed = 2;
+                            playerRect.hSpeed = 0;
+                            const sound = sfxr.generate("tone");
+                            sfxr.play(sound);
+                        }
+                    }
+                    else if (o.values.dir === 3) {
+                        if (playerRect.hSpeed !== -2) {
+                            playerRect.hSpeed = -2;
+                            playerRect.vSpeed = 0;
+                            const sound = sfxr.generate("tone");
+                            sfxr.play(sound);
+                        }
                     }
                 }
             }
@@ -1248,6 +1281,7 @@ const initItems = (savedItems) => {
     imgs['arrow_l'] = document.getElementById('arrow_l');
     imgs['arrow_r'] = document.getElementById('arrow_r');
     imgs['pipe'] = document.getElementById('pipe');
+    imgs['coin'] = document.getElementById('pipe');
     imgs['theImage'] = document.getElementById('theImage');
 
 
