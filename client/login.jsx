@@ -114,11 +114,11 @@ const SignupWindow = (props) => {
                 <label htmlFor="pass">Password: </label>
                 <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
-            <div className="floatLeft">
+            <div className="floatLeft pt-3">
                 <label htmlFor="colorField">Color: </label>
                 <input id="colorField" type="color" name="color" defaultValue="#6495ed" />
             </div>
-            <div className="floatRight">
+            <div className="floatRight pt-3">
                 <label htmlFor="pass2">Password: </label>
                 <input id="pass2" type="password" name="pass2" placeholder="password" />
             </div>
