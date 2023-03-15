@@ -401,7 +401,17 @@ const startGameLogic = (obj, immediate = false) => {
         console.error(error);
     });
 
-    loader.load('assets/img/SavePc.glb', function (gltf) {
+    // Thanks to this guide https://codepedia.info/detect-browser-in-javascript
+    // on using the user agent to sniff out the browser. This isn't very precise, but I'm only doing it to change a keyboard shortcut.
+    let userAgent = navigator.userAgent;
+    let compModelPath = 'assets/img/SavePc.glb';
+
+
+    if (userAgent.match(/firefox|fxios/i)) {
+        compModelPath = 'assets/img/SavePc_f.glb';
+    }
+
+    loader.load(compModelPath, function (gltf) {
         compModel = gltf.scene;
         compModel.scale.x = compModel.scale.y = compModel.scale.z = 9;
         compModel.rotation.y = Math.PI;
@@ -1153,7 +1163,7 @@ const CollisionsWithSpecialObjects = (p) => {
             }
         }
         // Handle player rect and arrow colliding
-        if (playerRect && (o.name.substring(0,5) === "arrow" || o.name === "stop")) {
+        if (playerRect && (o.name.substring(0, 5) === "arrow" || o.name === "stop")) {
             if (playerRect.x - playerRect.width < o.x + o.width / 2 && playerRect.x + playerRect.width > o.x - o.width / 2
                 && playerRect.y - playerRect.height < o.y + o.height / 2 && playerRect.y + playerRect.height > o.y - o.height / 2) {
                 if (o.values && o.values.dir !== null) {
@@ -1190,7 +1200,7 @@ const CollisionsWithSpecialObjects = (p) => {
                             sfxr.play(sound);
                         }
                     } */
-                    else if (o.values.dir === 5){
+                    else if (o.values.dir === 5) {
                         if (playerRect.hSpeed !== 0) {
                             playerRect.hSpeed = 0;
                             // playerRect.vSpeed = 0;
@@ -1423,7 +1433,7 @@ function collectScrewAttack(shouldSendPost = true) {
 
     playerShouldEnterVoid = true;
     // document.getElementById('spaceInstructions').innerHTML = `<strong>&nbsp;SPACE</strong> to ultra flip`
-    infiniteFlip = true;
+    // infiniteFlip = true;
     if (shouldSendPost === true) {
         requests.updatePlayer(player.name, 'screwattack');
         item_audio.play();
@@ -1554,7 +1564,7 @@ function cloudState() {
         bgRectColor += 0.15;
         player.y += 0.3;
     }
-    
+
     //find true player.x, where drawn
 
 
