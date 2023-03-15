@@ -509,6 +509,12 @@ const startGameLogic = (obj, immediate = false) => {
 
     w_ctx.fillStyle = "black";
 
+    sphereMaterial = new THREE.MeshBasicMaterial({ color: trueColor });
+    sphere = new THREE.Mesh(geometry, sphereMaterial);
+
+    console.log(sphereMaterial);
+    console.log(sphere.color);
+
     requestAnimationFrame(update);
     requestAnimationFrame(drawBG);
     // setInterval(animate, 1000 / 30);
@@ -520,8 +526,8 @@ const startGameLogic = (obj, immediate = false) => {
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 const geometry = new THREE.SphereGeometry(8, 8, 16);
-const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-const sphere = new THREE.Mesh(geometry, material);
+let sphereMaterial;
+let sphere;
 
 let goingToTree = false, goingToBody = false;
 
@@ -685,6 +691,7 @@ const update = (timeStamp) => {
 
 // updates the 3D model when the player activates it
 const updateTripped = (model = THREE.Object3D) => {
+    //Player uses WASD to rotate model
     if (keysPressed[65]) {
         model.rotation.y += 0.01;
     }
@@ -698,18 +705,28 @@ const updateTripped = (model = THREE.Object3D) => {
     if (keysPressed[83]) {
         model.rotation.x += 0.01;
     }
+    //'R' to reset model 
+    if (keysPressed[82]) {
+        model.rotation.x = 0;
+        model.rotation.y = Math.PI;
+        model.scale.x = 15;
+        model.scale.y = 15;
+        model.scale.z = 15;
+        model.position.y = -20;
+    }
 
+    // Shift and Space to make model larger or smaller
     if (keysPressed[32]) {
         model.scale.x /= 1.01;
         model.scale.y /= 1.01;
-        model.position.y += 0.1;
+        model.position.y += 0.05;
         model.scale.z /= 1.01;
     }
 
     if (keysPressed[16]) {
         model.scale.x *= 1.01;
         model.scale.y *= 1.01;
-        model.position.y -= 0.1;
+        model.position.y -= 0.05;
         model.scale.z *= 1.01;
     }
 }
