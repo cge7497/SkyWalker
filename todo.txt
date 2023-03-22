@@ -1,6 +1,7 @@
 TODO 3-11:
 Finish bottom right area! The level editor was crashing on my laptop,
 maybe try tomorrow.
+Websockets...
 
 Add two-player mode where one player requests the other, and if they both accept then
 their clouds are transferred between worlds. This would allow them to go to a special area.
