@@ -4,7 +4,8 @@ maybe try tomorrow.
 
 Add two-player mode where one player requests the other, and if they both accept then
 their clouds are transferred between worlds. This would allow them to go to a special area.
-The above is a new feature Gaurav could add.
+The above is a new feature Gaurav could add. This could be with cellphone item, or by 
+clicking on a player's name.
 Implement speedrun timer tho?
 
 TODO 3-1: 

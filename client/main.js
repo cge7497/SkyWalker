@@ -33,8 +33,8 @@ const items = {
         obtained: false, collected: collectMorphBall,
         draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
     },
-    'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideYellowSwitch(o) } },
-    'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) } },
+    'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideTopOfSwitch(o) } },
+    'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) }, collide: (o) => {collideTopOfSwitch(o)} },
     'greyswitch': {
         collected: () => {
             shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.');
@@ -151,10 +151,10 @@ const collidePipe = (o) => {
     };
 };
 
-const collideYellowSwitch = (o) => {
+const collideTopOfSwitch = (o) => {
     if (player.g === 0 && player.flip === false && !prevOnGround) {
         level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
-        items["yellowswitch"].collected();
+        items[o.name].collected();
     };
 };
 
@@ -1141,6 +1141,9 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                 if (p.g === 0) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
                     if (!r.isPlayerRect) { colliding[1] = true; }
+                    else {
+                        _p.newX += playerRect.hSpeed;
+                    }
                 }
             }
             else if (utilities.collidedFromLeft(p, r) || utilities.collidedFromRight(p, r)) {
@@ -1511,9 +1514,10 @@ function collectMouse(shouldSendPost = true) {
 }
 
 function stopFire() {
-    for (let i = level.specialObjects.length - 1; i >= 0; i--) {
-        if (level.specialObjects[i].id === "fire") level.specialObjects.splice(i, 1);
-    }
+    console.log("running>")
+    level.specialObjects.splice(1, 2);
+    const sound = sfxr.generate("click");
+    sfxr.play(sound)
 }
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
