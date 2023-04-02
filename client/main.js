@@ -801,6 +801,7 @@ const updatePlayer = () => {
         if (player.flip) xDif = ySpeed;
         else xDif = -ySpeed;
     }
+
     //Reset cam offset if 'R' was pressed.
     if (hasEyes && keysPressed[82]) { camXOffset = 300 - player.x; camYOffset = 300 - player.y; }
 
@@ -1732,7 +1733,7 @@ const keyUp = (e) => {
             break;
     }
 };
-const canvasA = document.getElementById("above");
+const canvasA = document.getElementById("canvas_above");
 let a_ctx;
 
 ʵ.stop = () => {
@@ -1756,14 +1757,22 @@ let a_ctx;
         canvasP.style.opacity = startOpac;
         canvasW.style.opacity = startOpac;
         canvasBG.style.opacity = startOpac;
-        updatePlayer();
+
+        if (keysPressed[65]) { player.x -= xSpeed; }
+        if (keysPressed[68]) { player.x += xSpeed; }
+        player.y += 1;
 
         utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
-        a_ctx.drawImage(imgs['theImage'],0,0);
+        // a_ctx.drawImage(imgs['theImage'],0,0);
 
-        canvasA.style.height += 10;
+        // canvasA.style.height += 10;
 
-        if (startOpac <= 0) clearInterval(opacFade);
+        if (startOpac <= 0) {
+            //Implement drawing SMW boss door here. Beforehand, maybe no moving sideways- only down
+            //Also, be sure to figure out how to extend window downward
+            clearInterval(opacFade);
+        }
+
     }, 1000 / 60);
 
     //Thanks to https://stackoverflow.com/a/48087847 for this code for disabling a bunch of buttons at once

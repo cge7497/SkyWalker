@@ -270,6 +270,11 @@ canvas {
     margin: -0.5rem;
 }
 
+#canvas_above {
+    z-index: 4;
+    position: absolute;
+}
+
 #canvas_player {
     z-index: 3;
     position: absolute;
