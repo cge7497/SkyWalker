@@ -1736,15 +1736,33 @@ const keyUp = (e) => {
 ʵ.stop = () => {
     console.log("You must put parentheses at the end of a command to execute it... Sorry but this is just the way I am.");
     document.getElementById("canvas_js3").remove();
-    document.getElementById("canvas_player").remove();
-    document.getElementById("canvas_walkers").remove();
-    document.getElementById("canvas_bg").remove();
+
+    shouldUpdateGame = false;
+    playerCanPlaceRect = false;
+    
+    let startOpac = 1;
+
+    const canvasP = document.getElementById("canvas_player");
+    const canvasW = document.getElementById("canvas_walkers");
+    const canvasBG = document.getElementById("canvas_bg");
+    setInterval(() => {
+        startOpac -= 0.005;
+
+        document.body.style.opacity = startOpac;
+        canvasP.style.opacity = startOpac;
+        canvasW.style.opacity = startOpac;
+        canvasBG.style.opacity = startOpac;
+
+        if (startOpac <= 0) clearInterval(0);
+    }, 1000 / 60);
 
     //Thanks to https://stackoverflow.com/a/48087847 for this code for disabling a bunch of buttons at once
     let btns = document.getElementsByTagName("button");
     for (let btn of btns) {
         btn.disabled = true;
     };
+    document.getElementById("logoutLink").classList.add("disabled");
+
 };
 
 export { startGameLogic, setShape };
