@@ -104,7 +104,7 @@ const getLevel = (request, response) => {
 
 // Add a cloud to the level data JSON object.
 const enterKey = (request, response) => {
-  const responseJSON = {
+  let responseJSON = {
     message: 'Incorrect key.',
   };
 
@@ -117,8 +117,11 @@ const enterKey = (request, response) => {
     return respondJSON(request, response, 401, responseJSON);
   }
 
-  // This returns if the cloud was added.
-  return respondJSONMeta(request, response, 200);
+  responseJSON = {
+    message: process.env.WORLD
+  }
+  // This returns if the key is correct.
+  return respondJSON(request, response, 200, responseJSON);
 };
 
 const getLevelMeta = (request, response) => respondJSONMeta(request, response, 200);

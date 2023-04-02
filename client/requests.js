@@ -73,10 +73,11 @@ const sendKey = async (theKey) => {
         body: JSON.stringify(key),
     });
 
+    let obj = await response.json();
     switch (response.status) {
         case 200:
+            what_is_this_world = obj.message;
             return true;
-            break;
         default: //any other status code
             break;
     }

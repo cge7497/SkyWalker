@@ -14,6 +14,7 @@ const bgRects = []; let collisionRects = [], playerInBG = false, playerRect = nu
 let movementThisSecond = {}; let otherPlayerMovement = {};
 let updateMovement = true, otherPlayerMovementFrame = 0, shouldDrawOthers = false;
 let cloudsShouldLoop = true, activeCheckpoint = {}, debugCheckPoints = [];
+var thisWorld = undefined;
 
 var test = "hello";
 
@@ -34,7 +35,7 @@ const items = {
         draw: (o) => { drawImage(o) }, collide: (o) => { collideItem(o) }
     },
     'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideTopOfSwitch(o) } },
-    'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) }, collide: (o) => {collideTopOfSwitch(o)} },
+    'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) }, collide: (o) => { collideTopOfSwitch(o) } },
     'greyswitch': {
         collected: () => {
             shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.');
@@ -283,8 +284,6 @@ const startGameLogic = (obj, immediate = false) => {
     movementThisSecond.color = trueColor;
     movementThisSecond.movement = [];
 
-    emptyMemory = cloudState;
-
     // This seems unoptimal... should I just await the data.
     collisionRects = level.rects;
 
@@ -384,7 +383,10 @@ const startGameLogic = (obj, immediate = false) => {
     // White directional light at half intensity shining from the top.
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     scene.add(directionalLight);
-
+    ʵ.world = {
+        "blocks": level.rects,
+        "specialObjects": level.specialObjects
+    };
 
 
     camera.position.z = 100;
@@ -938,8 +940,19 @@ const evaluateKey = async () => {
     document.getElementById("keySubmit").disabled = true;
     console.log("evaluate the key");
     const key = document.getElementById("theKey").value;
-    const keyIsCorrect = requests.sendKey(key);
-    if (keyIsCorrect === true) console.log("correct");
+    const keyIsCorrect = await requests.sendKey(key);
+    if (keyIsCorrect === true) {
+        console.log("correct");
+        const sound = sfxr.generate("synth");
+        sfxr.play(sound);
+        document.getElementById("keyDiv").style.opacity = .3;
+        document.getElementById("theKey").disabled = true;
+        document.getElementById("keyDiv").style.color = "Green";
+    }
+    else {
+        const sound = sfxr.generate("hurt");
+        sfxr.play(sound);
+    }
 }
 
 let eyeAnimCounter = 0, shouldAnimateEyes = false, keyInputVisible = false, playedImageSound = false;
@@ -1305,6 +1318,7 @@ function swapBG() {
         drawLevelFilled = true;
         xSpeed = 3;
         ySpeed = 6;
+        collisionRects.push(playerRect);
     }
 };
 
@@ -1340,7 +1354,6 @@ const initItems = (savedItems) => {
         collectEyes(false);
     }
 };
-
 const setShape = (shape = 0) => {
     player.shape = shape;
 
@@ -1718,6 +1731,20 @@ const keyUp = (e) => {
             keysPressed[e.keyCode] = false;
             break;
     }
+};
+
+ʵ.stop = () => {
+    console.log("You must put parentheses at the end of a command to execute it... Sorry but this is just the way I am.");
+    document.getElementById("canvas_js3").remove();
+    document.getElementById("canvas_player").remove();
+    document.getElementById("canvas_walkers").remove();
+    document.getElementById("canvas_bg").remove();
+
+    //Thanks to https://stackoverflow.com/a/48087847 for this code for disabling a bunch of buttons at once
+    let btns = document.getElementsByTagName("button");
+    for (let btn of btns) {
+        btn.disabled = true;
+    };
 };
 
 export { startGameLogic, setShape };
