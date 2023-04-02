@@ -155,7 +155,7 @@ const ChangePasswordWindow = (props) => {
                 <label htmlFor="newPass">New Password: </label>
                 <input id="newPass" type="password" name="newPass" placeholder="password" />
             </div>
-            <button type='button' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
+            <button type="button" className='btn btn-outline-secondary btn-lg' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
             <button className="btn btn-outline-primary btn-lg formSubmit" id="changePasswordSubmit" type="submit">Set Password</button>
         </form>
     );

@@ -1748,6 +1748,8 @@ let a_ctx;
     const canvasW = document.getElementById("canvas_walkers");
     const canvasBG = document.getElementById("canvas_bg");
 
+    canvasA.width = 1000;
+    canvasA.height = 1000;
     a_ctx = canvasA.getContext('2d');
 
     let opacFade = setInterval(() => {

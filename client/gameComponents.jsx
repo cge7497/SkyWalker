@@ -153,7 +153,7 @@ const BuyShape = (props) => {
                 <label htmlFor="newPass">Payment Example: </label>
                 <input id="newPass" type="text" name="newPass" placeholder="Payment Info" />
             </div>
-            <button type='button' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
+            <button type="button" className='btn btn-outline-secondary btn-lg' id="closeForm" onClick={(e) => { setDisplayMode(0) }}>Close Form</button>
             <input className="formSubmit" id="changePasswordSubmit" type="submit" disabled={true} value="Purchase (Demo)" />
         </form>
     );
