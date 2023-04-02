@@ -1732,6 +1732,8 @@ const keyUp = (e) => {
             break;
     }
 };
+const canvasA = document.getElementById("above");
+let a_ctx;
 
 ʵ.stop = () => {
     console.log("You must put parentheses at the end of a command to execute it... Sorry but this is just the way I am.");
@@ -1739,21 +1741,29 @@ const keyUp = (e) => {
 
     shouldUpdateGame = false;
     playerCanPlaceRect = false;
-    
     let startOpac = 1;
 
     const canvasP = document.getElementById("canvas_player");
     const canvasW = document.getElementById("canvas_walkers");
     const canvasBG = document.getElementById("canvas_bg");
-    setInterval(() => {
+
+    a_ctx = canvasA.getContext('2d');
+
+    let opacFade = setInterval(() => {
         startOpac -= 0.005;
 
-        document.body.style.opacity = startOpac;
+        document.getElementById("falseBody").style.opacity = startOpac;
         canvasP.style.opacity = startOpac;
         canvasW.style.opacity = startOpac;
         canvasBG.style.opacity = startOpac;
+        updatePlayer();
 
-        if (startOpac <= 0) clearInterval(0);
+        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
+        a_ctx.drawImage(imgs['theImage'],0,0);
+
+        canvasA.style.height += 10;
+
+        if (startOpac <= 0) clearInterval(opacFade);
     }, 1000 / 60);
 
     //Thanks to https://stackoverflow.com/a/48087847 for this code for disabling a bunch of buttons at once
