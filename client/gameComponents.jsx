@@ -104,6 +104,8 @@ const GameInfo = (props) => {
                 <img id="uni" src='assets/img/uni.jpg' className='noDisplay' />
                 <img id="door" src='assets/img/door.png' className='noDisplay' width="16" height="32"
                     alt="The Door" />
+                <img id="door2" src='assets/img/door2.png' className='noDisplay' width="50" height="50"
+                    alt="The Second Door" />
                 <img id="pipe" src='assets/img/pipe.png' className='noDisplay' width="32" height="32"
                     alt="The Pipe" />
                 <img id="theImage" src='assets/img/theImage.png' className='noDisplay' />

@@ -4,7 +4,6 @@ import * as level from "./level.js"
 import * as requests from './requests.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-
 let w_ctx, p_ctx, bg_ctx, js3_ctx, scene, renderer, camera, characterModel = THREE.Object3D, compModel = THREE.Object3D,
     treeModel = THREE.Object3D, houseModel = THREE.Object3D, currentlyDrawnModel = false;
 let vpOffset = [0, 0], shouldRotateComp = false;
@@ -46,6 +45,7 @@ const items = {
         draw: (o) => { drawImage(o) }, collide: (o) => { collideGreySwitch(o) }
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
+    'door2': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
     'pipe': { draw: (o) => { drawImage(o) }, collide: (o) => { collidePipe() } },
     'coin': { draw: (o) => { drawImage(o) }, collide: (o) => { collidePipe() } },
     'fire': {
@@ -643,6 +643,10 @@ const update = (timeStamp) => {
     let deltaTime = timeStamp - prevUpdateTime;
 
     if (deltaTime < updateInterval) return;
+
+    if (playerIsFallingInEnding === true){
+        endingLogic();
+    }
 
     prevUpdateTime = timeStamp;
 
@@ -1331,6 +1335,7 @@ const initItems = (savedItems) => {
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
     imgs['door'] = document.getElementById('door');
+    imgs['door2'] = document.getElementById('door2');
     imgs['uni'] = document.getElementById('uni');
     imgs['mouse'] = document.getElementById('mouse');
     imgs['eyes'] = document.getElementById('eyes');
@@ -1735,6 +1740,7 @@ const keyUp = (e) => {
 };
 const canvasA = document.getElementById("canvas_above");
 let a_ctx;
+let playerIsFallingInEnding = false;
 
 ʵ.stop = () => {
     console.log("You must put parentheses at the end of a command to execute it... Sorry but this is just the way I am.");
@@ -1742,40 +1748,14 @@ let a_ctx;
 
     shouldUpdateGame = false;
     playerCanPlaceRect = false;
-    let startOpac = 1;
 
-    const canvasP = document.getElementById("canvas_player");
-    const canvasW = document.getElementById("canvas_walkers");
-    const canvasBG = document.getElementById("canvas_bg");
+    player.scale = 3;
 
     canvasA.width = 1000;
     canvasA.height = 1000;
     a_ctx = canvasA.getContext('2d');
 
-    let opacFade = setInterval(() => {
-        startOpac -= 0.005;
-
-        document.getElementById("falseBody").style.opacity = startOpac;
-        canvasP.style.opacity = startOpac;
-        canvasW.style.opacity = startOpac;
-        canvasBG.style.opacity = startOpac;
-
-        if (keysPressed[65]) { player.x -= xSpeed; }
-        if (keysPressed[68]) { player.x += xSpeed; }
-        player.y += 1;
-
-        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
-        // a_ctx.drawImage(imgs['theImage'],0,0);
-
-        // canvasA.style.height += 10;
-
-        if (startOpac <= 0) {
-            //Implement drawing SMW boss door here. Beforehand, maybe no moving sideways- only down
-            //Also, be sure to figure out how to extend window downward
-            clearInterval(opacFade);
-        }
-
-    }, 1000 / 60);
+    playerIsFallingInEnding = true;
 
     //Thanks to https://stackoverflow.com/a/48087847 for this code for disabling a bunch of buttons at once
     let btns = document.getElementsByTagName("button");
@@ -1786,4 +1766,42 @@ let a_ctx;
 
 };
 
+let startOpac = 1;
+
+const canvasP = document.getElementById("canvas_player");
+const canvasW = document.getElementById("canvas_walkers");
+const canvasBG = document.getElementById("canvas_bg");
+
+let canvasPaddingTop = 0;
+function endingLogic() {
+    if (startOpac <= 0) {
+        console.log("boom")
+        if (keysPressed[65]) { player.x -= xSpeed / 2; }
+        if (keysPressed[68]) { player.x += xSpeed / 2; }
+
+        console.log(`player_y: ${player.y + camYOffset}  canvasHeight: ${canvasA.height}`);
+        if ((player.y + camYOffset) >= (canvasA.height - 100)) {
+            a_ctx.drawImage(imgs['door2'], 500, 2075);
+        }
+        else {
+            player.y += 10;
+            canvasPaddingTop += 9;
+            canvasA.style.paddingTop = canvasPaddingTop + "px";
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
+    }
+    else {
+        startOpac -= 0.005;
+
+        document.getElementById("falseBody").style.opacity = startOpac;
+        canvasP.style.opacity = startOpac;
+        canvasW.style.opacity = startOpac;
+        canvasBG.style.opacity = startOpac;
+
+        player.y += 1;
+
+        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
+    }
+};
 export { startGameLogic, setShape };
