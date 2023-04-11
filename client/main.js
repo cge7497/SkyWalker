@@ -644,7 +644,7 @@ const update = (timeStamp) => {
 
     if (deltaTime < updateInterval) return;
 
-    if (playerIsFallingInEnding === true){
+    if (playerIsFallingInEnding === true) {
         endingLogic();
     }
 
@@ -1749,10 +1749,13 @@ let playerIsFallingInEnding = false;
     shouldUpdateGame = false;
     playerCanPlaceRect = false;
 
+    setShape(1);
     player.scale = 3;
 
+    console.log("I remember now... my name is Jack");
+
     canvasA.width = 1000;
-    canvasA.height = 1000;
+    canvasA.height = 400;
     a_ctx = canvasA.getContext('2d');
 
     playerIsFallingInEnding = true;
@@ -1763,7 +1766,8 @@ let playerIsFallingInEnding = false;
         btn.disabled = true;
     };
     document.getElementById("logoutLink").classList.add("disabled");
-
+    document.getElementById("game").style.height = 0;
+    document.getElementById("gameInfo").style.height = 0;
 };
 
 let startOpac = 1;
@@ -1772,24 +1776,48 @@ const canvasP = document.getElementById("canvas_player");
 const canvasW = document.getElementById("canvas_walkers");
 const canvasBG = document.getElementById("canvas_bg");
 
-let canvasPaddingTop = 0;
+let canvasPaddingTop = 0, exitingGame = false, exitAnimTimer = 300;
 function endingLogic() {
+    let playerWaving = false;
     if (startOpac <= 0) {
-        console.log("boom")
         if (keysPressed[65]) { player.x -= xSpeed / 2; }
         if (keysPressed[68]) { player.x += xSpeed / 2; }
 
-        console.log(`player_y: ${player.y + camYOffset}  canvasHeight: ${canvasA.height}`);
-        if ((player.y + camYOffset) >= (canvasA.height - 100)) {
-            a_ctx.drawImage(imgs['door2'], 500, 2075);
+        console.log(`player_x: ${player.x}  canvasPaddingTop: ${canvasPaddingTop}`);
+        a_ctx.clearRect(0, 0, 1000, 1000);
+        if (exitingGame === true) {
+            exitAnimTimer -= 1;
+
+            playerWaving = true;
+            if (exitAnimTimer >= 0) {
+                a_ctx.filter = `brightness(${300 / exitAnimTimer})`;
+                playerFallAnimCounter = Math.sin((exitAnimTimer * Math.PI / 35)) * 1.5 + 1;
+            }
+        }
+
+        if (canvasPaddingTop >= 1000) {
+            a_ctx.drawImage(imgs['door2'], 500, 150);
+            player.y = 350;
+
+            a_ctx.font = "30px Arial";
+            a_ctx.fillText("Ah well, looks like I'm done for", 400, 50);
+
+            if (keysPressed[87] && player.x >= 1305 && player.x <= 1375) {
+                exitingGame = true;
+            }
         }
         else {
-            player.y += 10;
+            // console.log(canvasA.style.paddingTop.substring(0, -2));
+            // player.y += 10;
             canvasPaddingTop += 9;
-            canvasA.style.paddingTop = canvasPaddingTop + "px";
-            window.scrollTo(0, document.body.scrollHeight);
+            document.body.style.paddingTop = canvasPaddingTop + "px";
+            window.scroll({
+                top: canvasPaddingTop,
+                left: 0,
+                behavior: "instant",
+            });
         }
-        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
+        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx, false, 0, playerFallAnimCounter, playerWaving);
     }
     else {
         startOpac -= 0.005;
@@ -1801,7 +1829,7 @@ function endingLogic() {
 
         player.y += 1;
 
-        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx);
+        utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx, true);
     }
 };
 export { startGameLogic, setShape };

@@ -14,7 +14,7 @@ const NPIDIV2 = -Math.PI / 2;
 
 
 // draws the player shape, which is a combination of canvas lines and arcs.
-const drawPlayer = (p, camX, camY, ctx, shouldClear = true, walkFrame = 0, fallFrame = 0) => {
+const drawPlayer = (p, camX, camY, ctx, shouldClear = true, walkFrame = 0, fallFrame = 0, waving = false) => {
 
   const x = p.x + camX;
   const y = p.y + camY;
@@ -65,7 +65,13 @@ const drawPlayer = (p, camX, camY, ctx, shouldClear = true, walkFrame = 0, fallF
 
   ctx.moveTo(-(3 * p.scale), armOffset); //move to beginning of arms
   ctx.lineTo(0, (3 * p.scale)); //left arm to center
-  ctx.lineTo((3 * p.scale), armOffset); //center to right arm
+  
+  // If the player is not waving, meaning only the left arm should move
+  if (!waving) {
+    ctx.lineTo((3 * p.scale), armOffset); //center to right arm
+  }
+  else ctx.lineTo((3 * p.scale), (3 * p.scale)); //center to right arm
+
   ctx.moveTo(0, (3 * p.scale)); //left arm to center
 
 
