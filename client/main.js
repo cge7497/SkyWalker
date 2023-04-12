@@ -388,6 +388,8 @@ const startGameLogic = (obj, immediate = false) => {
         "specialObjects": level.specialObjects
     };
 
+    ʈʼ.data = player;
+
 
     camera.position.z = 100;
 
@@ -1752,7 +1754,7 @@ let playerIsFallingInEnding = false;
     setShape(1);
     player.scale = 3;
 
-    console.log("I remember now... my name is Jack");
+    console.log("I remember now... my name is ʈʼ");
 
     canvasA.width = 1000;
     canvasA.height = 400;
@@ -1776,26 +1778,37 @@ const canvasP = document.getElementById("canvas_player");
 const canvasW = document.getElementById("canvas_walkers");
 const canvasBG = document.getElementById("canvas_bg");
 
-let canvasPaddingTop = 0, exitingGame = false, exitAnimTimer = 300;
+let PlayerIsLeaving = false;
+let bodyPaddingTop = 0, exitingThroughDoor2 = false, exitAnimTimer = 300;
 function endingLogic() {
     let playerWaving = false;
+
+    //Start opacity of canvas fading out
     if (startOpac <= 0) {
         if (keysPressed[65]) { player.x -= xSpeed / 2; }
         if (keysPressed[68]) { player.x += xSpeed / 2; }
 
-        console.log(`player_x: ${player.x}  canvasPaddingTop: ${canvasPaddingTop}`);
+        // console.log(`player_x: ${player.x}  bodyPaddingTop: ${bodyPaddingTop}`);
         a_ctx.clearRect(0, 0, 1000, 1000);
-        if (exitingGame === true) {
+
+        if (exitingThroughDoor2 === true) {
             exitAnimTimer -= 1;
 
             playerWaving = true;
-            if (exitAnimTimer >= 0) {
+            // If the exit timer is not done (50 rather than 0 to avoid an insanely high brightness)
+            if (exitAnimTimer >= 50) {
                 a_ctx.filter = `brightness(${300 / exitAnimTimer})`;
                 playerFallAnimCounter = Math.sin((exitAnimTimer * Math.PI / 35)) * 1.5 + 1;
             }
+            // Remove canvas after player enters door 2.
+            else {
+                document.getElementById("canvas_above").remove();
+                exitingThroughDoor2 = false;
+            }
         }
 
-        if (canvasPaddingTop >= 1000) {
+        // If the player entered the player.exitWorld command
+        if (PlayerIsLeaving===true) {
             a_ctx.drawImage(imgs['door2'], 500, 150);
             player.y = 350;
 
@@ -1803,22 +1816,24 @@ function endingLogic() {
             a_ctx.fillText("Ah well, looks like I'm done for", 400, 50);
 
             if (keysPressed[87] && player.x >= 1305 && player.x <= 1375) {
-                exitingGame = true;
+                exitingThroughDoor2 = true;
             }
         }
         else {
-            // console.log(canvasA.style.paddingTop.substring(0, -2));
-            // player.y += 10;
-            canvasPaddingTop += 9;
-            document.body.style.paddingTop = canvasPaddingTop + "px";
+            // Increase body padding top to push canvas down.
+            bodyPaddingTop += 9;
+            document.body.style.paddingTop = bodyPaddingTop + "px";
+
+            //Scroll to (almost) the bottom to show the player on the canvas.
             window.scroll({
-                top: canvasPaddingTop,
+                top: bodyPaddingTop,
                 left: 0,
                 behavior: "instant",
             });
         }
         utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx, false, 0, playerFallAnimCounter, playerWaving);
     }
+    // Do inital effect after running world.stop of fading out canvases.
     else {
         startOpac -= 0.005;
 
@@ -1832,4 +1847,14 @@ function endingLogic() {
         utilities.drawPlayer(player, camXOffset, camYOffset, a_ctx, true);
     }
 };
+
+ʈʼ.exitWorld = () => {
+    if (playerIsFallingInEnding !== true){
+        console.log("The player cannot exit a world that is going.")
+    }
+    else {
+        PlayerIsLeaving = true;
+    }
+}
+
 export { startGameLogic, setShape };
