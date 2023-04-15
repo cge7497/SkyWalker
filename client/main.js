@@ -439,6 +439,10 @@ const startGameLogic = (obj, immediate = false) => {
         // treeModel.rotation.x = -0.25;
         gltf.scene.name = '3DTree';
 
+        // light
+        const light = new THREE.PointLight(0xffffff, 1);
+        treeModel.add(light);
+
         items['3DTree'].file = gltf.scene;
         treeModel.position.y -= 30;
         // treeModel.position.x -= 20;
@@ -693,6 +697,7 @@ const update = (timeStamp) => {
 
             updatePlayerWalkAnim(false, true);
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset, playerFallAnimCounter, playerWalkAnimCounter);
+            console.log(`playerCloud X: ${camXOffset}}  y: ${camYOffset}`);
         }
     }
 };
@@ -1392,6 +1397,7 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
     //If the player is falling, then animate their arm positioning.
     if (!onGround) {
         inAirCounter += 1;
+        if (!infiniteFlip) canFlip = false;
         if (playerFallAnimOut) {
             playerFallAnimCounter += 0.4;
             if (playerFallAnimCounter >= 2) playerFallAnimOut = false;
@@ -1808,7 +1814,7 @@ function endingLogic() {
         }
 
         // If the player entered the player.exitWorld command
-        if (PlayerIsLeaving===true) {
+        if (PlayerIsLeaving === true) {
             a_ctx.drawImage(imgs['door2'], 500, 150);
             player.y = 350;
 
@@ -1849,7 +1855,7 @@ function endingLogic() {
 };
 
 ʈʼ.exitWorld = () => {
-    if (playerIsFallingInEnding !== true){
+    if (playerIsFallingInEnding !== true) {
         console.log("The player cannot exit a world that is going.")
     }
     else {
