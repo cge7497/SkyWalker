@@ -192,7 +192,7 @@ const collideItem = (o) => {
 };
 
 const draw3D = (o) => {
-    utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
+    // utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, 25, 25, p_ctx, "orange", true);
     if (isOnScreen(player, o)) {
         shouldDraw3DObjs = true;
         if (!currentlyDrawnModel) {
@@ -890,7 +890,7 @@ const drawLevel = () => {
 
     level.specialObjects.forEach((o) => {
         if (o.name.substring(0, 2) === '3D') {
-            utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
+            // utilities.drawRectangle(o.x + camXOffset, o.y + camYOffset, o.width, o.height, p_ctx, "orange", false);
             if (isOnScreen(player, o)) {
                 shouldDraw3DObjs = true;
                 // console.log(`current model: ${currentlyDrawnModel}, o.name: ${o.name}`);
