@@ -99,7 +99,7 @@ const drawRectangle = (x, y, width, height, ctx, color, fill = true, fillAndStro
   ctx.restore();
 }
 
-const drawPlayerCloud = (p, ctx, camX, fallFrame, walkFrame) => {
+const drawPlayerCloud = (p, ctx, fallFrame, walkFrame) => {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.dirRad);

@@ -110,12 +110,12 @@ const GameInfo = (props) => {
                     alt="The Pipe" />
                 <img id="theImage" src='assets/img/theImage.png' className='noDisplay' />
             </div>
-            <div id="keyDiv">
+            <div id="keyDiv" hidden>
                 <input id="theKey" placeholder="The Key" class="center" />
                 <input id="keySubmit" type="submit" value="Enter" class="center" />
             </div>
             <button id="resetBtn" className="btn btn-info" disabled={true} >Back to Save</button>
-            <select id="checkpoints">
+            <select id="checkpoints" hidden>
 
             </select>
             <br /><br /> <br />

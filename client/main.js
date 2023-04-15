@@ -162,7 +162,7 @@ const collideTopOfSwitch = (o) => {
 };
 
 const collideGreySwitch = (o) => {
-    if (player.g === 0 && player.flip === true && !prevOnGround) {
+    if (player.g === 1 && !prevOnGround) {
         level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
         items["greyswitch"].collected();
     };
@@ -272,7 +272,7 @@ const startGameLogic = (obj, immediate = false) => {
         trueColor = obj.color;
         player.shape = obj.shape;
 
-        what_is_my_name = "uh... " + obj.username;
+        what_is_my_name = "uh... \"" + obj.username + "\"";
         // setupSocket();
     }
     else {
@@ -605,8 +605,8 @@ let trippedTree = false;
 const moveToTree = () => {
     if (treeModel.scale.x >= 15 && !trippedTree) {
         trippedTree = true;
-        _ = false;
-        var _ = "what";
+        // _ = false;
+        // var _ = "what";
     }
     if (trippedTree) {
         updateTripped(treeModel);
@@ -694,7 +694,7 @@ const update = (timeStamp) => {
             animate(false);
 
             updatePlayerWalkAnim(false, true);
-            utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset, playerFallAnimCounter, playerWalkAnimCounter);
+            utilities.drawPlayerCloud(playerCloud, p_ctx, playerFallAnimCounter, playerWalkAnimCounter);
             // console.log(`playerCloud X: ${camXOffset}}  y: ${camYOffset}`);
         }
     }
@@ -742,6 +742,7 @@ const updateTripped = (model = THREE.Object3D) => {
     }
 }
 
+let uniOpac = 1;
 const updateCloud = () => {
 
     if (keysPressed[65]) {
@@ -765,11 +766,15 @@ const updateCloud = () => {
 
     camXOffset -= playerCloud.hSpeed / 5;
     camYOffset -= playerCloud.vSpeed / 5;
-    let diff = 0;
 
-
-    if (trippedTree && (camXOffset > -1500 && camXOffset < 250) || (camYOffset > -1500 && camYOffset < 250)) {
+    if (trippedTree === true && ((camXOffset < -1500 || camXOffset > 250) || (camYOffset < -1500 || camYOffset > 250))) {
         trippedTree = false;
+        if (uniOpac >= 0) uniOpac -= 0.005;
+        p_ctx.filter = (`opacity(${uniOpac})`);
+    }
+    else {
+        if (uniOpac <= 1) uniOpac+= 0.005;
+        p_ctx.filter = (`opacity(${uniOpac})`);
     }
 };
 
@@ -789,6 +794,10 @@ const updatePlayer = () => {
     let walked = false;
     if (hasEyes && keysPressed[16]) {
         // p_ctx.scale(0.999,0.999);
+        if (camXOffset <= 640 - player.x)
+        if (camXOffset >= player.x)
+        if (camYOffset <= 480 - camYOffset)
+        if (camYOffset >= player.y)
         if (keysPressed[65]) { camXOffset += 3; }
         if (keysPressed[68]) { camXOffset -= 3; }
         if (keysPressed[87]) { camYOffset += 3; }
@@ -1203,7 +1212,7 @@ const areColliding = (p, r) => {
 };
 
 const isOnScreen = (p, f) => {
-    return (p.newX - p.halfWidth < f.x + f.width + 400 && p.newX + p.halfWidth > f.x - 400
+    return (p.newX - p.halfWidth < f.x + f.width + 400 && p.newX + p.halfWidth > f.x - 600
         && p.newY - p.halfHeight < f.y + f.height + 500 && p.newY + p.halfHeight > f.y - 500);
 }
 
@@ -1568,6 +1577,10 @@ function stopFire() {
 
 // Ran when the 'Back To Start' button is clicked. Useful if the player shoots off into the distance without the screw attack.
 const movePlayerBackToStart = () => {
+    scene.remove(currentlyDrawnModel);
+    currentlyDrawnModel = false;
+    renderer.render(scene, camera);
+
     // document.getElementById("theKey").hidden = false;
     player.x = player.spawn[0]; player.y = player.spawn[1];
 
@@ -1645,7 +1658,7 @@ function cloudState() {
     bg_color_rgb = utilities.fadeBGColorToDarkBlue(bg_color_rgb);
 
     // let flrClr = Math.floor(bgRectColor);
-    p_ctx.filter = `grayscale(${bgRectColor * 10}%) blur(${bgRectColor / 2}px)`;
+    p_ctx.filter = `grayscale(${bgRectColor * 10}%) opacity(${5/bgRectColor})`;
     drawLevel();
 }
 

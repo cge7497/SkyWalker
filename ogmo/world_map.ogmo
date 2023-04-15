@@ -446,7 +446,7 @@
       "name": "greyswitch",
       "limit": -1,
       "size": {"x": 16, "y": 16},
-      "origin": {"x": -4, "y": 0},
+      "origin": {"x": -9, "y": 0},
       "originAnchored": true,
       "shape": {
         "label": "Rectangle",
