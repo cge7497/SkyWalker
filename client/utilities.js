@@ -185,7 +185,7 @@ const handleMouseClick = (e) => {
   let x, y, type;
 
   //If the click is not in the canvas, then return.
-  if (e.target.localName != "canvas") { console.log("not on canvas (utilities 160)"); return null; }
+  if (e.target.localName != "canvas") {return null; }
   type = Math.floor(Math.random() * 2);
 
 

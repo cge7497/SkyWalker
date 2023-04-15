@@ -37,7 +37,8 @@ const items = {
     'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) }, collide: (o) => { collideTopOfSwitch(o) } },
     'greyswitch': {
         collected: () => {
-            shouldRotateComp = true; console.log('Hello User. Computer is ready to use in default mode.');
+            shouldRotateComp = true; 
+            console.log('Hello User. Computer is ready to use in default mode.');
             console.log("Enter questions below...")
             const sound = sfxr.generate("synth");
             sfxr.play(sound);
@@ -137,6 +138,8 @@ const collideFire = () => {
     explode_audio.play();
     const color = player.color;
     player.color = "red";
+    rotateDown(false);
+
     setTimeout((e) => {
         shouldUpdateGame = true; movePlayerBackToStart(); player.color = color;
     }, 500);
@@ -144,7 +147,6 @@ const collideFire = () => {
 
 let enteredPipe = false;
 const collidePipe = (o) => {
-    console.log("colliding with pipe");
     // If the player pushed down 'S' on the top of the pipe
     if (!enteredPipe && keysPressed[83]) {
         cloudState();
@@ -244,13 +246,13 @@ const drawImage = (o, flipped = false) => {
 
 
 //usual player y is 200
-const player = { x: 1038, y: 0, halfWidth: 4, halfHeight: 7, newX: 825, newY: 0, scale: 1, name: '', flip: false, g: 0, spawn: [1038, 200] };
+const player = { x: 1038, y: 200, halfWidth: 4, halfHeight: 7, newX: 825, newY: 0, scale: 1, name: '', flip: false, g: 0, spawn: [1038, 200] };
 let playerCloud;
 let trueColor = 0, bgRectColor = 0;
 let fireAnimColor = 0, playerWalkAnimCounter = 0, playerFallAnimCounter = 0;
 
 let xSpeed = 3, ySpeed = 6; // 1, 2 in sky
-let canFlip = true; let infiniteFlip = false, hasMouse = false, hasEyes = false, inClouds = false, shouldUpdateGame = true;
+let canFlip = true; let infiniteFlip = false, hasMouse = false, hasEyes = false, keyVisible = false, inClouds = false, shouldUpdateGame = true;
 let canCrawl = false; const crawlTimerMax = 30; let hasMorphBall = false; let crawlInputTimer = 0, drawGTimer = false, GTimer = 5000;
 let keysPressed = [];
 let canvasWidth, canvasHeight;
@@ -435,7 +437,6 @@ const startGameLogic = (obj, immediate = false) => {
         treeModel = gltf.scene;
         treeModel.scale.x = treeModel.scale.y = treeModel.scale.z = 5;
         treeModel.rotation.y = Math.PI;
-        console.log(treeModel);
         // treeModel.rotation.x = -0.25;
         gltf.scene.name = '3DTree';
 
@@ -519,9 +520,6 @@ const startGameLogic = (obj, immediate = false) => {
 
     sphereMaterial = new THREE.MeshBasicMaterial({ color: trueColor });
     sphere = new THREE.Mesh(geometry, sphereMaterial);
-
-    console.log(sphereMaterial);
-    console.log(sphere.color);
 
     requestAnimationFrame(update);
     requestAnimationFrame(drawBG);
@@ -697,7 +695,7 @@ const update = (timeStamp) => {
 
             updatePlayerWalkAnim(false, true);
             utilities.drawPlayerCloud(playerCloud, p_ctx, camXOffset, playerFallAnimCounter, playerWalkAnimCounter);
-            console.log(`playerCloud X: ${camXOffset}}  y: ${camYOffset}`);
+            // console.log(`playerCloud X: ${camXOffset}}  y: ${camYOffset}`);
         }
     }
 };
@@ -937,6 +935,10 @@ const drawLevel = () => {
             shouldUpdateGame = true;
             clearInterval(timer);
             document.getElementById("keyDiv").hidden = false;
+            if (keyVisible === false) {
+                requests.updatePlayer(player.name, 'keyBox');
+                keyVisible = true;
+            }
             shouldAnimateEyes = false;
             drawTheImage = false;
             p_ctx.globalAlpha = 1;
@@ -950,11 +952,10 @@ const drawLevel = () => {
 
 const evaluateKey = async () => {
     document.getElementById("keySubmit").disabled = true;
-    console.log("evaluate the key");
     const key = document.getElementById("theKey").value;
     const keyIsCorrect = await requests.sendKey(key);
     if (keyIsCorrect === true) {
-        console.log("correct");
+        console.log("Computer unlocked- Creator mode in use.");
         const sound = sfxr.generate("synth");
         sfxr.play(sound);
         document.getElementById("keyDiv").style.opacity = .3;
@@ -1106,6 +1107,7 @@ const drawOtherPlayerMovement = () => {
 
 let drawTheImage = false;
 let collidedOnceWithYellowCloud = false;
+let onPlayerRect = false;
 //Returns true if there are collisions. It also fixes these collisions.
 const CollisionsWithLevel = (_p, xDif, yDif) => {
     let p = _p;
@@ -1122,10 +1124,12 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
 
     let lightColor = new THREE.Color();
     let shouldChangeLightColor = false;
+    onPlayerRect = false;
     collisionRects.forEach((r) => {
         if (areColliding(p, r)) {
             colliding[0] = true;
-            // If the player collides with a new color
+
+            /* If the player collides with a new color
             if (r.values && r.values.color
                 && r.values.color !== playerTracking[playerTracking.length - 1]) {
                 // console.log(r.values.color + "new color");
@@ -1147,6 +1151,7 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                     }
                 }
             }
+            */
             // Draws the image if the player collided with the yellow cloud
             if (r.values && r.values.color === "rgba(220,221,11,0.95)") {
                 console.log(collidedOnceWithYellowCloud);
@@ -1168,6 +1173,8 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                     if (!r.isPlayerRect) { colliding[1] = true; }
                     else {
                         _p.newX += playerRect.hSpeed;
+                        canFlip = true;
+                        onPlayerRect = true;
                     }
                 }
             }
@@ -1176,6 +1183,10 @@ const CollisionsWithLevel = (_p, xDif, yDif) => {
                 if (p.g === 1) {
                     if (!infiniteFlip) canFlip = true; //If the player doesn't have the screw attack/infinite flip, then continue updating canFlip
                     if (!r.isPlayerRect) { colliding[1] = true; }
+                    else {
+                        canFlip = true;
+                        onPlayerRect = true;
+                    }
                 }
             }
         }
@@ -1264,7 +1275,6 @@ async function hitDoor() {
     collidingWithDoor = true;
 
     if (keysPressed[87] && !justEnteredDoor && prevOnGround) {
-        console.log("in 65");
         swapBG();
         justEnteredDoor = true;
         shouldUpdateGame = false;
@@ -1366,6 +1376,10 @@ const initItems = (savedItems) => {
     if (savedItems['eyes'] === true) {
         collectEyes(false);
     }
+    if (savedItems['keyBox'] === true) {
+        document.getElementById("keyDiv").hidden = false;
+        keyVisible = true;
+    }
 };
 const setShape = (shape = 0) => {
     player.shape = shape;
@@ -1396,8 +1410,12 @@ const updatePlayerWalkAnim = (walked = false, onGround = false) => {
 
     //If the player is falling, then animate their arm positioning.
     if (!onGround) {
-        inAirCounter += 1;
-        if (!infiniteFlip) canFlip = false;
+        if (!onPlayerRect) {
+            inAirCounter += 1;
+            if (!infiniteFlip && inAirCounter >= 4) canFlip = false;
+        }
+        else inAirCounter = 0;
+
         if (playerFallAnimOut) {
             playerFallAnimCounter += 0.4;
             if (playerFallAnimCounter >= 2) playerFallAnimOut = false;
@@ -1441,10 +1459,12 @@ function rotatePlayer(o) {
     }
 };
 
-function rotateDown() {
-    const sound = sfxr.generate("jump");
-    sound.sound_vol = 0.05;
-    sfxr.play(sound);
+function rotateDown(playSound = true) {
+    if (playSound === true) {
+        const sound = sfxr.generate("jump");
+        sound.sound_vol = 0.05;
+        sfxr.play(sound);
+    }
 
     player.g = 0; player.halfWidth = 4; player.halfHeight = 7;
     player.flip = false; player.scale = Math.abs(player.scale);
@@ -1541,7 +1561,6 @@ function collectMouse(shouldSendPost = true) {
 }
 
 function stopFire() {
-    console.log("running>")
     level.specialObjects.splice(1, 2);
     const sound = sfxr.generate("click");
     sfxr.play(sound)
@@ -1750,7 +1769,7 @@ const canvasA = document.getElementById("canvas_above");
 let a_ctx;
 let playerIsFallingInEnding = false;
 
-ʵ.stop = () => {
+ʵ.end = () => {
     console.log("You must put parentheses at the end of a command to execute it... Sorry but this is just the way I am.");
     document.getElementById("canvas_js3").remove();
 
@@ -1856,7 +1875,7 @@ function endingLogic() {
 
 ʈʼ.exitWorld = () => {
     if (playerIsFallingInEnding !== true) {
-        console.log("The player cannot exit a world that is going.")
+        console.log("The player cannot leave a world that is still going.")
     }
     else {
         PlayerIsLeaving = true;
