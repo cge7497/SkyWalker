@@ -1,13 +1,15 @@
-TODO 3-11:
-Finish bottom right area! The level editor was crashing on my laptop,
-maybe try tomorrow.
 Websockets...
+
+Fix ending- player is not on canvas?
+Make the "You must use parantheses line" be logged write when admin mode is engaged.
+Double arrow to go super fast. Make it fun.
+Likewise, going through a wall only works on double speed- not initial.
+Implement speedrun timer on leaderboard?
 
 Add two-player mode where one player requests the other, and if they both accept then
 their clouds are transferred between worlds. This would allow them to go to a special area.
 The above is a new feature Gaurav could add. This could be with cellphone item, or by 
 clicking on a player's name.
-Implement speedrun timer tho?
 
 TODO 3-1: 
 Update guide text: Shift to Pause? - no just say in console you can mouse over NOT NEEDED
@@ -16,7 +18,6 @@ up for secret entrance at bottom. (Secret entrance inspired by Sunshine.)
 
 FINISH GAME
 Implement speedrun timer tho?
-
 
 Send player back after touching cloud? This is fine because of shift
 Switch sound effect DONE
