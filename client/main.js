@@ -794,14 +794,10 @@ const updatePlayer = () => {
     let walked = false;
     if (hasEyes && keysPressed[16]) {
         // p_ctx.scale(0.999,0.999);
-        if (camXOffset <= 640 - player.x)
-        if (camXOffset >= player.x)
-        if (camYOffset <= 480 - camYOffset)
-        if (camYOffset >= player.y)
-        if (keysPressed[65]) { camXOffset += 3; }
-        if (keysPressed[68]) { camXOffset -= 3; }
-        if (keysPressed[87]) { camYOffset += 3; }
-        if (keysPressed[83]) { camYOffset -= 3; }
+        if (keysPressed[65] && camXOffset <= 640 - player.x - 20) { camXOffset += 3; }
+        if (keysPressed[68] && camXOffset >= -player.x + 20) { camXOffset -= 3; }
+        if (keysPressed[87] && camYOffset <= 480 - player.y - 20) { camYOffset += 3; }
+        if (keysPressed[83] && camYOffset >= -player.y + 20) { camYOffset -= 3; }
     }
     else if (player.g === 0) {
         if (keysPressed[65]) { xDif = -xSpeed; walked = true; }
@@ -1229,7 +1225,7 @@ const CollisionsWithSpecialObjects = (p) => {
         }
         // Handle player rect and arrow colliding
         if (playerRect && (o.name.substring(0, 5) === "arrow" || o.name === "stop")) {
-            if (playerRect.x - playerRect.width < o.x + o.width / 2 && playerRect.x + playerRect.width > o.x - o.width / 2
+            if (playerRect.x - playerRect.width < o.x - o.width/2 && playerRect.x + playerRect.width > o.x - o.width / 2
                 && playerRect.y - playerRect.height < o.y + o.height / 2 && playerRect.y + playerRect.height > o.y - o.height / 2) {
                 if (o.values && o.values.dir !== null) {
                     //left, right. (Dir order is up, right, down, left)
@@ -1249,7 +1245,8 @@ const CollisionsWithSpecialObjects = (p) => {
                             sfxr.play(sound);
                         }
                     }
-                    /* else if (o.values.dir === 2) {
+                    /* commented out code for potential cloud going upward and downward due to collision bugs.
+                    else if (o.values.dir === 2) {
                         if (playerRect.vSpeed !== 2) {
                             // playerRect.vSpeed = 2;
                             playerRect.hSpeed = 0;
@@ -1622,6 +1619,10 @@ function cloudState() {
         setTimeout(() => {
             sky_audio.play();
             shouldUpdateGame = true;
+            
+            camYOffset = -300;
+            player.y = 475;
+
             cloudsShouldLoop = false;
             p_ctx.filter = "none";
             // I got this code for perfect audio looping (as the loop attribute has delay) from https://stackoverflow.com/a/22446616

@@ -115,7 +115,7 @@ const GameInfo = (props) => {
                 <input id="keySubmit" type="submit" value="Enter" class="center" />
             </div>
             <button id="resetBtn" className="btn btn-info" disabled={true} >Back to Save</button>
-            <select id="checkpoints" hidden>
+            <select id="checkpoints">
 
             </select>
             <br /><br /> <br />
