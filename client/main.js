@@ -35,7 +35,7 @@ const items = {
     },
     'yellowswitch': { collected: theCloud, draw: (o) => { drawImage(o) }, collide: (o) => { collideTopOfSwitch(o) } },
     'redswitch': { collected: stopFire, draw: (o) => { drawImage(o) }, collide: (o) => { collideTopOfSwitch(o) } },
-    'greyswitch': {
+    'orangeswitch': {
         collected: () => {
             shouldRotateComp = true; 
             console.log('Hello User. Computer is ready to use in default mode.');
@@ -43,7 +43,7 @@ const items = {
             const sound = sfxr.generate("synth");
             sfxr.play(sound);
         },
-        draw: (o) => { drawImage(o) }, collide: (o) => { collideGreySwitch(o) }
+        draw: (o) => { drawImage(o) }, collide: (o) => { collideorangeswitch(o) }
     },
     'door': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
     'door2': { draw: (o) => { drawImage(o) }, collide: (o) => { hitDoor() } },
@@ -161,10 +161,10 @@ const collideTopOfSwitch = (o) => {
     };
 };
 
-const collideGreySwitch = (o) => {
+const collideorangeswitch = (o) => {
     if (player.g === 1 && !prevOnGround) {
         level.specialObjects.splice(level.specialObjects.indexOf(o), 1);
-        items["greyswitch"].collected();
+        items["orangeswitch"].collected();
     };
 };
 
@@ -477,8 +477,6 @@ const startGameLogic = (obj, immediate = false) => {
 
     p_canvas.addEventListener("contextmenu", (e) => { e.preventDefault() });
     p_canvas.addEventListener("wheel", (e) => { e.preventDefault() });
-
-    // Prevent scrolling and right-click, use to change speed of bg/playerRect and delete playerRect.
 
     //If getLevel (in level.js) got back a set of clouds, add them to the bgRects/clouds that will be displayed by the client.
     if (level.clouds && level.clouds.length > 0) {
@@ -912,7 +910,7 @@ const drawLevel = () => {
     if (playerRect !== null) {
         playerRect.x += playerRect.hSpeed;
         utilities.drawRectangle(playerRect.x + camXOffset, playerRect.y + camYOffset, playerRect.width, playerRect.height, p_ctx, playerRect.values.color, false, true);
-        if (playerRect.x + camXOffset > canvasWidth + 20) { playerRect.x -= canvasWidth + 80 }
+        // if (playerRect.x + camXOffset > canvasWidth + 20) { playerRect.x -= canvasWidth + 80 }
     }
 
     if (drawTheImage) {
@@ -1354,7 +1352,8 @@ function swapBG() {
 const initItems = (savedItems) => {
     imgs['screwattack'] = document.getElementById('screwattack_inactive');
     imgs['morphball'] = document.getElementById('morphball');
-    imgs['greyswitch'] = document.getElementById('greyswitch');
+    imgs['orangeswitch'] = document.getElementById('orangeswitch');
+    // imgs['orangeswitchempty'] = document.getElementById('orangeswitchempty');
     imgs['yellowswitch'] = document.getElementById('yellowswitch');
     imgs['redswitch'] = document.getElementById('redswitch');
     imgs['door'] = document.getElementById('door');
@@ -1785,6 +1784,12 @@ let playerIsFallingInEnding = false;
 
 ʵ.end = () => {
     console.log("You must put parentheses at the end of a command to execute it... Sorry but this is just the way I am.");
+    console.log("playerY: " + player.y);
+    console.log("camY" + camYOffset);
+    
+    player.y = -100;
+    camYOffset = 0;
+
     document.getElementById("canvas_js3").remove();
 
     shouldUpdateGame = false;

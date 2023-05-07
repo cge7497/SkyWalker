@@ -93,8 +93,10 @@ const GameInfo = (props) => {
                     alt="Yellow Switch" />
                 <img id="redswitch" src='assets/img/redswitch.png' className='noDisplay' width="32" height="32"
                     alt="Red Switch" />
-                <img id="greyswitch" src='assets/img/greyswitch.png' className='noDisplay' width="25" height="25"
-                    alt="Grey Switch" />
+                <img id="orangeswitch" src='assets/img/orangeswitchempty.png' className='noDisplay' width="25" height="25"
+                    alt="Orange Switch" />
+                <img id="orangeswitchfull" src='assets/img/orangeswitch.png' className='noDisplay' width="25" height="25"
+                    alt="Orange Switch Empty" />
                 <img id="arrow_l" src='assets/img/arrow_l.png' className='noDisplay' width="25" height="25"
                     alt="Arrow Left" />
                 <img id="arrow_r" src='assets/img/arrow_r.png' className='noDisplay' width="25" height="25"
